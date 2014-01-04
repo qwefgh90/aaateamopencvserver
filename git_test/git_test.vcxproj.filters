@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{08a0f333-0261-4cb1-aec6-cff1d5dc09ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ImageProcess">
+      <UniqueIdentifier>{3b86a0e9-0ff8-4ef5-95da-8212ca392d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataBase">
+      <UniqueIdentifier>{8761d53e-0fe3-4b82-ab87-e7bec7ddd340}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

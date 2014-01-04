@@ -9,6 +9,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("hello world!");
 	printf("hello world!");
 	printf("hello world!");
-	printf("hello world!");
+	printf("hello world! error");
 	return 0;
 }

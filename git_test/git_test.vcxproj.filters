@@ -22,6 +22,9 @@
     <Filter Include="Source Files\DataBase">
       <UniqueIdentifier>{8761d53e-0fe3-4b82-ab87-e7bec7ddd340}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Resources">
+      <UniqueIdentifier>{d26f3922-bd6e-4ab5-a8f4-2dc2f694161f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

@@ -30,7 +30,7 @@ DB_manager::~DB_manager(void)
     SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
 }
 
-bool DB_manager::Query_signup(IN_Signup in_signup, OUT_Signup &out_signup)
+bool DB_manager::Query_signup(IN_Signup in_signup)
 {
 	sprintf_s(sql, "insert into member values (%s,%s,%s)", in_signup.ID, in_signup.pass, in_signup.nick);
 	Sql_run(sql);
@@ -62,9 +62,18 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login)
 	}
 }
 
-bool DB_manager::Query_leave()
+bool DB_manager::Query_leave(char* ID)
 {
-
+	sprintf_s(sql, "delete  from member where ID = '%s'", ID);
+	Sql_run(sql);
+	if(ret==SQL_SUCCESS)
+	{	
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void DB_manager::Query_images()

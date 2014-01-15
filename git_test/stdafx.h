@@ -31,10 +31,6 @@
 
 using namespace std;
 
-typedef struct _Memory{
-	u_char* buf;
-	u_int len;
-}Memory;
 string spliter;
 string spliter_end;
 #endif

@@ -22,9 +22,9 @@ public:
 	
 	void Sql_run(TCHAR* sql);
 
-	bool Query_signup(IN_Signup in_signup, OUT_Signup &out_signup);
+	bool Query_signup(IN_Signup in_signup);
 	bool Query_login(IN_Login in_login, IN_Login &db_login);
-	bool Query_leave();
+	bool Query_leave(char* ID);
 	void Query_images();
 	void Query_image_register();
 	void Query_opi_search();

@@ -1,11 +1,13 @@
 #include "stdafx.h"
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,DISLIKE=11,REPORT=12}PROTO_TYPE;
+
 //메모리구조체
 typedef struct _Memory{
 	u_char* buf;
 	u_int len;
 }Memory;
+
 //멤버세션
 typedef struct _MemberSession{
 	unsigned char cookie[64];
@@ -71,9 +73,11 @@ typedef struct _OUT_Signup{
 }OUT_Signup;
 
 typedef struct _OUT_Logout{
+	unsigned char result;
 }OUT_Logout;
 
 typedef struct _OUT_Leave{
+	unsigned char result;
 }OUT_Leave;
 
 typedef struct _OUT_Search{

@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Managers">
       <UniqueIdentifier>{ff05e1fd-6049-4cd8-943e-70bd79e8815a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Member">
+      <UniqueIdentifier>{7777d014-cec8-4d76-af2e-adb890dc500e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -54,17 +57,17 @@
     <ClInclude Include="protocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Member_manager.h">
-      <Filter>Source Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="DB_manager.h">
       <Filter>Source Files\DataBase</Filter>
     </ClInclude>
+    <ClInclude Include="Member_manager.h">
+      <Filter>Source Files\Member</Filter>
+    </ClInclude>
     <ClInclude Include="sha512.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Member</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Source Files\Member</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,14 +92,14 @@
     <ClCompile Include="MenuPacketFromStructure.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="sha512.c">
-      <Filter>Source Files\DataBase</Filter>
-    </ClCompile>
     <ClCompile Include="DB_manager.cpp">
       <Filter>Source Files\DataBase</Filter>
     </ClCompile>
     <ClCompile Include="Member_manager.cpp">
-      <Filter>Source Files\Managers</Filter>
+      <Filter>Source Files\Member</Filter>
+    </ClCompile>
+    <ClCompile Include="sha512.c">
+      <Filter>Source Files\Member</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "IOCPServer.h"	//서버 동작에 관련된 헤더
+#include "MenuAnalyzer.h"
 #include "resource.h"
 //Tray 
 #define WM_USER_SHELLICON WM_USER + 1	//기존 메세지 +1
@@ -34,7 +35,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	Tray.cbSize=sizeof(Tray);
 	Tray.hIcon=LoadIcon(NULL,IDI_WINLOGO);
 	Tray.hWnd=windowHwnd;
-	strcpy(Tray.szTip,"ImageProcessServer");
+	strcpy_s(Tray.szTip,"ImageProcessServer");
 	Tray.uID = IDR_MENU1;
 	Tray.uCallbackMessage=WM_USER_SHELLICON;
 	Tray.uFlags=NIF_ICON | NIF_TIP | NIF_MESSAGE;
@@ -84,7 +85,7 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 	//2)allocate completeBuf and copy original buf to complete buffer
 	//3)send data to mobile
 	char temp[256]={0,};
-	sprintf(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
+	sprintf_s(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
 	int length = strlen(temp)+1;
 	pSD->IOData[1].completeBuf = new byte[length];
 
@@ -354,7 +355,7 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 	static int		addrlen = sizeof(RecvAddr);  // 송신측 ip주소알아내기
 	char*			ClientAddr;
 
-	HWND *phWnd;
+	HWND *phWnd		=NULL;
 
 
 	while (1)

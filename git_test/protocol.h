@@ -14,6 +14,7 @@ typedef struct _IN_Signup{
 	char nick[40];
 }IN_Signup;
 typedef struct _IN_Logout{
+	char cookit[65];
 }IN_Logout;
 typedef struct _IN_Leave{
 }IN_Leave;

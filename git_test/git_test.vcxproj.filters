@@ -51,10 +51,19 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DB_connect_manager.h">
+    <ClInclude Include="protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Member_manager.h">
+      <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="DB_manager.h">
       <Filter>Source Files\DataBase</Filter>
     </ClInclude>
-    <ClInclude Include="protocol.h">
+    <ClInclude Include="sha512.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -78,6 +87,15 @@
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="MenuPacketFromStructure.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="sha512.c">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="DB_manager.cpp">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Member_manager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>

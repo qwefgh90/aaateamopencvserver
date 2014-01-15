@@ -26,6 +26,10 @@
 
 //We make required headers
 #include "protocol.h"
+
+
+using namespace std;
+
 typedef struct _Memory{
 	u_char* buf;
 	u_int len;

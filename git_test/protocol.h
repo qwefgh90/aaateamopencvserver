@@ -1,8 +1,18 @@
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,DISLIKE=11,REPORT=12}PROTO_TYPE;
+
+
+
 typedef struct _IN_Login{
+	char ID[20];
+	char pass[20];
+	char nick[40];
 }IN_Login;
+
 typedef struct _IN_Signup{
+	char ID[20];
+	char pass[20];
+	char nick[40];
 }IN_Signup;
 typedef struct _IN_Logout{
 }IN_Logout;
@@ -26,9 +36,14 @@ typedef struct _IN_Report{
 }IN_Report;
 
 typedef struct _OUT_Login{
+	unsigned char result;
+	unsigned char coockie[64];
 }OUT_Login;
+
 typedef struct _OUT_Signup{
+	unsigned char result;
 }OUT_Signup;
+
 typedef struct _OUT_Logout{
 }OUT_Logout;
 typedef struct _OUT_Leave{

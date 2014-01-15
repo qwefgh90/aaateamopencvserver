@@ -23,6 +23,7 @@
 #include <sql.h>
 #include <sqlext.h>
 #include <iostream>
+#include <vector>
 
 //We make required headers
 #include "protocol.h"
@@ -34,6 +35,6 @@ typedef struct _Memory{
 	u_char* buf;
 	u_int len;
 }Memory;
-extern u_char spliter[2];
-extern u_char spliter_end[4];
+string spliter;
+string spliter_end;
 #endif

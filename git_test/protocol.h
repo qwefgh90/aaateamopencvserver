@@ -6,7 +6,6 @@ typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 typedef struct _IN_Login{
 	char ID[20];
 	char pass[20];
-	char nick[40];
 }IN_Login;
 
 typedef struct _IN_Signup{
@@ -38,6 +37,7 @@ typedef struct _IN_Report{
 typedef struct _OUT_Login{
 	unsigned char result;
 	unsigned char coockie[64];
+	unsigned char nick[16];
 }OUT_Login;
 
 typedef struct _OUT_Signup{

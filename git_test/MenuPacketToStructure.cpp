@@ -1,19 +1,34 @@
 #include "stdafx.h"
 #include "MenuAnalyzer.h"
 
-bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory )
+bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 {
 	bool result = false;
+	
+	string str((char*)(memory.buf+5));
+	vector<string> v= split(str,spliter);
+	
+	strcpy(out.ID,v[0].c_str());
+	strcpy(out.pass,v[1].c_str());
+	result = true;
 	return result;
 }
 bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 {
 	bool result = false;
+	
+	string str((char*)(memory.buf+5));
+	vector<string> v= split(str,spliter);
+	
+	strcpy(out.ID,v[0].c_str());
+	strcpy(out.pass,v[1].c_str());
+	strcpy(out.nick,v[2].c_str());
+	result = true;
 	return result;
-
 }
 bool MenuAnalyzer::packetToLogout(__out IN_Logout& out, __in Memory& memory )
 {
+
 	bool result = false;
 	return result;
 

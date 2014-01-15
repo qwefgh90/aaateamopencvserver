@@ -30,11 +30,10 @@ CIocpSrv::~CIocpSrv()
 }
 void CIocpSrv::StartThreadRoutine(LPTHREAD_START_ROUTINE lpStartAddress,int num)
 {
-	DWORD i;
+	int i;
 
 	for(i=0; i< num; i++)
 		CloseHandle( CreateThread(NULL, 0, lpStartAddress, this, 0, 0) );
-
 }
 //서버소켓을 생성 및 바인드,리슨
 bool CIocpSrv::CreateLitenSocket()

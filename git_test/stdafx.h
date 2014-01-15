@@ -20,4 +20,8 @@
 #include <Windows.h>
 #include <list>
 #include <string.h>
+#include<sql.h>
+#include<sqlext.h>
+#include<iostream>
+
 #endif

@@ -1,13 +1,45 @@
 // git_test.cpp : Defines the entry point for the console application.
-//
+
 #include "stdafx.h"
 #include "IOCPServer.h"	//서버 동작에 관련된 헤더
+#include "resource.h"
+//Tray 
+#define WM_USER_SHELLICON WM_USER + 1	//기존 메세지 +1
+NOTIFYICONDATA Tray;//Tray Structure
+HMENU hPopMenu;		//Popup Menu
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);	//Aboutbox message handler
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);//Aboutbox CreateWindow handler
+HWND MyCreateWindow(HINSTANCE hInst);											//RegisterClass, CreateWindow
+HINSTANCE hInst;	// current process instance
+//Service
 DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext );
 DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext );
 DWORD WINAPI ProcessThread(LPVOID recv_buf);
 CIocpSrv *g_pSrv;	//서버 객체
 int _tmain(int argc, _TCHAR* argv[])
 {
+	MSG msg;
+	HWND consolHwnd;			//Console Handle
+	HWND windowHwnd;			//CreateWindow Handle
+	HACCEL hAccelTable;	
+	//hide console window
+	consolHwnd = FindWindow("ConsoleWindowClass",NULL);
+	ShowWindow(consolHwnd,0);
+	hInst = GetModuleHandleA(NULL);
+	//1)RegisterClass, CreateWindow to handle wndproc for handling message
+	windowHwnd = MyCreateWindow(hInst);
+	
+	//2)Tray , register callback, Shell_NotifyIcon() in <shellapi.h>
+	//tray info
+	Tray.cbSize=sizeof(Tray);
+	Tray.hIcon=LoadIcon(NULL,IDI_WINLOGO);
+	Tray.hWnd=windowHwnd;
+	strcpy(Tray.szTip,"ImageProcessServer");
+	Tray.uID = IDR_MENU1;
+	Tray.uCallbackMessage=WM_USER_SHELLICON;
+	Tray.uFlags=NIF_ICON | NIF_TIP | NIF_MESSAGE;
+	Shell_NotifyIcon(NIM_ADD, &Tray);
+
 	WSADATA stWSAData = {0};
 	int nWSAError = WSAStartup( MAKEWORD( 2, 2 ), &stWSAData );
 	if( nWSAError != 0 )
@@ -19,14 +51,156 @@ int _tmain(int argc, _TCHAR* argv[])
 		printf("bind(), listen()실패\n");
 	g_pSrv->StartThreadRoutine(WorkerThread,1);
 	g_pSrv->StartThreadRoutine(AcceptThread,1);
-	//1)서버 생성
-	//2)서버 IOCP큐 쓰레드 생성
-	//3)서버 동작
-	//4)큐에 데이터가 찰 경우 데이터를 영상처리 쓰레드에 넘긴다
-	//5)영상처리 쓰레드가 처리를 완료하고 Write를 한다.
-	//6)클라이언트 측에서 연결을 끊기를 원할경우나 커넥션이 끊어졌을경우도 고려한다.
-	while(1);
+	//3)서버 생성
+	//4)서버 IOCP큐 쓰레드 생성
+	//5)서버 동작
+	//6)큐에 데이터가 찰 경우 데이터를 영상처리 쓰레드에 넘긴다
+	//7)영상처리 쓰레드가 처리를 완료하고 Write를 한다.
+	//8)클라이언트 측에서 연결을 끊기를 원할경우나 커넥션이 끊어졌을경우도 고려한다.
+
+	//9)DispatchMessage()
+	hAccelTable = LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_MENU1));
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
 	return 0;
+}
+
+// DB처리
+// 데이터그램을 이용해 처리를 하는 쓰레드 (작업쓰레드 가장 중요)
+// 데이터그램을 이용해 처리를 하는 쓰레드 (자원해제 포함)
+DWORD WINAPI ProcessThread(LPVOID recv_buf)
+{
+	int nRet;
+	DWORD dwFlags = 0;
+	DWORD dwSendNBytes =0;
+	PSOCKET_DATA pSD = (PSOCKET_DATA)recv_buf;					//Received data from Mobile	about SOCKET_DATA
+	//1)parse(recv_buf) - MenuAnalyzer - return buffer and buffer_length
+	//2)allocate completeBuf and copy original buf to complete buffer
+	//3)send data to mobile
+	char temp[256]={0,};
+	sprintf(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
+	int length = strlen(temp)+1;
+	pSD->IOData[1].completeBuf = new byte[length];
+
+	strcpy((char*)(pSD->IOData[1].completeBuf),temp);
+
+	pSD->IOData[1].nTotalBytes = length;
+	pSD->IOData[1].wsabuf.buf = (char*)pSD->IOData[1].completeBuf;		//To send data to Mobile
+	pSD->IOData[1].wsabuf.len=length;									//To send data to Mobile
+
+	nRet = WSASend( pSD->Socket, &(pSD->IOData[1].wsabuf), 1, &dwSendNBytes,
+		dwFlags, &(pSD->IOData[1].Overlapped), NULL);
+	//버퍼 초기화
+	if (nRet = SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
+	{
+		pSD->Status = false;
+		g_pSrv->m_SocketIndexQ.Put( pSD->index );
+		g_pSrv->CloseClient( pSD );
+		g_pSrv->ReleaseData( pSD );
+	}
+	//4)release original buffer
+	return 0;
+}
+
+HWND MyCreateWindow(HINSTANCE hInst)
+{
+	char* windowname = "Console";	//CreateWindow Name
+	HWND windowHwnd;
+	WNDCLASS wcex;
+	wcex.cbClsExtra		= 0;
+	wcex.cbWndExtra		= 0;
+	wcex.style			= NULL;
+	wcex.hCursor		= NULL;
+	wcex.hbrBackground	= NULL;
+	wcex.hIcon			= NULL;
+	wcex.hInstance		= hInst;
+	wcex.lpfnWndProc	= WndProc;
+	wcex.lpszMenuName	= NULL;
+	wcex.lpszClassName	= windowname;
+	RegisterClass(&wcex);
+
+	windowHwnd = CreateWindow(windowname,windowname,WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,CW_USEDEFAULT,
+		NULL, (HMENU)NULL,hInst, NULL);	//윈도우 등록
+	return windowHwnd;
+}
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	int wmId, wmEvent;
+	POINT lpClickPoint;
+	switch (message)
+	{
+
+	case WM_USER_SHELLICON:		//윈도우 메세지 발생
+		switch(LOWORD(lParam)) 
+		{   
+		case WM_RBUTTONDOWN:	//오른쪽 클릭시 팝업 메뉴 생성
+			UINT uFlag = MF_BYPOSITION|MF_STRING;
+			GetCursorPos(&lpClickPoint);
+			hPopMenu = CreatePopupMenu();
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_START,"Start");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_STOP,"Stop");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_TERMINATE,"Terminate");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_ABOUT,"About");
+			SetForegroundWindow(hWnd);
+			TrackPopupMenu(hPopMenu,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_BOTTOMALIGN,lpClickPoint.x, lpClickPoint.y,0,hWnd,NULL);
+			return true;
+		}
+	case WM_COMMAND:			//정의한 메세지
+		wmId    = LOWORD(wParam);
+		wmEvent = HIWORD(wParam);
+		// Parse the menu selections:
+		switch (wmId)
+		{
+		case ID_TRAY_START:		//Server Start
+			MessageBox(NULL,"This is a test for menu Test 1","Start",MB_OK);
+			break;
+		case ID_TRAY_STOP:		//Server Stop
+			MessageBox(NULL,"This is a test for menu Test 1","Stop",MB_OK);
+			break;
+		case ID_TRAY_TERMINATE:	//Server Terminate
+			Shell_NotifyIcon(NIM_DELETE,&Tray);
+			MessageBox(NULL,"Terminate","Stop",MB_OK);
+			ExitProcess(0);
+			DestroyWindow(hWnd);
+			break;
+		case ID_TRAY_ABOUT:		//About us
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, About);
+			break;
+		default:
+			return DefWindowProc(hWnd, message, wParam, lParam);
+		}
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	}
+	return DefWindowProc(hWnd,message,wParam,lParam);
+}
+
+//Message Handler Aboutbox
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
 }
 
 //  특정 서버 객체에 대한 대기큐 
@@ -126,9 +300,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 				printf("New total buffer allocate\n");
 			}
 			pBuffer = pIOD->completeBuf;	//전체 데이터에 대한 버퍼
-
 			printf("[Read Data] totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
-
 			if (pIOD->nCurrentBytes < pIOD->nTotalBytes ) // 아직 덜받았따..
 			{
 				memcpy(pBuffer+(pIOD->nCurrentBytes-dwIoSize),pIOD->wsabuf.buf,dwIoSize);	//받은 일부 데이터를 전체 버퍼에 복사
@@ -228,151 +400,5 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 		Sleep(0);
 	}
 
-	return 0;
-}
-
-// DB처리
-// 데이터그램을 이용해 처리를 하는 쓰레드 (작업쓰레드 가장 중요)
-DWORD WINAPI DbGatewayThread ( LPVOID ScatterThreadContext )
-{
-	CPacket pack;
-	PSOCKET_DATA pSockets;
-	DWORD	dwSendNBytes=0;
-	DWORD	dwFlags=0;
-	int index;
-
-	while (1)
-	{
-		CIocpSrv::s_PacketQ.Get(pack);//큐에 쌓인패킷을 가져온다.
-		pSockets = g_pSrv->GetSockets();
-		index = pack.GetIndex();
-
-		WSASend( pSockets[index].Socket, &(pSockets[index].IOData[1].wsabuf), 1, &dwSendNBytes,
-			dwFlags, &(pSockets[index].IOData[1].Overlapped), NULL);
-		/*
-		// type에 따라 처리.
-		switch (pack.GetProtoData().nType) { 
-		// 클라이언트가 유해싸이트인지 판별요청했을시.
-		// 클라이언트에게  PROTODATA구조체형으로 결과값을 send해준다.
-		// type 이 0은 유해싸이트가 아니고  1은 유해싸이트이다.
-		// contents배열에 내용을 넣어준다.
-		case SM_CONNECT: 
-
-		// db에서 ip를 select한다.
-		// false를 리턴했다는것은 오류가 있다.
-		if( !g_pQuery->HarmfulSearch(pack.GetProtoData().szContent,pack.GetProtoData().grade) )
-		{
-		pack.GetProtoData().nType = 0;
-		if (g_pQuery->GetRet() == SQL_NO_DATA)
-		{
-		// m_Ret이 SQL_NO_DATA라는것은 유해싸이트가 아니다 
-		strcpy(pack.GetProtoData().szContent,"NO_DATA");
-		}
-		else
-		{
-		strcpy(pack.GetProtoData().szContent,"ERROR");
-		}
-		}
-		else 
-		{
-		pack.GetProtoData().nType = 1;
-		strcpy(pack.GetProtoData().szContent,"HARMFUL_IP");
-		}
-		pSockets[index].IOData[1].wsabuf.buf = (char *)&pack.GetProtoData();
-		WSASend( pSockets[index].Socket, &(pSockets[index].IOData[1].wsabuf), 1, &dwSendNBytes,
-		dwFlags, &(pSockets[index].IOData[1].Overlapped), NULL);
-
-		break;
-
-		case SM_USERID: // 회원이 컴퓨터를 켰다.
-		g_pQuery->UserUpdate(pack.GetProtoData().szContent,pSockets[index].IpAddress);
-		break;
-		case SM_USEEND: // 회원이 컴퓨터를 껏다.
-		g_pQuery->UserEnd(pack.GetProtoData().szContent);
-		break;
-
-		case SM_ADDURL: // 회원이 유해싸이트를 로컬에 추가하였다.
-		g_pQuery->AddHarmfulURL(pack.GetProtoData().szContent);
-		break;
-
-		case SM_GETPWD: // 프로그램 무단 상태변경 방지를 위한 회원 확인절차
-		if( !g_pQuery->GetPassWord(pack.GetProtoData().szContent) )
-		{
-		pack.GetProtoData().nType = 0;
-		if (g_pQuery->GetRet() == SQL_NO_DATA)
-		{
-		// 아이디가 존재 하지않습니다.
-		strcpy(pack.GetProtoData().szContent,"NO_ID");
-		}
-		else
-		{	// 일반적인 에러.
-		strcpy(pack.GetProtoData().szContent,"ERROR");
-		}
-		}
-		else 
-		{	// 회원으로 확인됨
-		pack.GetProtoData().nType = 1;
-		}
-		pSockets[index].IOData[1].wsabuf.buf = (char *)&pack.GetProtoData();
-		WSASend( pSockets[index].Socket, &(pSockets[index].IOData[1].wsabuf), 1, &dwSendNBytes,
-		dwFlags, &(pSockets[index].IOData[1].Overlapped), NULL);
-		break;
-
-		case SM_IDCHECK:
-		if( !g_pQuery->GetIDCheck(pack.GetProtoData().szContent) )
-		{
-		pack.GetProtoData().nType = 0;
-		if (g_pQuery->GetRet() == SQL_NO_DATA)
-		{	// 아이디가 존재 하지않습니다.
-		strcpy(pack.GetProtoData().szContent,"NO_ID");
-		}
-		else
-		{	// 일반적인 에러.
-		strcpy(pack.GetProtoData().szContent,"ERROR");
-		}
-		}
-		else 
-		{	// 아이디 존재
-		pack.GetProtoData().nType = 1;
-		}
-		pSockets[index].IOData[1].wsabuf.buf = (char *)&pack.GetProtoData();
-		WSASend( pSockets[index].Socket, &(pSockets[index].IOData[1].wsabuf), 1, &dwSendNBytes,
-		dwFlags, &(pSockets[index].IOData[1].Overlapped), NULL);
-		break;
-
-		default:
-		break;
-		}*/
-	}
-	return 0;
-}
-// 데이터그램을 이용해 처리를 하는 쓰레드 (자원해제 포함)
-DWORD WINAPI ProcessThread(LPVOID recv_buf)
-{
-	int nRet;
-	DWORD dwFlags = 0;
-	DWORD dwSendNBytes =0;
-	PSOCKET_DATA pSD = (PSOCKET_DATA)recv_buf;
-	char temp[256]={0,};
-	sprintf(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
-	int length = strlen(temp)+1;
-	pSD->IOData[1].completeBuf = new byte[length];
-
-	strcpy((char*)(pSD->IOData[1].completeBuf),temp);
-
-	pSD->IOData[1].nTotalBytes = length;
-	pSD->IOData[1].wsabuf.buf = (char*)pSD->IOData[1].completeBuf;
-	pSD->IOData[1].wsabuf.len=length;
-
-	nRet = WSASend( pSD->Socket, &(pSD->IOData[1].wsabuf), 1, &dwSendNBytes,
-		dwFlags, &(pSD->IOData[1].Overlapped), NULL);
-	//버퍼 초기화
-	if (nRet = SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
-	{
-		pSD->Status = false;
-		pSrv->m_SocketIndexQ.Put( pSD->index );
-		pSrv->CloseClient( pSD );
-		pSrv->ReleaseData( pSD );
-	}
 	return 0;
 }

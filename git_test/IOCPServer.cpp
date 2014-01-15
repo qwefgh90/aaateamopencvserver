@@ -5,7 +5,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CPacketQ CIocpSrv::s_PacketQ;
 
 bool CIocpSrv::StartUp()
 {

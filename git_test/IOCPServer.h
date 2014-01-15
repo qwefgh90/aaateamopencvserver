@@ -11,7 +11,6 @@
 #endif // _MSC_VER > 1000
 
 #include "IndexQ.h"
-#include "PacketQ.h"
 
 
 #ifndef __BUF__
@@ -77,7 +76,6 @@ class CIocpSrv
 	}
 public:
 	
-	static CPacketQ s_PacketQ;		//	패킷 큐
 	CIndexQ		m_SocketIndexQ;    // 인덱스큐
 
 	SOCKET GetLSocket()	{ return m_ListenSock;	}

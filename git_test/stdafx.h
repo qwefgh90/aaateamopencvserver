@@ -20,8 +20,13 @@
 #include <Windows.h>
 #include <list>
 #include <string.h>
-#include<sql.h>
-#include<sqlext.h>
-#include<iostream>
+#include <sql.h>
+#include <sqlext.h>
+#include <iostream>
+
+typedef struct _Memory{
+	u_char* buf;
+	u_int len;
+}Memory;
 
 #endif

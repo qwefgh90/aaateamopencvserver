@@ -10,12 +10,16 @@ MenuAnalyzer::MenuAnalyzer(void)
 MenuAnalyzer::~MenuAnalyzer(void)
 {
 }
-
-u_char* MenuAnalyzer::MenuSelector(u_char* in_buf)
+//param
+//@data received from mobile 
+//return
+//@buffer and size to send to mobile
+Memory MenuAnalyzer::MenuSelector(Memory in_buf)
 {
+	Memory memory;
 	u_char* out_buf;
 
-	return out_buf;
+	return memory;
 }
 
 MenuAnalyzer* MenuAnalyzer::GetMenuAnalyzer()

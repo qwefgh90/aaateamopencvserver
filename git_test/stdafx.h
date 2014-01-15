@@ -24,12 +24,12 @@
 #include <sqlext.h>
 #include <iostream>
 
+//We make required headers
+#include "protocol.h"
 typedef struct _Memory{
 	u_char* buf;
 	u_int len;
 }Memory;
-typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
-	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,DISLIKE=11,REPORT=12}PROTO_TYPE;
-u_char spliter[2]={'\r','\n'};
-u_char spliter_end[4]={'\r','\n','\r','\n'};
+extern u_char spliter[2];
+extern u_char spliter_end[4];
 #endif

@@ -45,6 +45,8 @@ bool MenuAnalyzer::packetToLeave(__out IN_Leave& out, __in Memory& memory )
 	result = true;
 	return result;
 }
+
+const u_int SEARCH_SIZE_BUTIMAGE = 64+4+1+1+4+4;
 bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 {
 	bool result = false;
@@ -53,13 +55,12 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	u_char* latitude = filter+1;		//위도
 	u_char* longitude = latitude+4;		//경도
 	u_char* image_buf = longitude+4;	//image
-	#define SIZE_BUTIMAGE 64+4+1+1+4+4
-	u_int	image_size = *((u_int*)memory.buf)-SIZE_BUTIMAGE;	//image size
+	u_int	image_size = *((u_int*)memory.buf)-SEARCH_SIZE_BUTIMAGE;	//image size
 	memcpy(out.cookie,cookie,64);
 	out.filter = *filter;
-	out.latitude = latitude[0]<<24+latitude[1]<<16+latitude[2]<<8+latitude[3];
-	out.longitude = longitude[0]<<24+longitude[1]<<16+longitude[2]<<8+longitude[3];
-	memcpy(out.image.buf,image_buf,image_size);
+	memcpy(&(out.latitude),latitude,4);
+	memcpy(&(out.longitude),longitude,4);
+	out.image.buf = image_buf;
 	out.image.len = image_size;
 
 	result = true;

@@ -6,6 +6,6 @@
 
 // TODO: reference any additional headers you need in STDAFX.H
 // and not in this file
-
-extern string spliter("\r\n");
-extern string spliter_end("\r\n\r\n");
+int a;
+string spliter("\r\n");
+string spliter_end("\r\n\r\n");

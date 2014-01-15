@@ -30,7 +30,7 @@
 
 
 using namespace std;
-
-string spliter;
-string spliter_end;
+extern int a;
+extern string spliter;
+extern string spliter_end;
 #endif

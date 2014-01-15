@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include"stdafx.h"
 #include "DB_manager.h"
 
 DB_manager::DB_manager(void)
@@ -62,7 +62,7 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login)
 	}
 }
 
-void DB_manager::Query_leave()
+bool DB_manager::Query_leave()
 {
 
 }

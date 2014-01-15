@@ -1,7 +1,8 @@
 #pragma once
 
-#include "stdafx.h"
+#include"stdafx.h"
 #include"sha512.h"
+
 
 class DB_manager
 {
@@ -23,7 +24,7 @@ public:
 
 	bool Query_signup(IN_Signup in_signup, OUT_Signup &out_signup);
 	bool Query_login(IN_Login in_login, IN_Login &db_login);
-	void Query_leave();
+	bool Query_leave();
 	void Query_images();
 	void Query_image_register();
 	void Query_opi_search();

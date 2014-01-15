@@ -1,6 +1,17 @@
-#include "stdafx.h"
+#include"stdafx.h"
 #include "Member_manager.h"
 
+Member_manager* Member_manager::singleton=NULL;
+
+//싱글톤
+Member_manager* Member_manager::GetMember_manager()
+{
+	if(Member_manager::singleton == NULL)
+	{
+		singleton = new Member_manager();
+	}
+	return singleton;
+}
 
 //멤버 매니저 클래스 생성자
 Member_manager::Member_manager(void)
@@ -21,6 +32,8 @@ bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
 {
 	//DB에서 받아올 구조체
 	IN_Login db_login;
+	//멤버세션에 저장할 구조체
+	MemberSession mem;
 	//로그인 쿼리 실행
 	if(dbm->Query_login(in_login, db_login))
 	{
@@ -32,6 +45,11 @@ bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
 			cout<<db_login.ID<<" 님 로그인 성공"<<endl;
 
 			sha512((unsigned char*)db_login.ID,strlen(db_login.ID),out_login.coockie,0);
+			strcpy((char *)mem.coockie,(char *)out_login.coockie);
+			strcpy(mem.ID,db_login.ID);
+			
+			hash.push_back(mem);
+
 			out_login.result = 1;
 			
 			return true;
@@ -54,9 +72,18 @@ bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
 	}
 }
 
-void Member_manager::Logout()
+bool Member_manager::Logout(IN_Logout in_logout, OUT_Logout &out_logout)
 {
+	for(int i = 0; i<(int)hash.size(); i++)
+	{
+		if(hash[i].coockie == in_logout.coockie)
+		{
+			hash.erase(hash.begin() + i);
+			return true;
+		}
+	}
 
+	return false;
 }
 
 bool Member_manager::Signup(IN_Signup in_signup, OUT_Signup &out_signup)

@@ -23,7 +23,6 @@ private:
 	bool packetToModifyComment(__out IN_Modify_comment&, __in Memory& memory);
 	bool packetToDeleteComment(__out IN_Delete_comment&, __in Memory& memory);
 	bool packetToLike(__out IN_Like&, __in Memory& memory);
-	bool packetToDislike(__out IN_Dislike&, __in Memory& memory);
 	bool packetToReport(__out IN_Report&, __in Memory& memory);
 
 	//structure of login to packet structure
@@ -36,7 +35,6 @@ private:
 	bool packetFromSWriteComment(__out Memory&, __in OUT_More&);
 	bool packetFromModifyComment(__out Memory&, __in OUT_Write_comment&);
 	bool packetFromDeleteComment(__out Memory&, __in OUT_Modify_comment&);
-	bool packetFromLike(__out Memory&, __in OUT_Delete_comment&);
-	bool packetFromDislike(__out Memory&, __in OUT_Like&);
-	bool packetFromReport(__out Memory&, __in OUT_Dislike&);
+	bool packetFromLike(__out Memory&, __in OUT_Like&);
+	bool packetFromReport(__out Memory&, __in OUT_Report&);
 };

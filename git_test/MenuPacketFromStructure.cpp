@@ -31,32 +31,27 @@ bool packetToMore(__out Memory& out, __in OUT_More& in)
 	bool result = false;
 	return result;
 }
-bool packetFromSWriteComment(__out Memory& out, __in OUT_More& in)
+bool packetFromSWriteComment(__out Memory& out, __in OUT_Write_comment& in)
 {
 	bool result = false;
 	return result;
 }
-bool packetFromModifyComment(__out Memory& out, __in OUT_Write_comment& in)
+bool packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in)
 {
 	bool result = false;
 	return result;
 }
-bool packetFromDeleteComment(__out Memory& out, __in OUT_Modify_comment& in)
+bool packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in)
 {
 	bool result = false;
 	return result;
 }
-bool packetFromLike(__out Memory& out, __in OUT_Delete_comment& in)
+bool packetFromLike(__out Memory& out, __in OUT_Like& in)
 {
 	bool result = false;
 	return result;
 }
-bool packetFromDislike(__out Memory& out, __in OUT_Like& in)
-{
-	bool result = false;
-	return result;
-}
-bool packetFromReport(__out Memory& out, __in OUT_Dislike& in)
+bool packetFromReport(__out Memory& out, __in _OUT_Report& in)
 {
 	bool result = false;
 	return result;

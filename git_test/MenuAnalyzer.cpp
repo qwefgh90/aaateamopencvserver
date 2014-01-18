@@ -123,15 +123,6 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 
 		break;
 		}
-	case DISLIKE:
-		{
-		IN_Dislike in;	//로그인 요청 구조체
-		OUT_Dislike out;	//로그인 응답 구조체
-		memset(&in,0,sizeof(in));
-		memset(&out,0,sizeof(out));
-
-		break;
-		}
 	case REPORT:
 		{
 		IN_Report in;	//로그인 요청 구조체

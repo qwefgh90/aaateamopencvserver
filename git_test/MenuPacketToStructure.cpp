@@ -100,12 +100,6 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	return result;
 
 }
-bool MenuAnalyzer::packetToDislike(__out IN_Dislike& out, __in Memory& memory )
-{
-	bool result = false;
-	return result;
-
-}
 bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
 	bool result = false;

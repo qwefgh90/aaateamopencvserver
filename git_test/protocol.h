@@ -56,6 +56,7 @@ typedef struct _IN_Write_comment{
 	unsigned char cookie[64];
 	u_int code;
 	char comment[400+1];
+	u_char comment_score;
 }IN_Write_comment;
 
 typedef struct _IN_Modify_comment{
@@ -63,6 +64,7 @@ typedef struct _IN_Modify_comment{
 	u_int num;
 	u_char comment_count;
 	char comment[400+1];
+	u_char comment_score;
 }IN_Modify_comment;
 
 typedef struct _IN_Delete_comment{
@@ -83,6 +85,7 @@ typedef struct _IN_Report{
 	float latitude;	//위도
 	float longitude;//경도
 	char comment[400+1];
+	u_char comment_score;
 	Memory image;	//image
 	u_char id[31];
 }IN_Report;

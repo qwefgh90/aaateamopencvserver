@@ -76,7 +76,7 @@ bool DB_manager::Query_leave(char* ID)
 	}
 }
 
-void DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector)
+bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector)
 {
 	char buf[50];
 	char c[2];
@@ -89,7 +89,7 @@ void DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 		if( in_search.filter & filter[i])
 		{
 			strcat_s(buf,"'");
-			itoa(i,c,10);
+			_itoa_s(i,c,10);
 			strcat_s(buf, c);
 			strcat_s(buf,"'");
 			strcat_s(buf,",");
@@ -111,23 +111,56 @@ void DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 
 				Imagevector.push_back(Image_list);
 			}
+			
+			return true;
 		}
-
+		return false;
 }
 
-void DB_manager::Query_image_register(IN_Report in_report)
+bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report out_report)
 {
 	int filter_id;
+	int store_code;
+
 	for ( int i = 0; i < filter_no ; i++)
 		if( in_report.filter & filter[i])
 		{
 			filter_id = i;
 		}
 		sprintf_s(sql, "insert into STORE values (%s,%f,%f,%d)", in_report.image, in_report.longitude, in_report.latitude,in_report.filter);
+
 		Sql_run(sql);
+
+		if(ret == SQL_SUCCESS)
+		{
+			sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.image);
+
+			Sql_run(sql);
+
+			if(ret==SQL_SUCCESS)
+			{
+				SQLFetch(hStmt);
+				SQLGetData(hStmt, 1, SQL_INTEGER, &store_code, 4, NULL);
+			}
+
+			sprintf_s(sql, "insert into SNS(ID, store_code, store_con) values (%s,%d,%s)", in_report.ID, store_code, in_report.comment);
+
+			Sql_run(sql);
+			
+			if(ret==SQL_SUCCESS)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return false;
+
 }
 
-void DB_manager::Query_opi_search()
+bool Query_opi_search(IN_More in_more, OUT_More out_more)
 {
 
 }

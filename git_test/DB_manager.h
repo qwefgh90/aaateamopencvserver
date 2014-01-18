@@ -25,7 +25,7 @@ public:
 	bool Query_signup(IN_Signup in_signup);
 	bool Query_login(IN_Login in_login, IN_Login &db_login);
 	bool Query_leave(char* ID);
-	void Query_images();
+	void Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector);
 	void Query_image_register();
 	void Query_opi_search();
 	void Query_opi_register();

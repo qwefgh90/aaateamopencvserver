@@ -19,7 +19,7 @@
 #include <WinSock2.h>
 #include <Windows.h>
 #include <list>
-#include <string.h>
+#include <string>
 #include <sql.h>
 #include <sqlext.h>
 #include <iostream>

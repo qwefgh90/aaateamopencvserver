@@ -15,19 +15,18 @@ typedef struct _Memory{
 //멤버세션
 typedef struct _MemberSession{
 	unsigned char cookie[64];
-	char ID[20];
+	char ID[20+1];
 }MemberSession;
 
-
 typedef struct _IN_Login{
-	char ID[20];
-	char pass[20];
+	char ID[20+1];
+	char pass[20+1];
 }IN_Login;
 
 typedef struct _IN_Signup{
-	char ID[20];
-	char pass[20];
-	char nick[40];
+	char ID[20+1];
+	char pass[20+1];
+	char nick[40+1];
 }IN_Signup;
 
 typedef struct _IN_Logout{
@@ -56,14 +55,14 @@ typedef struct _IN_More{
 typedef struct _IN_Write_comment{
 	unsigned char cookie[64];
 	u_int code;
-	char comment[400];
+	char comment[400+1];
 }IN_Write_comment;
 
 typedef struct _IN_Modify_comment{
 	unsigned char cookie[64];
 	u_int num;
 	u_char comment_count;
-	char comment[400];
+	char comment[400+1];
 }IN_Modify_comment;
 
 typedef struct _IN_Delete_comment{
@@ -83,22 +82,22 @@ typedef struct _IN_Report{
 	u_char filter;
 	float latitude;	//위도
 	float longitude;//경도
-	char comment[400];
+	char comment[400+1];
 	Memory image;	//image
-
+	u_char id[31];
 }IN_Report;
 
 //Opinion mini structure is contained 
 typedef struct _OUT_Opinion{
 	unsigned char result;
-	char comment[400];
+	char comment[400+1];
 	u_int like_cnt;
 	u_int dislike_cnt;
 }OUT_Opinion;
 
 typedef struct _OUT_Login{
 	unsigned char result;
-	char nick[16];
+	char nick[16+1];
 	unsigned char cookie[64];
 }OUT_Login;
 

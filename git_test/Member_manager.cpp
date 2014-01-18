@@ -45,7 +45,7 @@ bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
 			cout<<db_login.ID<<" 님 로그인 성공"<<endl;
 
 			sha512((unsigned char*)db_login.ID,strlen(db_login.ID),out_login.cookie,0);
-			strcpy_s((char *)mem.cookie,strlen((char*)out_login.cookie),(char *)out_login.cookie);
+			memcpy_s(mem.cookie,64,out_login.cookie,64);
 			strcpy_s(mem.ID,db_login.ID);
 			
 			hash.push_back(mem);

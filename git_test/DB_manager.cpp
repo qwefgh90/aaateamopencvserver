@@ -78,7 +78,17 @@ bool DB_manager::Query_leave(char* ID)
 
 void DB_manager::Query_images()
 {
+	char buf[50];
+	for ( int i = 0; i < filter_no ; i++)
+		if( in_filter & filter[i])
+			strcat_s(buf,"'");
+			strcpy_s(buf,(char)i);
+			strcat_s(buf,"'");
+			strcat_s(buf,",");
+			
 
+			sprintf_s(sql, "select store_code, store_key from STORE where store_filter in('%d' and ", i);
+			
 }
 
 void DB_manager::Query_image_register()

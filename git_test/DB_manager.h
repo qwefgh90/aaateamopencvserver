@@ -26,7 +26,7 @@ public:
 	bool Query_login(IN_Login in_login, IN_Login &db_login);
 	bool Query_leave(char* ID);
 	void Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector);
-	void Query_image_register();
+	void Query_image_register(IN_Report in_report);
 	void Query_opi_search();
 	void Query_opi_register();
 	void Query_opi_delete();

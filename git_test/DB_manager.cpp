@@ -81,7 +81,9 @@ void DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 	char buf[50];
 	char c[2];
 	memset(buf,0,50);
-	Imagelist Image_list;
+	Imagelist* Image_list;
+
+	Image_list = new Imagelist();
 
 	for ( int i = 0; i < filter_no ; i++)
 		if( in_search.filter & filter[i])
@@ -104,18 +106,25 @@ void DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 		{
 			while(SQLFetch(hStmt))
 			{
-				SQLGetData(hStmt, 1, SQL_INTEGER, &Image_list.store_code, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_C_CHAR, &Image_list.store_path, 40, NULL);
+				SQLGetData(hStmt, 1, SQL_INTEGER, &Image_list->store_code, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_C_CHAR, &Image_list->store_path, 40, NULL);
 
-				Imagevector.push_back(&Image_list);
+				Imagevector.push_back(Image_list);
 			}
 		}
 
 }
 
-void DB_manager::Query_image_register()
+void DB_manager::Query_image_register(IN_Report in_report)
 {
-
+	int filter_id;
+	for ( int i = 0; i < filter_no ; i++)
+		if( in_report.filter & filter[i])
+		{
+			filter_id = i;
+		}
+		sprintf_s(sql, "insert into STORE values (%s,%f,%f,%d)", in_report.image, in_report.longitude, in_report.latitude,in_report.filter);
+		Sql_run(sql);
 }
 
 void DB_manager::Query_opi_search()

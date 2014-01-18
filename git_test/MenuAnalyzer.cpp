@@ -34,7 +34,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		//1)패킷에서 구조체 생성
-		this->packetToLogin(in,out_memory);
+		this->packetToLogin(in,in_memory);
 		//2)생성된 구조체를 각 모듈에 전달
 		//3)생성된 구조체에서 패킷을 생성
 		//4)모바일에서 패킷 전송

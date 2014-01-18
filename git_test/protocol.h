@@ -43,24 +43,45 @@ typedef struct _IN_Search{
 }IN_Search;
 
 typedef struct _IN_More{
+	unsigned char cookie[64];
+	u_int code;
+	u_char comment_count;
+	u_char sort;
 }IN_More;
 
 typedef struct _IN_Write_comment{
+	unsigned char cookie[64];
+	u_int code;
+	char comment[400];
 }IN_Write_comment;
 
 typedef struct _IN_Modify_comment{
+	unsigned char cookie[64];
+	u_int num;
+	u_char comment_count;
+	char comment[400];
 }IN_Modify_comment;
 
 typedef struct _IN_Delete_comment{
+	unsigned char cookie[64];
+	u_int num;
+	u_char comment_count;
 }IN_Delete_comment;
 
 typedef struct _IN_Like{
+	unsigned char cookie[64];
+	u_int num;
+	u_char like;
 }IN_Like;
 
-typedef struct _IN_Dislike{
-}IN_Dislike;
-
 typedef struct _IN_Report{
+	unsigned char cookie[64];
+	u_char filter;
+	float latitude;	//위도
+	float longitude;//경도
+	char comment[400];
+	Memory image;	//image
+
 }IN_Report;
 
 typedef struct _OUT_Login{

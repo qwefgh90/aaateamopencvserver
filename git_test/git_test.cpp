@@ -310,6 +310,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 					&dwFlags, &(pIOD->Overlapped), NULL);
 				if (SOCKET_ERROR == nRet && (ERROR_IO_PENDING != WSAGetLastError()) )
 				{
+					
 					pSD->Status = false;
 					pSrv->m_SocketIndexQ.Put( pSD->index );
 					pSrv->CloseClient( pSD );

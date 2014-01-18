@@ -60,8 +60,11 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	out.filter = *filter;
 	memcpy(&(out.latitude),latitude,4);
 	memcpy(&(out.longitude),longitude,4);
-	out.image.buf = image_buf;
+
+
+	out.image.buf = new byte[image_size];
 	out.image.len = image_size;
+	memcpy(out.image.buf,image_buf,image_size);
 
 	result = true;
 	return result;

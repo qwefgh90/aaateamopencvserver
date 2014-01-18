@@ -1,10 +1,23 @@
 #include "stdafx.h"
 
-#define filter_no 8
+#define filter_no 6
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,REPORT=11}PROTO_TYPE;
 
-const unsigned char filter[filter_no] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
+#define COFFEE 0x01
+#define FOOD 0x02
+#define RESTAURANT 0x04
+#define HAIR 0x08
+#define BAKERY 0x10
+#define ETC 0x20
+#define ERRORRANGE 0.001
+const unsigned char filter[filter_no] = { COFFEE, FOOD, RESTAURANT, HAIR, BAKERY, ETC};
+
+//DB->이미지모듈로 넘겨주는 구조체(상점 코드, 상점 키값)
+typedef struct _Imagelist{
+	u_int store_code;
+	char store_path[256];
+}Imagelist;
 
 //메모리구조체
 typedef struct _Memory{

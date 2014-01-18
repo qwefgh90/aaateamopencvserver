@@ -134,3 +134,13 @@ bool Member_manager::Leave(IN_Leave in_leave, OUT_Leave &out_leave)
 	out_leave.result = -1;
 	return false;
 }
+
+char* Member_manager::Check_Member(unsigned char* cookie)
+{
+	for(int i = 0; i < (int)hash.size(); i++)
+	{
+		if(memcmp(hash[i].cookie,cookie,64))
+			return hash[i].ID;
+	}
+	return false;
+}

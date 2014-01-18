@@ -143,7 +143,7 @@ bool MenuAnalyzer::packetToModifyComment(__out IN_Modify_comment& out, __in Memo
 	{
 		goto END;
 	}
-	string str= string((char*)opinion);
+	str= string((char*)opinion);
 	v= split(str,spliter);	//spliter를 기준으로 자른다 마지막엔 NULL이 있어야 하지만 존재 하지 않음, 임의로 NULL로 채워줌
 	strcpy(out.comment,v[0].c_str());		//글 내용
 

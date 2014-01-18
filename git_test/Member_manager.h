@@ -23,6 +23,7 @@ public:
 	bool Logout(IN_Logout in_logout, OUT_Logout &out_logout);
 	bool Signup(IN_Signup in_signup, OUT_Signup &out_signup);
 	bool Leave(IN_Leave in_leave, OUT_Leave &out_leave);
+	char* Check_Member(unsigned char* cookie);
 
 };
 

@@ -5,9 +5,18 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 {
 	bool result = false;
 	
-	string str((char*)(memory.buf+5+2+2));
+	string str((char*)(memory.buf+5 +2+2));
 	vector<string> v= split(str,spliter);
 	
+	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5 +2+2),spliter_end.c_str());
+	if(end_ptr!=NULL)
+	{
+		end_ptr[0]=NULL;
+		end_ptr[1]=NULL;
+		end_ptr[2]=NULL;
+		end_ptr[3]=NULL;
+	}
+
 	strcpy(out.ID,v[0].c_str());
 	strcpy(out.pass,v[1].c_str());
 	result = true;
@@ -17,9 +26,18 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 {
 	bool result = false;
 	
-	string str((char*)(memory.buf+5+2+2));
+	string str((char*)(memory.buf+5 +2+2));
 	vector<string> v= split(str,spliter);
 	
+	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5 +2+2),spliter_end.c_str());
+	if(end_ptr!=NULL)
+	{
+		end_ptr[0]=NULL;
+		end_ptr[1]=NULL;
+		end_ptr[2]=NULL;
+		end_ptr[3]=NULL;
+	}
+
 	strcpy(out.ID,v[0].c_str());
 	strcpy(out.pass,v[1].c_str());
 	strcpy(out.nick,v[2].c_str());
@@ -29,7 +47,7 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 bool MenuAnalyzer::packetToLogout(__out IN_Logout& out, __in Memory& memory )
 {
 	bool result = false;
-	u_char* cookie = memory.buf+5+2+2;
+	u_char* cookie = memory.buf+5 +2+2;
 
 	memcpy(out.cookie,cookie,64);
 	result = true;
@@ -39,7 +57,7 @@ bool MenuAnalyzer::packetToLogout(__out IN_Logout& out, __in Memory& memory )
 bool MenuAnalyzer::packetToLeave(__out IN_Leave& out, __in Memory& memory )
 {
 	bool result = false;
-	u_char* cookie = memory.buf+5+2+2;
+	u_char* cookie = memory.buf+5 +2+2;
 
 	memcpy(out.cookie,cookie,64);
 	result = true;
@@ -47,7 +65,7 @@ bool MenuAnalyzer::packetToLeave(__out IN_Leave& out, __in Memory& memory )
 }
 
 const u_int SEARCH_SIZE_BUTIMAGE = (4+2)+ (1+2) + (64+2)+(1+2)+(4+2)+(4+2)+4;
-//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자
+//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 +(이미지 크기 제외)
 bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 {
 	bool result = false;
@@ -56,7 +74,7 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	u_char* latitude = filter+1 +2;		//위도
 	u_char* longitude = latitude+4 +2;		//경도
 	u_char* image_buf = longitude+4 +2;	//image
-	u_int	image_size = *((u_int*)memory.buf)-SEARCH_SIZE_BUTIMAGE;	//image size
+	u_int	image_size = *((u_int*)memory.buf)-SEARCH_SIZE_BUTIMAGE;	//image size // 이미지 끝의 구분자는 없음(마지막)
 
 	memcpy(out.cookie,cookie,64);
 	out.filter = *filter;
@@ -99,7 +117,7 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 	memcpy(&(out.code),code,4);
 	//char* pointer of comment
 	char* end_ptr =NULL;
-	end_ptr = strstr((char*)opinion,"\r\n");
+	end_ptr = strstr((char*)opinion,spliter.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -131,7 +149,7 @@ bool MenuAnalyzer::packetToModifyComment(__out IN_Modify_comment& out, __in Memo
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.num),num,4);					//글번호
 	memcpy(&(out.comment_count),opnion_cnt,1);	//글갯수
-
+	
 	char* end_ptr =NULL;
 	end_ptr = strstr((char*)opinion,"\r\n");
 	if(end_ptr!=NULL)
@@ -180,7 +198,7 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	return result;
 }
 const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4+2)+ (1+2) + (64+2)+(1+2)+(4+2)+(4+2) +4;
-//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 + (의견/점수 제외) 
+//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 + (의견+2/점수+2/이미지 제외)
 bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
 	bool result = false;

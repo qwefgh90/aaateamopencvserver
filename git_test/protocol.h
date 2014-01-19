@@ -93,14 +93,16 @@ typedef struct _IN_Like{
 }IN_Like;
 
 typedef struct _IN_Report{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_char filter;
 	float latitude;	//위도
 	float longitude;//경도
 	char comment[400+1];
 	u_char comment_score;
 	Memory image;	//image
-	u_char id[31];
 }IN_Report;
 
 //Opinion mini structure is contained 

@@ -162,7 +162,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report out_report
 
 bool Query_opi_search(IN_More in_more, OUT_More out_more)
 {
-
+	return false;
 }
 
 void DB_manager::Query_opi_register()

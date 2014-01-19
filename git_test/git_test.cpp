@@ -88,7 +88,7 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 	sprintf_s(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
 	int length = strlen(temp)+1;
 	pSD->IOData[1].completeBuf = new byte[length];
-
+	
 	strcpy((char*)(pSD->IOData[1].completeBuf),temp);
 
 	pSD->IOData[1].nTotalBytes = length;

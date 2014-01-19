@@ -27,8 +27,10 @@ typedef struct _Memory{
 
 //멤버세션
 typedef struct _MemberSession{
-	unsigned char cookie[64];
-	char ID[20+1];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 }MemberSession;
 
 typedef struct _IN_Login{
@@ -43,15 +45,24 @@ typedef struct _IN_Signup{
 }IN_Signup;
 
 typedef struct _IN_Logout{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 }IN_Logout;
 
 typedef struct _IN_Leave{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 }IN_Leave;
 
 typedef struct _IN_Search{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_char filter;
 	float latitude;	//위도
 	float longitude;//경도
@@ -59,21 +70,30 @@ typedef struct _IN_Search{
 }IN_Search;
 
 typedef struct _IN_More{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_int code;
 	u_char comment_count;
 	u_char sort;
 }IN_More;
 
 typedef struct _IN_Write_comment{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_int code;
 	char comment[400+1];
 	u_char comment_score;
 }IN_Write_comment;
 
 typedef struct _IN_Modify_comment{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_int num;
 	u_char comment_count;
 	char comment[400+1];
@@ -81,13 +101,19 @@ typedef struct _IN_Modify_comment{
 }IN_Modify_comment;
 
 typedef struct _IN_Delete_comment{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_int num;
 	u_char comment_count;
 }IN_Delete_comment;
 
 typedef struct _IN_Like{
-	unsigned char cookie[64];
+	union{
+		char ID[64];
+		unsigned char cookie[64];
+	};
 	u_int num;
 	u_char like;
 }IN_Like;

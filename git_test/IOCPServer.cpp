@@ -113,6 +113,7 @@ PSOCKET_DATA CIocpSrv::UpdataCompletionPort(SOCKET sdAccept,char* pClientAddr)
 
 void CIocpSrv::CloseClient(PSOCKET_DATA pSD)
 { 
+	printf("CloseClient!\n");
 	if ( pSD )
 	{
 		//소켓 종료시 아직 송수신이 완료되지 않은 패킷들의 처리 방안 지정

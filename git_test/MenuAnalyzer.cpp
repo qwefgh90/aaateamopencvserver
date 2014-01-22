@@ -19,8 +19,8 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 	u_char* out_buf;		//buffer to mobile
 	u_int out_len;			//buffer length to mobile
 
-	u_char* in_buf=in_memory.buf;			//buffer from mobile
-	u_int in_len=in_memory.len;			//buffer length from mobile
+	u_char* in_buf=in_memory.buf;			//buffer from mobile(complete buffer available releasing)
+	u_int in_len=in_memory.len;				//buffer length from mobile
 
 	u_char proto_type;		//proto_type
 
@@ -36,7 +36,9 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		//1)패킷에서 구조체 생성
 		this->packetToLogin(in,in_memory);
 		//2)생성된 구조체를 각 모듈에 전달
+		
 		//3)생성된 구조체에서 패킷을 생성
+
 		//4)모바일에서 패킷 전송
 		
 		break;

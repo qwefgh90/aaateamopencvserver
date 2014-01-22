@@ -25,7 +25,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	HACCEL hAccelTable;	
 	//hide console window
 	consolHwnd = FindWindow("ConsoleWindowClass",NULL);
-	ShowWindow(consolHwnd,0);
+	//ShowWindow(consolHwnd,0);
 	hInst = GetModuleHandleA(NULL);
 	//1)RegisterClass, CreateWindow to handle wndproc for handling message
 	windowHwnd = MyCreateWindow(hInst);
@@ -81,31 +81,37 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 	DWORD dwFlags = 0;
 	DWORD dwSendNBytes =0;
 	PSOCKET_DATA pSD = (PSOCKET_DATA)recv_buf;					//Received data from Mobile	about SOCKET_DATA
+
+																//complete buffer is available releasing
 	//1)parse(recv_buf) - MenuAnalyzer - return buffer and buffer_length
+
 	//2)allocate completeBuf and copy original buf to complete buffer
+
 	//3)send data to mobile
+
+	//4)release resource (malloc)
 	char temp[256]={0,};
 	sprintf_s(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
 	int length = strlen(temp)+1;
+
 	pSD->IOData[1].completeBuf = new byte[length];
-	
 	strcpy((char*)(pSD->IOData[1].completeBuf),temp);
 
 	pSD->IOData[1].nTotalBytes = length;
 	pSD->IOData[1].wsabuf.buf = (char*)pSD->IOData[1].completeBuf;		//To send data to Mobile
-	pSD->IOData[1].wsabuf.len=length;									//To send data to Mobile
+	pSD->IOData[1].wsabuf.len = length;									//To send data to Mobile
 
 	nRet = WSASend( pSD->Socket, &(pSD->IOData[1].wsabuf), 1, &dwSendNBytes,
 		dwFlags, &(pSD->IOData[1].Overlapped), NULL);
+
 	//버퍼 초기화
-	if (nRet = SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
+	if (nRet == SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
 	{
 		pSD->Status = false;
 		g_pSrv->m_SocketIndexQ.Put( pSD->index );
 		g_pSrv->CloseClient( pSD );
 		g_pSrv->ReleaseData( pSD );
 	}
-	//4)release original buffer
 	return 0;
 }
 
@@ -244,6 +250,13 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 
 		pIOD = (PIO_DATA)pOverlapped; 
 
+		//사용 되는 변수
+		//nCurrentBytes	현재 받거나 보낸 버퍼의 크기
+		//nTotalBytes	현재 보내야 하는 버퍼의 총 크기
+		//completeBuf	보낸 버퍼 / 받은 버퍼
+		//wsabuf
+		//상대가 하나의 포트로 여러개의 데이터를 보낸다면 completeBuf는 공유되므로 예기치못한 오류가 발생한다.
+		//nTotalBytes, nCurrentBytes 역시 마찬가지
 		//통보받은 IO를 구분하고 그에해당하는 처리가 이루워 진다.
 		switch (pIOD->IOOperation) { 
 		case IoWrite:
@@ -252,15 +265,15 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			printf("[Write Data] totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
 
 			if (pIOD->nCurrentBytes < pIOD->nTotalBytes ) // 아직 덜보냈다..
-			{ 
+			{
 				printf("Write more data : %ubytes\n",pIOD->nTotalBytes-pIOD->nCurrentBytes);
-				pIOD->wsabuf.buf = pIOD->Buf + pIOD->nCurrentBytes;
-				pIOD->wsabuf.len = pIOD->nTotalBytes - pIOD->nCurrentBytes;
+				pIOD->wsabuf.buf = pIOD->Buf + pIOD->nCurrentBytes;			//complete buffer
+				pIOD->wsabuf.len = pIOD->nTotalBytes - pIOD->nCurrentBytes;	//complete buffer
 
 				nRet = WSASend( pSD->Socket, &(pIOD->wsabuf), 1, &dwSendNBytes,
 					dwFlags, &(pIOD->Overlapped), NULL);
 
-				if (nRet = SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
+				if (nRet == SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
 				{
 					pSD->Status = false;
 					pSrv->m_SocketIndexQ.Put( pSD->index );
@@ -271,11 +284,25 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			}
 			else if(pIOD->nCurrentBytes == pIOD->nTotalBytes) // 다보냈을시에 초기화
 			{
-				printf("All data Send\n");
-				pSD->Status = false;
-				pSrv->m_SocketIndexQ.Put( pSD->index );
+				//1)통신 바로 종료
+				//pSD->Status = false;
+				//pSrv->m_SocketIndexQ.Put( pSD->index );
+				//pSrv->CloseClient( pSD );
+
 				pSrv->ReleaseData( pSD );
-				pSrv->CloseClient( pSD );
+				//2)다음 통신 대기
+				nRet = WSARecv( pSD->Socket, &(pSD->IOData[0].wsabuf), 1, &dwRecvNBytes,
+					&dwFlags, &(pSD->IOData[0].Overlapped), NULL);
+				printf("write all");
+				if (SOCKET_ERROR == nRet && (ERROR_IO_PENDING != WSAGetLastError()) )
+				{
+					printf("Socket Error _ , code: %d\n",nRet);
+					pSD->Status = false;
+					pSrv->m_SocketIndexQ.Put( pSD->index );
+					pSrv->CloseClient( pSD );
+					pSrv->ReleaseData( pSD );
+				}
+
 			}else
 			{		//SEND INVALID DATA
 				pSD->Status = false;
@@ -300,7 +327,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 				memset(pIOD->completeBuf,0,totalBytes);
 				printf("New total buffer allocate\n");
 			}
-			pBuffer = pIOD->completeBuf;	//전체 데이터에 대한 버퍼
+			pBuffer = pIOD->completeBuf;	//전체 데이터에 대한 버퍼 , completeBuf
 			printf("[Read Data] totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
 			if (pIOD->nCurrentBytes < pIOD->nTotalBytes ) // 아직 덜받았따..
 			{
@@ -310,7 +337,6 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 					&dwFlags, &(pIOD->Overlapped), NULL);
 				if (SOCKET_ERROR == nRet && (ERROR_IO_PENDING != WSAGetLastError()) )
 				{
-					
 					pSD->Status = false;
 					pSrv->m_SocketIndexQ.Put( pSD->index );
 					pSrv->CloseClient( pSD );
@@ -326,7 +352,6 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			}else
 			{	//RECEIVE INVALID DATA
 				//CloseHandle( CreateThread(NULL, 0, ProcessThread, pSD, 0, 0) );
-
 				pSD->Status = false;
 				pSrv->m_SocketIndexQ.Put( pSD->index );
 				pSrv->CloseClient( pSD );

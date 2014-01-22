@@ -27,10 +27,9 @@ typedef struct _Memory{
 
 //¸â¹ö¼¼¼Ç
 typedef struct _MemberSession{
-	union{
-		char ID[64];
-		unsigned char cookie[64];
-	};
+	char ID[30+1];
+	u_int valid_stamp;
+	unsigned char cookie[64];
 }MemberSession;
 
 typedef struct _IN_Login{

@@ -84,6 +84,7 @@ typedef struct _IN_Write_comment{
 		unsigned char cookie[64];
 	};
 	u_int code;
+	u_char sort;
 	char comment[400+1];
 	u_char comment_score;
 }IN_Write_comment;
@@ -93,10 +94,12 @@ typedef struct _IN_Modify_comment{
 		char ID[64];
 		unsigned char cookie[64];
 	};
-	u_int num;
+	u_int code;
+	u_int comment_num;
 	u_char comment_count;
-	char comment[400+1];
+	u_char sort;
 	u_char comment_score;
+	char comment[400+1];
 }IN_Modify_comment;
 
 typedef struct _IN_Delete_comment{
@@ -104,8 +107,10 @@ typedef struct _IN_Delete_comment{
 		char ID[64];
 		unsigned char cookie[64];
 	};
-	u_int num;
+	u_int code;
+	u_int comment_num;
 	u_char comment_count;
+	u_char sort;
 }IN_Delete_comment;
 
 typedef struct _IN_Like{

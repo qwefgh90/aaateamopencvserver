@@ -93,8 +93,8 @@ bool MenuAnalyzer::packetToMore(__out IN_More& out, __in Memory& memory )
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
 	u_int* code = (u_int*)(cookie+64 );
-	u_char* opi_cnt = ((u_char*)code)+4 ;
-	u_char* sort = opi_cnt +1 ;
+	u_char* sort = ((u_char*)code)+4 ;
+	u_char* opi_cnt = opi_cnt +1 ;
 	
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.code),code,4);
@@ -147,9 +147,9 @@ bool MenuAnalyzer::packetToModifyComment(__out IN_Modify_comment& out, __in Memo
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
 	u_int* code = ((u_int*)cookie)+64 ;
-	u_int* comment_num = ((u_int*)code)+4 ;
-	u_char* comment_count = ((u_char*)comment_num)+4;
-	u_char* sort = comment_count+1;
+	u_int* sort = ((u_int*)code)+4 ;
+	u_char* comment_count = ((u_char*)sort)+1;
+	u_char* comment_num = comment_count+1;
 
 	u_char* opi_score = ((u_char*)sort)+1;
 	u_char* opinion = opi_score+1;
@@ -190,9 +190,9 @@ bool MenuAnalyzer::packetToDeleteComment(__out IN_Delete_comment& out, __in Memo
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
 	u_int* code = ((u_int*)cookie)+64 ;
-	u_int* comment_num = ((u_int*)code)+4 ;
-	u_char* comment_count = ((u_char*)comment_num)+4;
-	u_char* sort = comment_count+1;
+	u_int* sort = ((u_int*)code)+4 ;
+	u_char* comment_count = ((u_char*)sort)+1;
+	u_char*  comment_num = comment_count+1;
 
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.code),code,4);

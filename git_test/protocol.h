@@ -137,7 +137,8 @@ typedef struct _IN_Report{
 
 //Opinion mini structure is contained 
 typedef struct _OUT_Opinion{
-	unsigned char result;
+	unsigned int sns_id;
+	unsigned nick[16+1];
 	char comment[400+1];
 	u_int like_cnt;
 	u_int dislike_cnt;

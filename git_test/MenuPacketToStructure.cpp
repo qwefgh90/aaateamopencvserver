@@ -73,17 +73,18 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	u_char* filter = cookie+64 ;			//필터
 	u_char* latitude = filter+1 ;		//위도
 	u_char* longitude = latitude+4 ;		//경도
-	u_char* image_buf = longitude+4 ;	//image
+	u_char* image_buf = longitude+8 ;	//image
 	u_int	image_size = *((u_int*)memory.buf)-SEARCH_SIZE_BUTIMAGE;	//image size // 이미지 끝의 구분자는 없음(마지막)
 
 	memcpy(out.cookie,cookie,64);
+
 	out.filter = *filter;
 	memcpy(&(out.latitude),latitude,4);
 	memcpy(&(out.longitude),longitude,4);
 	out.image.buf = new byte[image_size];
 	out.image.len = image_size;
 	memcpy(out.image.buf,image_buf,image_size);
-
+	//__OK__BY Chang
 	result = true;
 	return result;
 }
@@ -98,8 +99,8 @@ bool MenuAnalyzer::packetToMore(__out IN_More& out, __in Memory& memory )
 	
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.code),code,4);
-	memcpy(&(out.comment_count),opi_cnt,1);
 	memcpy(&(out.sort),sort,1);
+	memcpy(&(out.comment_count),opi_cnt,1);
 
 	result = true;
 	return result;
@@ -108,7 +109,7 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 {
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
-	u_int* code = ((u_int*)cookie)+64 ;
+	u_int* code = (u_int*)(cookie+64) ;
 	u_char* sort = ((u_char*)code)+4;
 
 	u_char* opi_score = ((u_char*)sort)+1;
@@ -136,7 +137,7 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 	}
 	str = string((char*)opinion);
 	v= split(str,spliter);//spliter를 기준으로 자른다 마지막엔 NULL이 있어야 하지만 존재 하지 않음, 임의로 NULL로 채워줌
-	strcpy(out.comment,v[0].c_str());
+	strcpy(out.comment,v[0].c_str());//400bytes buffer
 	
 	result = true;
 	END:
@@ -146,12 +147,12 @@ bool MenuAnalyzer::packetToModifyComment(__out IN_Modify_comment& out, __in Memo
 {
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
-	u_int* code = ((u_int*)cookie)+64 ;
+	u_int* code = (u_int*)(cookie+64) ;
 	u_int* sort = ((u_int*)code)+4 ;
 	u_char* comment_count = ((u_char*)sort)+1;
 	u_char* comment_num = comment_count+1;
 
-	u_char* opi_score = ((u_char*)sort)+1;
+	u_char* opi_score = ((u_char*)comment_num)+1;
 	u_char* opinion = opi_score+1;
 	string str;
 	vector<string> v;
@@ -189,16 +190,16 @@ bool MenuAnalyzer::packetToDeleteComment(__out IN_Delete_comment& out, __in Memo
 {
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
-	u_int* code = ((u_int*)cookie)+64 ;
+	u_int* code = (u_int*)(cookie+64) ;
 	u_int* sort = ((u_int*)code)+4 ;
 	u_char* comment_count = ((u_char*)sort)+1;
 	u_char*  comment_num = comment_count+1;
 
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.code),code,4);
-	memcpy(&(out.comment_num),comment_num,4);
-	memcpy(&(out.comment_count),comment_count,1);
 	memcpy(&(out.sort),sort,1);
+	memcpy(&(out.comment_count),comment_count,1);
+	memcpy(&(out.comment_num),comment_num,4);
 
 	result = true;
 	END:
@@ -208,7 +209,7 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 {
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;
-	u_int* num = ((u_int*)cookie)+64 ;		//글 번호
+	u_int* num = (u_int*)(cookie+64) ;		//글 번호
 	u_char* like = ((u_char*)num)+4 ;			//글 개수
 	
 	memcpy(out.cookie,cookie,64);
@@ -219,7 +220,7 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	return result;
 }
 const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4)+ (1) + (64)+(1)+(4)+(4) +(1) +4;
-//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 + (의견+2/점수+2/이미지 제외)
+//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 + 의견점수 + 마지막 구분자 + (의견/이미지 제외)
 bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
 	bool result = false;
@@ -228,7 +229,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 
 	u_char* cookie = memory.buf+5 ;
 	u_char* filter = cookie+64 ;
-	float*	latitude =((float*)(filter+1 ));
+	float*	latitude = (float*)(filter+1 );
 	float*	longitude= (float*)(((u_char*)latitude)+4 );
 	
 	u_char* opinion_socre = ((u_char*)longitude)+4;

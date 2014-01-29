@@ -31,7 +31,7 @@ private:
 	bool packetFromLogout(__out Memory&, __in OUT_Logout&);
 	bool packetFromLeave(__out Memory&, __in OUT_Leave&);
 	bool packetFromSearch(__out Memory&, __in OUT_Search&);
-	bool packetToMore(__out Memory&, __in OUT_More&);
+	bool packetFromMore(__out Memory&, __in OUT_More&);
 	bool packetFromSWriteComment(__out Memory&, __in OUT_More&);
 	bool packetFromModifyComment(__out Memory&, __in OUT_Write_comment&);
 	bool packetFromDeleteComment(__out Memory&, __in OUT_Modify_comment&);

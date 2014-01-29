@@ -27,7 +27,7 @@ typedef struct _Memory{
 
 //¸â¹ö¼¼¼Ç
 typedef struct _MemberSession{
-	char ID[30+1];
+	char ID[20+1];
 	u_int valid_stamp;
 	unsigned char cookie[64];
 }MemberSession;
@@ -45,21 +45,21 @@ typedef struct _IN_Signup{
 
 typedef struct _IN_Logout{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 }IN_Logout;
 
 typedef struct _IN_Leave{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 }IN_Leave;
 
 typedef struct _IN_Search{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_char filter;
@@ -70,7 +70,7 @@ typedef struct _IN_Search{
 
 typedef struct _IN_More{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -80,7 +80,7 @@ typedef struct _IN_More{
 
 typedef struct _IN_Write_comment{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -92,7 +92,7 @@ typedef struct _IN_Write_comment{
 
 typedef struct _IN_Modify_comment{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -105,7 +105,7 @@ typedef struct _IN_Modify_comment{
 
 typedef struct _IN_Delete_comment{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -116,7 +116,7 @@ typedef struct _IN_Delete_comment{
 
 typedef struct _IN_Like{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_int num;
@@ -125,7 +125,7 @@ typedef struct _IN_Like{
 
 typedef struct _IN_Report{
 	union{
-		char ID[64];
+		char ID[20+1];
 		unsigned char cookie[64];
 	};
 	u_char filter;

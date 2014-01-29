@@ -84,6 +84,7 @@ typedef struct _IN_Write_comment{
 		unsigned char cookie[64];
 	};
 	u_int code;
+	u_char comment_count;
 	u_char sort;
 	char comment[400+1];
 	u_char comment_score;
@@ -200,9 +201,6 @@ typedef struct _OUT_Delete_comment{
 
 typedef struct _OUT_Like{
 	unsigned char result;
-	float score;
-	OUT_Opinion opi[10];
-	u_int opi_cnt;
 }OUT_Like;
 
 typedef struct _OUT_Report{

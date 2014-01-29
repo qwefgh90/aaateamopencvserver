@@ -117,7 +117,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 		return false;
 }
 
-bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report out_report)
+bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_report)
 {
 	int filter_id;
 	int store_code;
@@ -127,7 +127,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report out_report
 		{
 			filter_id = i;
 		}
-		sprintf_s(sql, "insert into STORE values (%s,%f,%f,%d)", in_report.image, in_report.longitude, in_report.latitude,in_report.filter);
+		sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.image, in_report.longitude, in_report.latitude,in_report.filter);
 
 		Sql_run(sql);
 
@@ -143,7 +143,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report out_report
 				SQLGetData(hStmt, 1, SQL_INTEGER, &store_code, 4, NULL);
 			}
 
-			sprintf_s(sql, "insert into SNS(ID, store_code, store_con) values (%s,%d,%s)", in_report.ID, store_code, in_report.comment);
+			sprintf_s(sql, "insert into SNS(nick, store_code, sns_con) values (%s,%d,%s)", in_report.ID, store_code, in_report.comment);
 
 			Sql_run(sql);
 			
@@ -160,19 +160,225 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report out_report
 
 }
 
-bool Query_opi_search(IN_More in_more, OUT_More out_more)
+bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 {
+	int i=0;
+	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_more.code, in_more.sort, in_more.comment_count);
+
+	Sql_run(sql);
+
+	if(ret==SQL_SUCCESS)
+	{
+		while(SQLFetch(hStmt))
+		{
+			SQLGetData(hStmt, 1, SQL_INTEGER, &out_more.opi[i].sns_id, 4, NULL);
+			SQLGetData(hStmt, 2, SQL_C_CHAR, out_more.opi[i].nick, 30, NULL);
+			SQLGetData(hStmt, 3, SQL_C_CHAR, out_more.opi[i].comment, 400, NULL);
+			SQLGetData(hStmt, 2, SQL_INTEGER, &out_more.opi[i].like_cnt, 4, NULL);
+			SQLGetData(hStmt, 2, SQL_INTEGER, &out_more.opi[i].dislike_cnt, 4, NULL);
+			i++;
+		}
+		
+		out_more.opi_cnt = i+1;
+	}
+	else
+	{
+		return false;
+	}
+	
+	sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_more.code);
+	
+	Sql_run(sql);
+
+	if(ret==SQL_SUCCESS)
+	{
+		SQLGetData(hStmt, 1, SQL_INTEGER, &out_more.score, 4, NULL);
+
+		return true;
+	}
+
 	return false;
 }
 
-void DB_manager::Query_opi_register()
+bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_comment &out_write_opi)
 {
+	int sns_id = 0;
 
+	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s)", in_write_opi.ID, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
+	
+	Sql_run(sql);
+	
+	sprintf_s(sql, "select top 1 sns_id from SNS order by desc");
+
+	Sql_run(sql);
+	
+	if(SQLFetch(hStmt))
+	{
+		SQLGetData(hStmt, 1, SQL_INTEGER, &sns_id, 4, NULL);
+	}
+
+	sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values (%s,%d)", in_write_opi.ID, sns_id);
+	
+	Sql_run(sql);
+
+	if(ret==SQL_SUCCESS)
+	{
+		int i=0;
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_write_opi.code, in_write_opi.sort, in_write_opi.comment_count);
+
+		Sql_run(sql);
+
+		if(ret==SQL_SUCCESS)
+		{
+			while(SQLFetch(hStmt))
+			{
+				SQLGetData(hStmt, 1, SQL_INTEGER, &out_write_opi.opi[i].sns_id, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_C_CHAR, out_write_opi.opi[i].nick, 30, NULL);
+				SQLGetData(hStmt, 3, SQL_C_CHAR, out_write_opi.opi[i].comment, 400, NULL);
+				SQLGetData(hStmt, 2, SQL_INTEGER, &out_write_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_INTEGER, &out_write_opi.opi[i].dislike_cnt, 4, NULL);
+				i++;
+			}
+
+			out_write_opi.opi_cnt = i+1;
+		}
+		else
+		{
+			return false;
+		}
+
+		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_write_opi.code);
+
+		Sql_run(sql);
+
+		if(ret==SQL_SUCCESS)
+		{
+			SQLGetData(hStmt, 1, SQL_INTEGER, &out_write_opi.score, 4, NULL);
+
+			return true;
+		}
+
+		return false;
+	}
+	//상점 코드, 의견, 평점, ID를 DB에 등록한다.
+	//의견들, 의견 개수, 평균평점을 리턴한다.
+
+	return false;
 }
 
-void DB_manager::Query_opi_delete()
+bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comment &out_mod_opi)
 {
+	sprintf_s(sql, "update SNS set sns_con='%s', score='%d' where sns_id='%d'", in_mod_opi.comment, in_mod_opi.comment_score, in_mod_opi.comment_num);
 
+	Sql_run(sql);
+	
+	if(ret==SQL_SUCCESS)
+	{
+		int i=0;
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_mod_opi.code, in_mod_opi.sort, in_mod_opi.comment_count);
+
+		Sql_run(sql);
+
+		if(ret==SQL_SUCCESS)
+		{
+			while(SQLFetch(hStmt))
+			{
+				SQLGetData(hStmt, 1, SQL_INTEGER, &out_mod_opi.opi[i].sns_id, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_C_CHAR, out_mod_opi.opi[i].nick, 30, NULL);
+				SQLGetData(hStmt, 3, SQL_C_CHAR, out_mod_opi.opi[i].comment, 400, NULL);
+				SQLGetData(hStmt, 2, SQL_INTEGER, &out_mod_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_INTEGER, &out_mod_opi.opi[i].dislike_cnt, 4, NULL);
+				i++;
+			}
+
+			out_mod_opi.opi_cnt = i+1;
+		}
+		else
+		{
+			return false;
+		}
+
+		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_mod_opi.code);
+
+		Sql_run(sql);
+
+		if(ret==SQL_SUCCESS)
+		{
+			SQLGetData(hStmt, 1, SQL_INTEGER, &out_mod_opi.score, 4, NULL);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	//글번호를 이용해 글내용, 평점을 수정
+	//의견들, 의견개수, 평균평점을 리턴
+	return false;
+}
+
+bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comment &out_del_opi)
+{
+	sprintf_s(sql, "delete from SNS where sns_id='%s'", in_del_opi.comment_num);
+
+	Sql_run(sql);
+	
+	if(ret==SQL_SUCCESS)
+	{
+		int i=0;
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_del_opi.code, in_del_opi.sort, in_del_opi.comment_count);
+
+		Sql_run(sql);
+
+		if(ret==SQL_SUCCESS)
+		{
+			while(SQLFetch(hStmt))
+			{
+				SQLGetData(hStmt, 1, SQL_INTEGER, &out_del_opi.opi[i].sns_id, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_C_CHAR, out_del_opi.opi[i].nick, 30, NULL);
+				SQLGetData(hStmt, 3, SQL_C_CHAR, out_del_opi.opi[i].comment, 400, NULL);
+				SQLGetData(hStmt, 2, SQL_INTEGER, &out_del_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_INTEGER, &out_del_opi.opi[i].dislike_cnt, 4, NULL);
+				i++;
+			}
+
+			out_del_opi.opi_cnt = i+1;
+		}
+		else
+		{
+			return false;
+		}
+
+		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_del_opi.code);
+
+		Sql_run(sql);
+
+		if(ret==SQL_SUCCESS)
+		{
+			SQLGetData(hStmt, 1, SQL_INTEGER, &out_del_opi.score, 4, NULL);
+
+			return true;
+		}
+
+		return false;
+	}
+	
+	//글번호를 이용해 의견을 삭제
+	//의견들, 의견개수, 평균평점을 리턴
+	return false;
+}
+
+bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
+{
+	sprintf_s(sql, "update member_sns set val='%c' where mem_ID='%s' and sns_id='%s'", in_like_opi.like, in_like_opi.ID, in_like_opi.num);
+
+	Sql_run(sql);
+
+	if(ret == SQL_SUCCESS)
+	{
+		return true;
+	}
+	return false;
 }
 
 void DB_manager::Sql_run(char* sql)

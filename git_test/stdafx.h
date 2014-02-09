@@ -10,7 +10,6 @@
 #pragma once
 
 #include "targetver.h"
-
 #include <stdio.h>
 #include <tchar.h>
 
@@ -27,6 +26,7 @@
 
 //We make required headers
 #include "protocol.h"
+
 
 //Function
 void dumpbyte(u_char* buf,u_int len);

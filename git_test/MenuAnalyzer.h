@@ -1,6 +1,6 @@
 #pragma once
 #include "StdAfx.h"
-
+#include "Member_manager.h"
 class MenuAnalyzer
 {
 private:
@@ -11,6 +11,8 @@ public:
 	DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory);
 	static MenuAnalyzer* GetMenuAnalyzer();
 	vector<string> MenuAnalyzer::split(string str, string sep);
+	Member_manager* member_manager;
+	
 private:
 	//packet to structure of login
 	bool packetToLogin(__out IN_Login&,__in Memory& memory);

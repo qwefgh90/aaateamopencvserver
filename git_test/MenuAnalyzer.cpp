@@ -4,6 +4,8 @@
 MenuAnalyzer* MenuAnalyzer::singleton=NULL;
 
 MenuAnalyzer::MenuAnalyzer(void){
+	//initialize member manager
+	member_manager = Member_manager::GetMember_manager();
 }
 MenuAnalyzer::~MenuAnalyzer(void){
 }
@@ -35,9 +37,14 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&out,0,sizeof(out));
 		//1)패킷에서 구조체 생성
 		this->packetToLogin(in,in_memory);
-		printf("id: %s@@@@",in.ID);
-		printf("passwd: %s@@@@",in.pass);
+		printf("id: %s@@@@\n",in.ID);
+		printf("passwd: %s@@@@\n",in.pass);
 		//2)생성된 구조체를 각 모듈에 전달
+		member_manager->Login(in,out);
+		
+		dumpbyte(out.cookie,64);
+		printf("nick: %s@@@\n",out.nick);
+		printf("result: %d@@@\n",out.result);
 		
 		//3)생성된 구조체에서 패킷을 생성
 		
@@ -52,11 +59,12 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		packetToSignup(in,in_memory);
-		printf("id: %s@@@@",in.ID);
-		printf("passwd: %s@@@@",in.pass);
-		printf("nick: %s@@@@",in.nick);
+		printf("id: %s@@@@\n",in.ID);
+		printf("passwd: %s@@@@\n",in.pass);
+		printf("nick: %s@@@@\n",in.nick);
 		//2)생성된 구조체를 각 모듈에 전달
-		
+		member_manager->Signup(in,out);
+		printf("result: %s@@@@\n",out.result);
 		//3)생성된 구조체에서 패킷을 생성
 
 		//4)모바일에서 패킷 전송

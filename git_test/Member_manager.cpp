@@ -28,7 +28,7 @@ Member_manager::~Member_manager(void)
 }
 
 //로그인 함수
-bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
+bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 {
 	//ID와 PASS를 함께 저장하여 해쉬 구조체 만들 배열
 	char to_hash[64];
@@ -80,7 +80,7 @@ bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
 	}
 }
 
-bool Member_manager::Logout(IN_Logout in_logout, OUT_Logout &out_logout)
+bool Member_manager::Logout(IN_Logout& in_logout, OUT_Logout &out_logout)
 {
 	for(int i = 0; i<(int)hash.size(); i++)
 	{
@@ -96,7 +96,7 @@ bool Member_manager::Logout(IN_Logout in_logout, OUT_Logout &out_logout)
 	return false;
 }
 
-bool Member_manager::Signup(IN_Signup in_signup, OUT_Signup &out_signup)
+bool Member_manager::Signup(IN_Signup& in_signup, OUT_Signup &out_signup)
 {
 	if(dbm->Query_signup(in_signup))
 	{
@@ -115,7 +115,7 @@ bool Member_manager::Signup(IN_Signup in_signup, OUT_Signup &out_signup)
 	}
 }
 
-bool Member_manager::Leave(IN_Leave in_leave, OUT_Leave &out_leave)
+bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 {
 	for(int i = 0; i<(int)hash.size(); i++)
 	{

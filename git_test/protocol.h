@@ -25,6 +25,13 @@ typedef struct _Memory{
 	u_int len;
 }Memory;
 
+typedef struct _Store{
+	float latitude;	//위도
+	float longitude;//경도
+	Memory image;	//image
+}Store;
+
+
 //멤버세션
 typedef struct _MemberSession{
 	char ID[20+1];
@@ -63,9 +70,10 @@ typedef struct _IN_Search{
 		unsigned char cookie[64];
 	};
 	u_char filter;
-	float latitude;	//위도
-	float longitude;//경도
-	Memory image;	//image
+	Store store;	//상점 구조체
+//	float latitude;	//위도
+//	float longitude;//경도
+//	Memory image;	//image
 }IN_Search;
 
 typedef struct _IN_More{
@@ -129,11 +137,12 @@ typedef struct _IN_Report{
 		unsigned char cookie[64];
 	};
 	u_char filter;
-	float latitude;	//위도
-	float longitude;//경도
+	Store store;		//상점 구조체
+	//float latitude;	//위도
+	//float longitude;//경도
+	//Memory image;	//image
 	char comment[400+1];
 	u_char comment_score;
-	Memory image;	//image
 }IN_Report;
 
 //Opinion mini structure is contained 

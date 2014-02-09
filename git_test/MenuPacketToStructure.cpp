@@ -83,11 +83,11 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	memcpy(out.cookie,cookie,64);
 
 	out.filter = *filter;
-	memcpy(&(out.latitude),latitude,4);
-	memcpy(&(out.longitude),longitude,4);
-	out.image.buf = new byte[image_size];
-	out.image.len = image_size;
-	memcpy(out.image.buf,image_buf,image_size);
+	memcpy(&(out.store.latitude),latitude,4);
+	memcpy(&(out.store.longitude),longitude,4);
+	out.store.image.buf = new byte[image_size];
+	out.store.image.len = image_size;
+	memcpy(out.store.image.buf,image_buf,image_size);
 	//__OK__BY Chang
 	result = true;
 	return result;
@@ -245,8 +245,8 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.filter),filter,1);				//필터
-	memcpy(&(out.latitude),latitude,4);			//위도
-	memcpy(&(out.longitude),longitude,4);		//경도
+	memcpy(&(out.store.latitude),latitude,4);			//위도
+	memcpy(&(out.store.longitude),longitude,4);		//경도
 
 	char* end_ptr =NULL;
 	end_ptr = strstr((char*)opinion,spliter.c_str());	//\r\n포인터
@@ -272,9 +272,9 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	out.comment_score = *opinion_socre;		//글 평점
 
 	//이미지 복사
-	out.image.buf=new byte[image_size];		//추후 처리 후 할당해제 필요
-	memcpy(out.image.buf,image,image_size);
-	out.image.len = image_size;
+	out.store.image.buf=new byte[image_size];		//추후 처리 후 할당해제 필요
+	memcpy(out.store.image.buf,image,image_size);
+	out.store.image.len = image_size;
 	
 	result = true;
 	END:

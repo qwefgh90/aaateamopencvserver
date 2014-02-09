@@ -16,20 +16,23 @@
     <Filter Include="Source Files\Network">
       <UniqueIdentifier>{08a0f333-0261-4cb1-aec6-cff1d5dc09ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ImageProcess">
-      <UniqueIdentifier>{3b86a0e9-0ff8-4ef5-95da-8212ca392d15}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DataBase">
       <UniqueIdentifier>{8761d53e-0fe3-4b82-ab87-e7bec7ddd340}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Resources">
       <UniqueIdentifier>{d26f3922-bd6e-4ab5-a8f4-2dc2f694161f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Managers">
-      <UniqueIdentifier>{ff05e1fd-6049-4cd8-943e-70bd79e8815a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Member">
       <UniqueIdentifier>{7777d014-cec8-4d76-af2e-adb890dc500e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Analyzer">
+      <UniqueIdentifier>{ff05e1fd-6049-4cd8-943e-70bd79e8815a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Store">
+      <UniqueIdentifier>{3b86a0e9-0ff8-4ef5-95da-8212ca392d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sift">
+      <UniqueIdentifier>{063d6fbc-33ab-43fb-9491-1eb38c14ae62}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -50,7 +53,7 @@
       <Filter>Source Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="MenuAnalyzer.h">
-      <Filter>Source Files\Managers</Filter>
+      <Filter>Source Files\Analyzer</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
@@ -70,6 +73,9 @@
     <ClInclude Include="config.h">
       <Filter>Source Files\Member</Filter>
     </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>Source Files\Store</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -85,13 +91,13 @@
       <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="MenuAnalyzer.cpp">
-      <Filter>Source Files\Managers</Filter>
+      <Filter>Source Files\Analyzer</Filter>
     </ClCompile>
     <ClCompile Include="MenuPacketToStructure.cpp">
-      <Filter>Source Files\Managers</Filter>
+      <Filter>Source Files\Analyzer</Filter>
     </ClCompile>
     <ClCompile Include="MenuPacketFromStructure.cpp">
-      <Filter>Source Files\Managers</Filter>
+      <Filter>Source Files\Analyzer</Filter>
     </ClCompile>
     <ClCompile Include="DB_manager.cpp">
       <Filter>Source Files\DataBase</Filter>
@@ -101,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="sha512.c">
       <Filter>Source Files\Member</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>Source Files\Store</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

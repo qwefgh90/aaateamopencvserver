@@ -274,7 +274,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 		case IoWrite:
 			pIOD->nCurrentBytes += dwIoSize;
 			dwFlags = 0;
-			printf("[Write Data] totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+			printf("[Write Data Info] totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
 
 			if (pIOD->nCurrentBytes < pIOD->nTotalBytes ) // 아직 덜보냈다..
 			{
@@ -300,12 +300,12 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 				//pSD->Status = false;
 				//pSrv->m_SocketIndexQ.Put( pSD->index );
 				//pSrv->CloseClient( pSD );
+				printf("Send all packet!!\n");
 
 				pSrv->ReleaseData( pSD );
 				//2)다음 통신 대기
 				nRet = WSARecv( pSD->Socket, &(pSD->IOData[0].wsabuf), 1, &dwRecvNBytes,
 					&dwFlags, &(pSD->IOData[0].Overlapped), NULL);
-				printf("Send all packet!!\n");
 				if (SOCKET_ERROR == nRet && (ERROR_IO_PENDING != WSAGetLastError()) )
 				{
 					printf("Socket Error _ , code: %d\n",nRet);
@@ -430,7 +430,7 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 
 		//사실 6번째 매개변수는 소켓데이터 구조체의 주소와 마찬가지이다.
 		nRet = WSARecv( sdAccept, &(pSD->IOData[0].wsabuf), 1, &dwRecvNBytes, &dwFlags, &(pSD->IOData[0].Overlapped), NULL);
-
+		printf("--\n--\n--\n");
 		if (nRet == SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError())) {
 			pSrv->CloseClient(pSD);
 			printf("WSARecv ERROR\n");

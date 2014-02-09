@@ -128,7 +128,7 @@ void CIocpSrv::CloseClient(PSOCKET_DATA pSD)
 }
 void CIocpSrv::ReleaseData(PSOCKET_DATA pSD)
 { 
-
+	printf("ReleaseData()\n");
 	pSD->IOData[0].nCurrentBytes = 0;//현재 받은 크기 초기화
 	pSD->IOData[1].nCurrentBytes = 0;
 	pSD->IOData[0].nTotalBytes = 0;

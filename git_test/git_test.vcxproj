@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="DB_manager.h" />
+    <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexQ.h" />
     <ClInclude Include="IOCPServer.h" />
     <ClInclude Include="Member_manager.h" />
@@ -92,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="DB_manager.cpp" />
     <ClCompile Include="git_test.cpp" />
+    <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="IndexQ.cpp" />
     <ClCompile Include="IOCPServer.cpp" />
     <ClCompile Include="Member_manager.cpp" />

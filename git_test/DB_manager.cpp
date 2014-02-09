@@ -117,8 +117,8 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
 		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%s' and '%s' and gps_Latitude between '%s' and '%s'",
 			buf,
-			in_search.longitude - ERRORRANGE, in_search.longitude + ERRORRANGE,
-			in_search.latitude - ERRORRANGE, in_search.latitude + ERRORRANGE);
+			in_search.store.longitude - ERRORRANGE, in_search.store.longitude + ERRORRANGE,
+			in_search.store.latitude - ERRORRANGE, in_search.store.latitude + ERRORRANGE);
 
 		Sql_run(sql);
 
@@ -150,7 +150,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 		if( in_report.filter & filter[i])
 			filter_id = i;
 		//상점 등록
-		sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.image, in_report.longitude, in_report.latitude,in_report.filter);
+		sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image, in_report.store.longitude, in_report.store.latitude,in_report.filter);
 
 		Sql_run(sql);
 
@@ -158,7 +158,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 		{
 			//핸들을 닫은 후에 상점 키값을 이용해 상점 코드값을 알아내기
 			SQLCloseCursor(hStmt);
-			sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.image);
+			sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.store.image);
 
 			Sql_run(sql);
 

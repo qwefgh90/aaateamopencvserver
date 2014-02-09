@@ -3,7 +3,7 @@
 
 const u_int LOGIN_PACKET_SIZE_BUT_NICKNAME = (4)+(1)+(64)+4;
 	//len + result + cookie + (exclude nick)
-bool packetFromLogin(__out Memory& out, __in OUT_Login& in)
+bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 {
 	bool result = false;
 	u_int bytelen=0;
@@ -39,7 +39,7 @@ bool packetFromLogin(__out Memory& out, __in OUT_Login& in)
 }
 const u_int SIGNUP_PACKET_SIZE = (4)+(1)+4;
 	//len + result
-bool packetFromSignup(__out Memory& out, __in OUT_Signup& in)
+bool MenuAnalyzer::packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 {
 	bool result = false;
 
@@ -64,7 +64,7 @@ bool packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 	result = true;
 	return result;
 }
-bool packetFromLogout(__out Memory& out, __in OUT_Logout& in)
+bool MenuAnalyzer::packetFromLogout(__out Memory& out, __in OUT_Logout& in)
 {
 	bool result = false;
 
@@ -89,7 +89,7 @@ bool packetFromLogout(__out Memory& out, __in OUT_Logout& in)
 	result = true;
 	return result;
 }
-bool packetFromLeave(__out Memory& out, __in OUT_Leave& in)
+bool MenuAnalyzer::packetFromLeave(__out Memory& out, __in OUT_Leave& in)
 {
 	bool result = false;
 
@@ -116,7 +116,7 @@ bool packetFromLeave(__out Memory& out, __in OUT_Leave& in)
 }
 const u_int SEARCH_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+(4)+2;
 												//마지막 \r\n하나빼고..
-bool packetFromSearch(__out Memory& out, __in OUT_Search& in)
+bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 {
 	bool result = false;
 
@@ -225,7 +225,7 @@ bool packetFromSearch(__out Memory& out, __in OUT_Search& in)
 }
 const u_int MORE_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+2;
 												//마지막 \r\n하나빼고..
-bool packetFromMore(__out Memory& out, __in OUT_More& in)
+bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 {
 		bool result = false;
 
@@ -330,7 +330,7 @@ bool packetFromMore(__out Memory& out, __in OUT_More& in)
 	result = true;
 	return result;
 }
-bool packetFromSWriteComment(__out Memory& out, __in OUT_Write_comment& in)
+bool MenuAnalyzer::packetFromWriteComment(__out Memory& out, __in OUT_Write_comment& in)
 {
 			bool result = false;
 
@@ -435,7 +435,7 @@ bool packetFromSWriteComment(__out Memory& out, __in OUT_Write_comment& in)
 	result = true;
 	return result;
 }
-bool packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in)
+bool MenuAnalyzer::packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in)
 {
 			bool result = false;
 
@@ -540,7 +540,7 @@ bool packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in)
 	result = true;
 	return result;
 }
-bool packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in)
+bool MenuAnalyzer::packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in)
 {
 			bool result = false;
 
@@ -647,7 +647,7 @@ bool packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in)
 }
 const u_int LIKE_PACKET_SIZE = 5;
 												//마지막 \r\n하나빼고..
-bool packetFromLike(__out Memory& out, __in OUT_Like& in)
+bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 {
 	bool result = false;
 	out.buf = new u_char[LIKE_PACKET_SIZE];

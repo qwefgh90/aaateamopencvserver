@@ -45,7 +45,7 @@ bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 		//입력 받은 ID와 DB에있는 아이디 비교(DB에서는 대소문자 비교가 안되므로)
 		if(strcmp(in_login.ID,db_login.ID) == 0)
 		{
-			strcpy_s(out_login.nick,strlen(out_login.nick)+1,nick);
+			strcpy_s(out_login.nick,strlen(nick)+1,nick);
 
 			cout<<db_login.ID<<" "<<db_login.pass<<" "<<nick<<endl;
 			cout<<db_login.ID<<" 님 로그인 성공"<<endl;

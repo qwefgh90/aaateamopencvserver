@@ -34,9 +34,9 @@ private:
 	bool packetFromLeave(__out Memory&, __in OUT_Leave&);
 	bool packetFromSearch(__out Memory&, __in OUT_Search&);
 	bool packetFromMore(__out Memory&, __in OUT_More&);
-	bool packetFromSWriteComment(__out Memory&, __in OUT_More&);
-	bool packetFromModifyComment(__out Memory&, __in OUT_Write_comment&);
-	bool packetFromDeleteComment(__out Memory&, __in OUT_Modify_comment&);
+	bool packetFromWriteComment(__out Memory& out, __in OUT_Write_comment& in);
+	bool packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in);
+	bool packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in);
 	bool packetFromLike(__out Memory&, __in OUT_Like&);
 	bool packetFromReport(__out Memory&, __in OUT_Report&);
 };

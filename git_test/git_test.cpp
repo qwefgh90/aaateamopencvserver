@@ -102,13 +102,13 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 
 	//4)release resource (malloc)
 	
-	char temp[256]={0,};
-	sprintf_s(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
-	int length = strlen(temp)+1;
+	int length =send_data.len;	//buffer length
 
+	//5)allocate memory of completebuffer
 	pSD->IOData[1].completeBuf = new byte[length];
-	strcpy((char*)(pSD->IOData[1].completeBuf),temp);
+	memcpy(pSD->IOData[1].completeBuf,send_data.buf,length);
 
+	//6)assemble send buffer
 	pSD->IOData[1].nTotalBytes = length;
 	pSD->IOData[1].wsabuf.buf = (char*)pSD->IOData[1].completeBuf;		//To send data to Mobile
 	pSD->IOData[1].wsabuf.len = length;									//To send data to Mobile
@@ -305,7 +305,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 				//2)다음 통신 대기
 				nRet = WSARecv( pSD->Socket, &(pSD->IOData[0].wsabuf), 1, &dwRecvNBytes,
 					&dwFlags, &(pSD->IOData[0].Overlapped), NULL);
-				printf("write all");
+				printf("Send all packet!!\n");
 				if (SOCKET_ERROR == nRet && (ERROR_IO_PENDING != WSAGetLastError()) )
 				{
 					printf("Socket Error _ , code: %d\n",nRet);

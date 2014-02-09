@@ -17,6 +17,7 @@ const unsigned char filter[filter_no] = { COFFEE, FOOD, RESTAURANT, HAIR, BAKERY
 typedef struct _Imagelist{
 	u_int store_code;
 	char store_path[256];
+	//매트릭스 객체 추가
 }Imagelist;
 
 //메모리구조체

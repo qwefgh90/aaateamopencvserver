@@ -76,6 +76,9 @@
     <ClInclude Include="ImageManager.h">
       <Filter>Source Files\Store</Filter>
     </ClInclude>
+    <ClInclude Include="SiftEngine.h">
+      <Filter>Source Files\Sift</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -110,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="ImageManager.cpp">
       <Filter>Source Files\Store</Filter>
+    </ClCompile>
+    <ClCompile Include="SiftEngine.cpp">
+      <Filter>Source Files\Sift</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

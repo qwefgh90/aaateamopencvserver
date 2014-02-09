@@ -12,7 +12,7 @@ ImageManager* ImageManager::getImageManager()
 	return ImageManager::singleton;
 }
 
-bool ImageManager::matchingImage(__out u_int& code,__in Store& store, __in vector<Imagelist>& imageList)
+bool ImageManager::matchingImage(__out Imagelist& image,__in Store& store, __in vector<Imagelist>& imageList)
 {
 	bool dwResult = false;
 	//1)CreateKey , 이미지 키생성

@@ -8,7 +8,7 @@ public:
 	
 private:
 	static ImageManager* singleton;
-	bool matchingImage(__out u_int& code,__in Store& store, __in vector<Imagelist>& imageList);
+	bool matchingImage(__out Imagelist& image,__in Store& store, __in vector<Imagelist>& imageList);
 	
 	//DWORD 
 	//DWORD createKeyFile();

@@ -6,9 +6,11 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 	bool result = false;
 	
 	string str((char*)(memory.buf+5));
+	//1)i d / p a s s w d
 	vector<string> v= split(str,spliter);
 	
-	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5 +2+2),spliter_end.c_str());
+	//2)final spliter
+	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -27,9 +29,11 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 	bool result = false;
 	
 	string str((char*)(memory.buf+5));
+	//1)i d / p a s s w d
 	vector<string> v= split(str,spliter);
 	
-	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5 +2+2),spliter_end.c_str());
+	//2)end spliter
+	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -37,7 +41,7 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 		end_ptr[2]=NULL;
 		end_ptr[3]=NULL;
 	}
-
+	
 	strcpy(out.ID,v[0].c_str());
 	strcpy(out.pass,v[1].c_str());
 	strcpy(out.nick,v[2].c_str());

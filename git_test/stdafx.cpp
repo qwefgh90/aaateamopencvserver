@@ -9,3 +9,10 @@
 int a;
 string spliter("\r\n");
 string spliter_end("\r\n\r\n");
+void dumpbyte(u_char* buf,u_int len)
+{
+	int i=0;
+	for (i=0 ; i<len;i++)
+		printf("0x%x ",buf[i]);
+	printf("\n");
+}

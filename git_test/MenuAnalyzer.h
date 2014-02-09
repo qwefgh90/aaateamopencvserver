@@ -8,7 +8,7 @@ private:
 public:
 	MenuAnalyzer(void);
 	~MenuAnalyzer(void);
-	Memory MenuSelector(Memory&);
+	DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory);
 	static MenuAnalyzer* GetMenuAnalyzer();
 	vector<string> MenuAnalyzer::split(string str, string sep);
 private:

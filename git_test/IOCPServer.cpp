@@ -146,6 +146,7 @@ void CIocpSrv::ReleaseData(PSOCKET_DATA pSD)
 		u_char* temp=pSD->IOData[1].completeBuf;
 		delete[] temp;
 		pSD->IOData[1].completeBuf=NULL;
+
 		pSD->IOData[1].wsabuf.buf=NULL;
 		pSD->IOData[1].wsabuf.len=0;
 	}

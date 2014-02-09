@@ -28,6 +28,8 @@
 //We make required headers
 #include "protocol.h"
 
+//Function
+void dumpbyte(u_char* buf,u_int len);
 
 using namespace std;
 extern int a;

@@ -6,6 +6,7 @@
 #include "resource.h"
 //Tray 
 #define WM_USER_SHELLICON WM_USER + 1	//기존 메세지 +1
+#define PORT 8888
 NOTIFYICONDATA Tray;//Tray Structure
 HMENU hPopMenu;		//Popup Menu
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);	//Aboutbox message handler
@@ -47,7 +48,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		return nWSAError;
 	}
-	g_pSrv = CIocpSrv::CreateInstance(8888,5);
+	g_pSrv = CIocpSrv::CreateInstance(PORT,5);
 	if ( !g_pSrv->CreateLitenSocket() )			//Win소켓 -> bind() listen() 초기화
 		printf("bind(), listen()실패\n");
 	g_pSrv->StartThreadRoutine(WorkerThread,1);
@@ -80,16 +81,27 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 	int nRet;
 	DWORD dwFlags = 0;
 	DWORD dwSendNBytes =0;
+	Memory recv_data;
+	Memory send_data;
+	memset(&recv_data,0,sizeof(Memory));
+	memset(&send_data,0,sizeof(Memory));
+	MenuAnalyzer* analyzer= MenuAnalyzer::GetMenuAnalyzer();	//Menu analyzer
 	PSOCKET_DATA pSD = (PSOCKET_DATA)recv_buf;					//Received data from Mobile	about SOCKET_DATA
 
-																//complete buffer is available releasing
+																
+	//0)configure Memory structure 
+	recv_data.buf = pSD->IOData[0].completeBuf;					//complete buffer is available releasing
+	recv_data.len = pSD->IOData[0].nCurrentBytes;				//n-bytes
 	//1)parse(recv_buf) - MenuAnalyzer - return buffer and buffer_length
+
+	analyzer->MenuSelector(recv_data,send_data);
 
 	//2)allocate completeBuf and copy original buf to complete buffer
 
 	//3)send data to mobile
 
 	//4)release resource (malloc)
+	
 	char temp[256]={0,};
 	sprintf_s(temp,"You send data : %dbytes\n",pSD->IOData[0].nCurrentBytes);
 	int length = strlen(temp)+1;
@@ -321,7 +333,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			if(pIOD->nTotalBytes==0)
 			{
 				//binascii.unhexlify('0000000a') in python
-				u_int totalBytes = ntohl(*((u_int*)pIOD->Buf));
+				u_int totalBytes = *((u_int*)pIOD->Buf);
 				pIOD->nTotalBytes = totalBytes;
 				pIOD->completeBuf = new u_char[totalBytes];
 				memset(pIOD->completeBuf,0,totalBytes);

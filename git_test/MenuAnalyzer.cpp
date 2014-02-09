@@ -12,12 +12,11 @@ MenuAnalyzer::~MenuAnalyzer(void){
 //@data received from mobile 
 //return
 //@buffer and size to send to mobile
-Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
+DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 {
-	Memory out_memory;		//memory to mobile
-
-	u_char* out_buf;		//buffer to mobile
-	u_int out_len;			//buffer length to mobile
+	DWORD dwResult=FALSE;
+	u_char* out_buf=NULL;		//buffer to mobile
+	u_int out_len=0;			//buffer length to mobile
 
 	u_char* in_buf=in_memory.buf;			//buffer from mobile(complete buffer available releasing)
 	u_int in_len=in_memory.len;				//buffer length from mobile
@@ -25,6 +24,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 	u_char proto_type;		//proto_type
 
 	proto_type = *((u_char*)(in_buf+4));
+	printf ("proto: %d\n",proto_type);
 	switch(proto_type)
 	{
 	case LOGIN:
@@ -35,10 +35,12 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		memset(&out,0,sizeof(out));
 		//1)패킷에서 구조체 생성
 		this->packetToLogin(in,in_memory);
+		printf("id: %s@@@@",in.ID);
+		printf("passwd: %s@@@@",in.pass);
 		//2)생성된 구조체를 각 모듈에 전달
 		
 		//3)생성된 구조체에서 패킷을 생성
-
+		
 		//4)모바일에서 패킷 전송
 		
 		break;
@@ -49,7 +51,15 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Signup out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToSignup(in,in_memory);
+		printf("id: %s@@@@",in.ID);
+		printf("passwd: %s@@@@",in.pass);
+		printf("nick: %s@@@@",in.nick);
+		//2)생성된 구조체를 각 모듈에 전달
+		
+		//3)생성된 구조체에서 패킷을 생성
 
+		//4)모바일에서 패킷 전송
 		break;
 		}
 	case LOGOUT:
@@ -58,7 +68,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Logout out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
-
+		packetToLogout(in,in_memory);
 		break;
 		}
 	case LEAVE:
@@ -67,6 +77,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Leave out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToLeave(in,in_memory);
 
 		break;
 		}
@@ -76,6 +87,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Search out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToSearch(in,in_memory);
 
 		break;
 		}
@@ -85,6 +97,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_More out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToMore(in,in_memory);
 
 		break;
 		}
@@ -94,6 +107,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Write_comment out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToWriteComment(in,in_memory);
 
 		break;
 		}
@@ -103,6 +117,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Modify_comment out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToModifyComment(in,in_memory);
 
 		break;
 		}
@@ -112,6 +127,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Delete_comment out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToDeleteComment(in,in_memory);
 
 
 		break;
@@ -122,6 +138,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Like out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToLike(in,in_memory);
 
 		break;
 		}
@@ -131,6 +148,7 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 		OUT_Report out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
+		packetToReport(in,in_memory);
 
 		break;
 		}
@@ -138,7 +156,8 @@ Memory MenuAnalyzer::MenuSelector(Memory& in_memory)
 	}
 	out_memory.len=out_len;
 	out_memory.buf=out_buf;
-	return out_memory;
+	dwResult= TRUE;
+	return dwResult;
 }
 
 MenuAnalyzer* MenuAnalyzer::GetMenuAnalyzer()

@@ -94,7 +94,7 @@ bool Member_manager::Signup(IN_Signup in_signup, OUT_Signup &out_signup)
 	{
 		cout<<in_signup.ID<<" "<<in_signup.pass<<" "<<in_signup.nick<<endl;
 		cout<<"가입완료"<<endl;
-
+		
 		out_signup.result = 1;
 		return true;
 	}
@@ -117,7 +117,7 @@ bool Member_manager::Leave(IN_Leave in_leave, OUT_Leave &out_leave)
 			{
 				cout<<hash[i].ID<<" 님의 회원 탈퇴가 완료되었습니다."<<endl;
 				hash.erase(hash.begin() + i);
-
+				
 				out_leave.result = 1;
 				return true;
 			}

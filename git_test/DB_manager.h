@@ -23,7 +23,7 @@ public:
 	void Sql_run(TCHAR* sql);
 
 	bool Query_signup(IN_Signup in_signup);
-	bool Query_login(IN_Login in_login, IN_Login &db_login);
+	bool Query_login(IN_Login in_login, IN_Login &db_login,char* nick);
 	bool Query_leave(char* ID);
 	bool Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector);
 	bool Query_image_register(IN_Report in_report, OUT_Report &out_report);

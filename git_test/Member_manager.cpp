@@ -30,26 +30,35 @@ Member_manager::~Member_manager(void)
 //로그인 함수
 bool Member_manager::Login(IN_Login in_login, OUT_Login &out_login)
 {
+	//ID와 PASS를 함께 저장하여 해쉬 구조체 만들 배열
+	char to_hash[64];
+
 	//DB에서 받아올 구조체
 	IN_Login db_login;
+	char nick[40];
 	//멤버세션에 저장할 구조체
 	MemberSession mem;
 	//로그인 쿼리 실행
-	if(dbm->Query_login(in_login, db_login))
+	if(dbm->Query_login(in_login, db_login,nick))
 	{
 		//쿼리가 정상적으로 실행 되었을 경우
 		//입력 받은 ID와 DB에있는 아이디 비교(DB에서는 대소문자 비교가 안되므로)
 		if(strcmp(in_login.ID,db_login.ID) == 0)
 		{
-			cout<<db_login.ID<<" "<<db_login.pass<<" "<<endl;
+			strcpy_s(out_login.nick,strlen(out_login.nick)+1,nick);
+
+			cout<<db_login.ID<<" "<<db_login.pass<<" "<<nick<<endl;
 			cout<<db_login.ID<<" 님 로그인 성공"<<endl;
 
-			sha512((unsigned char*)db_login.ID,strlen(db_login.ID),out_login.cookie,0);
+			sprintf_s(to_hash,"%s%s",db_login.ID,db_login.pass);
+			sha512((unsigned char*)to_hash,strlen(to_hash),out_login.cookie,0);
 			memcpy_s(mem.cookie,64,out_login.cookie,64);
-			strcpy_s(mem.ID,db_login.ID);
+			memcpy_s(mem.ID,strlen(mem.ID)+1,db_login.ID,strlen(db_login.ID)+1);
 			
 			hash.push_back(mem);
-			
+			for (int i=0;i<64;i++)
+			cout<<hash[0].cookie[i];
+
 			out_login.result = 1;
 			return true;
 		}
@@ -83,7 +92,6 @@ bool Member_manager::Logout(IN_Logout in_logout, OUT_Logout &out_logout)
 			return true;
 		}
 	}
-	
 	out_logout.result = 0;
 	return false;
 }
@@ -94,7 +102,7 @@ bool Member_manager::Signup(IN_Signup in_signup, OUT_Signup &out_signup)
 	{
 		cout<<in_signup.ID<<" "<<in_signup.pass<<" "<<in_signup.nick<<endl;
 		cout<<"가입완료"<<endl;
-		
+
 		out_signup.result = 1;
 		return true;
 	}
@@ -111,13 +119,13 @@ bool Member_manager::Leave(IN_Leave in_leave, OUT_Leave &out_leave)
 {
 	for(int i = 0; i<(int)hash.size(); i++)
 	{
-		if(hash[i].cookie == in_leave.cookie)
+		if(memcmp((const char*)hash[i].cookie,(const char*)in_leave.cookie,64) == 0)
 		{
 			if(dbm->Query_leave(hash[i].ID))
 			{
 				cout<<hash[i].ID<<" 님의 회원 탈퇴가 완료되었습니다."<<endl;
 				hash.erase(hash.begin() + i);
-				
+
 				out_leave.result = 1;
 				return true;
 			}
@@ -132,15 +140,5 @@ bool Member_manager::Leave(IN_Leave in_leave, OUT_Leave &out_leave)
 	}
 
 	out_leave.result = -1;
-	return false;
-}
-
-char* Member_manager::Check_Member(unsigned char* cookie)
-{
-	for(int i = 0; i < (int)hash.size(); i++)
-	{
-		if(memcmp(hash[i].cookie,cookie,64))
-			return hash[i].ID;
-	}
 	return false;
 }

@@ -7,6 +7,8 @@
 class DB_manager
 {
 private:
+	static DB_manager* singleton;	
+
 	SQLHENV hEnv;
 	SQLHDBC hDbc;
 	SQLHSTMT hStmt;
@@ -20,12 +22,14 @@ public:
 	DB_manager(void);
 	~DB_manager(void);
 	
+	static DB_manager* GetDB_manager();
+
 	void Sql_run(TCHAR* sql);
 
 	bool Query_signup(IN_Signup in_signup);
 	bool Query_login(IN_Login in_login, IN_Login &db_login,char* nick);
 	bool Query_leave(char* ID);
-	bool Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector);
+	bool Query_images(IN_Search in_search, vector<Imagelist> &Imagevector);
 	bool Query_image_register(IN_Report in_report, OUT_Report &out_report);
 	bool Query_opi_search(IN_More in_more, OUT_More &out_more);
 	bool Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_comment &out_write_opi);

@@ -79,6 +79,9 @@
     <ClInclude Include="SiftEngine.h">
       <Filter>Source Files\Sift</Filter>
     </ClInclude>
+    <ClInclude Include="Store_manager.h">
+      <Filter>Source Files\Store</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -116,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="SiftEngine.cpp">
       <Filter>Source Files\Sift</Filter>
+    </ClCompile>
+    <ClCompile Include="Store_manager.cpp">
+      <Filter>Source Files\Store</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,18 @@
 #include"stdafx.h"
 #include "DB_manager.h"
 
+DB_manager* DB_manager::singleton=NULL;
+
+//싱글톤
+DB_manager* DB_manager::GetDB_manager()
+{
+	if(DB_manager::singleton == NULL)
+	{
+		singleton = new DB_manager();
+	}
+	return singleton;
+}
+
 //DB자원 할당
 DB_manager::DB_manager(void)
 {
@@ -90,7 +102,7 @@ bool DB_manager::Query_leave(char* ID)
 }
 
 //이미지 검색 쿼리
-bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevector)
+bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevector)
 {
 	//필터를 담기위한 버퍼생성
 	char buf[50];
@@ -99,8 +111,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 	//버퍼 초기화
 	memset(buf,0,50);
 	//이미지 리스트를 생성
-	Imagelist* Image_list;
-	Image_list = new Imagelist();
+	Imagelist Image_list;
 
 	//필터 쿼리를 만들기 위한 for문
 	for ( int i = 0; i < filter_no ; i++)
@@ -127,9 +138,9 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist*> &Imagevect
 			while(SQLFetch(hStmt))
 			{
 				//이미지 벡터에 넣기 위해 선언
-				SQLGetData(hStmt, 1, SQL_INTEGER, &Image_list->store_code, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_C_CHAR, &Image_list->store_path, 40, NULL);
-
+				SQLGetData(hStmt, 1, SQL_INTEGER, &Image_list.store_code, 4, NULL);
+				SQLGetData(hStmt, 2, SQL_C_CHAR, Image_list.store_path, 40, NULL);
+				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
 			

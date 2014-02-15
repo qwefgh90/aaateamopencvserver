@@ -16,45 +16,94 @@ DB_manager* DB_manager::GetDB_manager()
 //DB자원 할당
 DB_manager::DB_manager(void)
 {
-	int a;
-	ret = SQL_SUCCESS;
-	SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hEnv);
-	SQLSetEnvAttr(hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER);
-	SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &hDbc);
-	ret = SQLConnect(hDbc,(SQLCHAR *)"AAA", SQL_NTS, (SQLCHAR *)"AAA", SQL_NTS, (SQLCHAR *)"ghkdlxld", SQL_NTS);
-	ret = SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
-	if(ret == SQL_SUCCESS)
-	{
-		//연결에 성공 했을 경우
-		cout<<"Connection:success\n";
+	sqlsvrpool = new SQLSvrPool(	"117.16.244.38",	//hostnam
+		"AAA",	//database 
+		"AAA",			//username
+		"ghkdlxld",	//password
+		300000,		//keepalive timeout (milliseconds)
+		"SELECT top 1 name FROM dbo.sysobjects");	//keepalive statement
+
+	/*Create a pool that will have 3 cached connections and will swell upto a 
+	total of 5 connections. Returns the number of cached connections or -1 on error
+	*/
+	if(sqlsvrpool->CreatePool(3, 5)<=0){
+		cout<<"Error creating database pool\n";
+		cout<<sqlsvrpool->GetLastSystemError()<<endl;	//If it's asystem error
 	}
-	else
-	{
-		//연결에 실패했을 경우
-		cout<<"Connection:fail\n"<<ret;
-	}
+
+	/*Dispaly the pool information*/
+	cout<<(*sqlsvrpool);
+//	int a;
+//	ret = SQL_SUCCESS;
+//	SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hEnv);
+//	SQLSetEnvAttr(hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER);
+//	SQLAllocHandle(SQL_HANDLE_DBC, hEnv, &hDbc);
+//	ret = SQLConnect(hDbc,(SQLCHAR *)"AAA", SQL_NTS, (SQLCHAR *)"AAA", SQL_NTS, (SQLCHAR *)"ghkdlxld", SQL_NTS);
+//	ret = SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
+//	if(ret == SQL_SUCCESS)
+//	{
+//		//연결에 성공 했을 경우
+//		cout<<"Connection:success\n";
+//	}
+//	else
+//	{
+//		//연결에 실패했을 경우
+//		cout<<"Connection:fail\n"<<ret;
+//	}
 }
 
 //DB 자원해제
 DB_manager::~DB_manager(void)
 {
-	SQLFreeHandle(SQL_HANDLE_STMT, hStmt );
-    SQLDisconnect(hDbc);
-    SQLFreeHandle(SQL_HANDLE_DBC, hDbc);
-    SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
+	/*Destroy the database pool*/
+	if(sqlsvrpool->DestroyPool()>0){
+		cout<<"There are still some un-released connections in the pool\n";
+	}
+
+	delete sqlsvrpool;
+//	SQLFreeHandle(SQL_HANDLE_STMT, hStmt );
+//    SQLDisconnect(hDbc);
+//    SQLFreeHandle(SQL_HANDLE_DBC, hDbc);
+//    SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
 }
 
 //회원가입 쿼리
 bool DB_manager::Query_signup(IN_Signup in_signup)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	//아이디, 비번, 닉네임을 DB테이블에 삽입
 	sprintf_s(sql, "insert into member values ('%s','%s','%s')", in_signup.ID, in_signup.pass, in_signup.nick);
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 
-	if(ret==SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
 		//커서 해제
-		SQLCloseCursor(hStmt);
+		//SQLCloseCursor(hStmt);
+		
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
 		return true;
 	}
 	else
@@ -66,18 +115,45 @@ bool DB_manager::Query_signup(IN_Signup in_signup)
 //로그인 쿼리
 bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	//아이디, 비번을 이용해 TABLE에있는 DATA SELECT
 	sprintf_s(sql, "select * from member where ID='%s' and pass='%s'", in_login.ID, in_login.pass);
-	Sql_run(sql);
-	if(ret==SQL_SUCCESS)
+	//Sql_run(sql, sqlstatementhandle);
+
+	if(Sql_run(sql, sqlstatementhandle))
 	{
 		//아이디와 비번이 일치하는게 있을 경우
 		//SELECT한 DATA의 아이디와 비밀번호, 닉네임을 반환
-		SQLFetch(hStmt);
-		SQLGetData(hStmt, 1, SQL_C_CHAR, db_login.ID, 20, NULL);
-		SQLGetData(hStmt, 2, SQL_C_CHAR, db_login.pass, 20, NULL);
-		SQLGetData(hStmt, 3, SQL_C_CHAR, nick, 40, NULL);
-		SQLCloseCursor(hStmt);
+		SQLFetch(sqlstatementhandle);
+		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, db_login.ID, 20, NULL);
+		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 20, NULL);
+		SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, nick, 40, NULL);
+		//SQLCloseCursor(hStmt);
+		
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
 		return true;
 	}
 
@@ -87,12 +163,38 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 //회원 탈퇴 쿼리
 bool DB_manager::Query_leave(char* ID)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	//이미 로그인중이기 때문에 ID만 받아와서 DB TABLE에 있는 ID가 일치하는 DATA 행을 삭제
 	sprintf_s(sql, "delete from member where ID='%s'", ID);
-	Sql_run(sql);
-	if(ret==SQL_SUCCESS)
+	//Sql_run(sql, sqlstatementhandle);
+	if(Sql_run(sql, sqlstatementhandle))
 	{	
-		SQLCloseCursor(hStmt);
+		//SQLCloseCursor(hStmt);
+		
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
 		return true;
 	}
 	else
@@ -104,6 +206,19 @@ bool DB_manager::Query_leave(char* ID)
 //이미지 검색 쿼리
 bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevector)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	//필터를 담기위한 버퍼생성
 	char buf[50];
 	//필터의 번호를 저장하기 위한 버퍼
@@ -130,21 +245,34 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			buf,
 			in_search.store.longitude - ERRORRANGE, in_search.store.longitude + ERRORRANGE,
 			in_search.store.latitude - ERRORRANGE, in_search.store.latitude + ERRORRANGE);
+		
+		//Sql_run(sql, sqlstatementhandle);
 
-		Sql_run(sql);
-
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(hStmt))
+			while(SQLFetch(sqlstatementhandle))
 			{
 				//이미지 벡터에 넣기 위해 선언
-				SQLGetData(hStmt, 1, SQL_INTEGER, &Image_list.store_code, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_C_CHAR, Image_list.store_path, 40, NULL);
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Image_list.store_code, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Image_list.store_path, 40, NULL);
 				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
 			
-			SQLCloseCursor(hStmt);
+			//SQLCloseCursor(hStmt);
+		
+			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
+
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
 			return true;
 		}
 		
@@ -154,6 +282,19 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 //이미지 등록 쿼리
 bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_report)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	int filter_id;
 	int store_code;
 	//비트 AND연산을 통해 등록할 상점의 필터값을 알아내기
@@ -161,32 +302,45 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 		if( in_report.filter & filter[i])
 			filter_id = i;
 		//상점 등록
-		sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image, in_report.store.longitude, in_report.store.latitude,in_report.filter);
+	sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image, in_report.store.longitude, in_report.store.latitude,in_report.filter);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret == SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
 			//핸들을 닫은 후에 상점 키값을 이용해 상점 코드값을 알아내기
-			SQLCloseCursor(hStmt);
+			SQLCloseCursor(sqlstatementhandle);
 			sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.store.image);
 
-			Sql_run(sql);
+			//Sql_run(sql, sqlstatementhandle);
 
-			if(ret==SQL_SUCCESS)
+			if(Sql_run(sql, sqlstatementhandle))
 			{
-				SQLFetch(hStmt);
-				SQLGetData(hStmt, 1, SQL_INTEGER, &store_code, 4, NULL);
-				SQLCloseCursor(hStmt);
+				SQLFetch(sqlstatementhandle);
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &store_code, 4, NULL);
+				SQLCloseCursor(sqlstatementhandle);
 			}
 			//상점코드를 이용해 의견을 INSERT
 			sprintf_s(sql, "insert into SNS(nick, store_code, sns_con) values (%s,%d,%s)", in_report.ID, store_code, in_report.comment);
 
-			Sql_run(sql);
+			//Sql_run(sql, sqlstatementhandle);
 			
-			if(ret==SQL_SUCCESS)
+			if(Sql_run(sql, sqlstatementhandle))
 			{
-				SQLCloseCursor(hStmt);
+				//SQLCloseCursor(hStmt);
+		
+				SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+				/*Dispaly the pool information*/
+				cout<<(*sqlsvrpool);
+
+
+				/*Release the connection back into the pool*/
+				sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+				/*Dispaly the pool information*/
+				cout<<(*sqlsvrpool);
 				return true;
 			}
 			else
@@ -200,24 +354,50 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 
 bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	int i=0;
 	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_more.code, in_more.sort, in_more.comment_count);
 
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 
-	if(ret==SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
-		while(SQLFetch(hStmt))
+		while(SQLFetch(sqlstatementhandle))
 		{
-			SQLGetData(hStmt, 1, SQL_INTEGER, &out_more.opi[i].sns_id, 4, NULL);
-			SQLGetData(hStmt, 2, SQL_C_CHAR, out_more.opi[i].nick, 30, NULL);
-			SQLGetData(hStmt, 3, SQL_C_CHAR, out_more.opi[i].comment, 400, NULL);
-			SQLGetData(hStmt, 2, SQL_INTEGER, &out_more.opi[i].like_cnt, 4, NULL);
-			SQLGetData(hStmt, 2, SQL_INTEGER, &out_more.opi[i].dislike_cnt, 4, NULL);
+			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_more.opi[i].sns_id, 4, NULL);
+			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_more.opi[i].nick, 30, NULL);
+			SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_more.opi[i].comment, 400, NULL);
+			SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_more.opi[i].like_cnt, 4, NULL);
+			SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_more.opi[i].dislike_cnt, 4, NULL);
 			i++;
 		}
 		
-		SQLCloseCursor(hStmt);
+		//SQLCloseCursor(hStmt);
+		
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
 		out_more.opi_cnt = i+1;
 	}
 	else
@@ -227,13 +407,26 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 	
 	sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_more.code);
 	
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 
-	if(ret==SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLGetData(hStmt, 1, SQL_INTEGER, &out_more.score, 4, NULL);
+		SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_more.score, 4, NULL);
 
-		SQLCloseCursor(hStmt);
+		//SQLCloseCursor(hStmt);
+		
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
 		return true;
 	}
 
@@ -242,51 +435,68 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 
 bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_comment &out_write_opi)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	int sns_id = 0;
 
 	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s)", in_write_opi.ID, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
 	
-	Sql_run(sql);
-	
-	SQLCloseCursor(hStmt);
+	if(Sql_run(sql, sqlstatementhandle))
+		SQLCloseCursor(sqlstatementhandle);
+	else 
+		return false;
 
 	sprintf_s(sql, "select top 1 sns_id from SNS order by desc");
-
-	Sql_run(sql);
 	
-	if(SQLFetch(hStmt))
+	if(Sql_run(sql, sqlstatementhandle))
+		SQLCloseCursor(sqlstatementhandle);
+	else 
+		return false;
+	
+	if(SQLFetch(sqlstatementhandle))
 	{
-		SQLGetData(hStmt, 1, SQL_INTEGER, &sns_id, 4, NULL);
+		SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
 		
-		SQLCloseCursor(hStmt);
+		SQLCloseCursor(sqlstatementhandle);
 	}
 
 	sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values (%s,%d)", in_write_opi.ID, sns_id);
 	
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 
-	if(ret==SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLCloseCursor(hStmt);
+		SQLCloseCursor(sqlstatementhandle);
 
 		int i=0;
 		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_write_opi.code, in_write_opi.sort, in_write_opi.comment_count);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(hStmt))
+			while(SQLFetch(sqlstatementhandle))
 			{
-				SQLGetData(hStmt, 1, SQL_INTEGER, &out_write_opi.opi[i].sns_id, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_C_CHAR, out_write_opi.opi[i].nick, 30, NULL);
-				SQLGetData(hStmt, 3, SQL_C_CHAR, out_write_opi.opi[i].comment, 400, NULL);
-				SQLGetData(hStmt, 2, SQL_INTEGER, &out_write_opi.opi[i].like_cnt, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_INTEGER, &out_write_opi.opi[i].dislike_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_write_opi.opi[i].sns_id, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_write_opi.opi[i].nick, 30, NULL);
+				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_write_opi.opi[i].comment, 400, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_write_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_write_opi.opi[i].dislike_cnt, 4, NULL);
 				i++;
 			}
 			
-			SQLCloseCursor(hStmt);
+			SQLCloseCursor(sqlstatementhandle);
 			out_write_opi.opi_cnt = i+1;
 		}
 		else
@@ -296,13 +506,25 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_write_opi.code);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			SQLGetData(hStmt, 1, SQL_INTEGER, &out_write_opi.score, 4, NULL);
+			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_write_opi.score, 4, NULL);
 			
-			SQLCloseCursor(hStmt);
+			//SQLCloseCursor(hStmt);
+		
+			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
+
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
 			return true;
 		}
 
@@ -316,48 +538,71 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comment &out_mod_opi)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	sprintf_s(sql, "update SNS set sns_con='%s', score='%d' where sns_id='%d'", in_mod_opi.comment, in_mod_opi.comment_score, in_mod_opi.comment_num);
 
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 	
-	if(ret==SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLCloseCursor(hStmt);
+		SQLCloseCursor(sqlstatementhandle);
 		int i=0;
 
 		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_mod_opi.code, in_mod_opi.sort, in_mod_opi.comment_count);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(hStmt))
+			while(SQLFetch(sqlstatementhandle))
 			{
-				SQLGetData(hStmt, 1, SQL_INTEGER, &out_mod_opi.opi[i].sns_id, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_C_CHAR, out_mod_opi.opi[i].nick, 30, NULL);
-				SQLGetData(hStmt, 3, SQL_C_CHAR, out_mod_opi.opi[i].comment, 400, NULL);
-				SQLGetData(hStmt, 2, SQL_INTEGER, &out_mod_opi.opi[i].like_cnt, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_INTEGER, &out_mod_opi.opi[i].dislike_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_mod_opi.opi[i].sns_id, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_mod_opi.opi[i].nick, 30, NULL);
+				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_mod_opi.opi[i].comment, 400, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_mod_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_mod_opi.opi[i].dislike_cnt, 4, NULL);
 				i++;
 			}
 			
-			SQLCloseCursor(hStmt);
+			SQLCloseCursor(sqlstatementhandle);
 			out_mod_opi.opi_cnt = i+1;
 		}
 		else
-		{
 			return false;
-		}
 
 		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_mod_opi.code);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			SQLGetData(hStmt, 1, SQL_INTEGER, &out_mod_opi.score, 4, NULL);
+			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_mod_opi.score, 4, NULL);
 			
-			SQLCloseCursor(hStmt);
+			//SQLCloseCursor(hStmt);
+		
+			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
+
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
 			return true;
 		}
 
@@ -371,32 +616,45 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 
 bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comment &out_del_opi)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	sprintf_s(sql, "delete from SNS where sns_id='%s'", in_del_opi.comment_num);
 
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 	
-	if(ret==SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLCloseCursor(hStmt);
+		SQLCloseCursor(sqlstatementhandle);
 		int i=0;
 
 		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_del_opi.code, in_del_opi.sort, in_del_opi.comment_count);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(hStmt))
+			while(SQLFetch(sqlstatementhandle))
 			{
-				SQLGetData(hStmt, 1, SQL_INTEGER, &out_del_opi.opi[i].sns_id, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_C_CHAR, out_del_opi.opi[i].nick, 30, NULL);
-				SQLGetData(hStmt, 3, SQL_C_CHAR, out_del_opi.opi[i].comment, 400, NULL);
-				SQLGetData(hStmt, 2, SQL_INTEGER, &out_del_opi.opi[i].like_cnt, 4, NULL);
-				SQLGetData(hStmt, 2, SQL_INTEGER, &out_del_opi.opi[i].dislike_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_del_opi.opi[i].sns_id, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_del_opi.opi[i].nick, 30, NULL);
+				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_del_opi.opi[i].comment, 400, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_del_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_del_opi.opi[i].dislike_cnt, 4, NULL);
 				i++;
 			}
 			
-			SQLCloseCursor(hStmt);
+			SQLCloseCursor(sqlstatementhandle);
 			out_del_opi.opi_cnt = i+1;
 		}
 		else
@@ -406,13 +664,25 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 
 		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_del_opi.code);
 
-		Sql_run(sql);
+		//Sql_run(sql, sqlstatementhandle);
 
-		if(ret==SQL_SUCCESS)
+		if(Sql_run(sql, sqlstatementhandle))
 		{
-			SQLGetData(hStmt, 1, SQL_INTEGER, &out_del_opi.score, 4, NULL);
+			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_del_opi.score, 4, NULL);
 			
-			SQLCloseCursor(hStmt);
+			//SQLCloseCursor(hStmt);
+		
+			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
+
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
 			return true;
 		}
 
@@ -426,20 +696,51 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 
 bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 {
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
 	sprintf_s(sql, "update member_sns set val='%c' where mem_ID='%s' and sns_id='%s'", in_like_opi.like, in_like_opi.ID, in_like_opi.num);
 
-	Sql_run(sql);
+	//Sql_run(sql, sqlstatementhandle);
 
-	if(ret == SQL_SUCCESS)
+	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLCloseCursor(hStmt);
+		//SQLCloseCursor(hStmt);
+		
+		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		cout<<(*sqlsvrpool);
 		return true;
 	}
 	return false;
 }
 
-void DB_manager::Sql_run(char* sql)
+bool DB_manager::Sql_run(char* sql, SQLHANDLE &hStmt)
 {
-	ret = SQLExecDirect(hStmt, (SQLCHAR*)sql, SQL_NTS);
-	memset(sql,0,256);
+	if(SQL_SUCCESS!=SQLExecDirect(hStmt, (SQLCHAR*)sql, SQL_NTS))
+	{
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_STMT, hStmt);
+		return false;
+	}
+	return true;
+//	ret = SQLExecDirect(hStmt, (SQLCHAR*)sql, SQL_NTS);
+//	memset(sql,0,256);
 }

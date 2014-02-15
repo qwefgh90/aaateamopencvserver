@@ -2,17 +2,20 @@
 
 #include"stdafx.h"
 #include"sha512.h"
+#include "SQLSvrPool.h"
 
 
 class DB_manager
 {
 private:
 	static DB_manager* singleton;	
+	
+	SQLSvrPool* sqlsvrpool;
 
-	SQLHENV hEnv;
-	SQLHDBC hDbc;
-	SQLHSTMT hStmt;
-	SQLRETURN ret;
+//	SQLHENV hEnv;
+//	SQLHDBC hDbc;
+//	SQLHSTMT hStmt;
+//	SQLRETURN ret;
 
 	TCHAR sql[256];
 
@@ -24,7 +27,7 @@ public:
 	
 	static DB_manager* GetDB_manager();
 
-	void Sql_run(TCHAR* sql);
+	bool Sql_run(TCHAR* sql, SQLHANDLE &hStmt);
 
 	bool Query_signup(IN_Signup in_signup);
 	bool Query_login(IN_Login in_login, IN_Login &db_login,char* nick);

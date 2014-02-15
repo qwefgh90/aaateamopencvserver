@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
+    <ClInclude Include="CrossHelper.h" />
     <ClInclude Include="DB_manager.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexQ.h" />
@@ -88,11 +89,14 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="sha512.h" />
     <ClInclude Include="SiftEngine.h" />
+    <ClInclude Include="SQLSvrPool.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Store_manager.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CommonDatabasePool.cpp" />
+    <ClCompile Include="CrossHelper.cpp" />
     <ClCompile Include="DB_manager.cpp" />
     <ClCompile Include="git_test.cpp" />
     <ClCompile Include="ImageManager.cpp" />
@@ -106,6 +110,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SiftEngine.cpp" />
+    <ClCompile Include="SQLSvrPool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

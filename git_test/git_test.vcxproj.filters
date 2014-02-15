@@ -34,6 +34,9 @@
     <Filter Include="Source Files\Sift">
       <UniqueIdentifier>{063d6fbc-33ab-43fb-9491-1eb38c14ae62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DB Pool">
+      <UniqueIdentifier>{00498534-2e94-4d76-9f41-b147728181e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -82,6 +85,12 @@
     <ClInclude Include="Store_manager.h">
       <Filter>Source Files\Store</Filter>
     </ClInclude>
+    <ClInclude Include="SQLSvrPool.h">
+      <Filter>DB Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossHelper.h">
+      <Filter>DB Pool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -122,6 +131,15 @@
     </ClCompile>
     <ClCompile Include="Store_manager.cpp">
       <Filter>Source Files\Store</Filter>
+    </ClCompile>
+    <ClCompile Include="SQLSvrPool.cpp">
+      <Filter>DB Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonDatabasePool.cpp">
+      <Filter>DB Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossHelper.cpp">
+      <Filter>DB Pool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

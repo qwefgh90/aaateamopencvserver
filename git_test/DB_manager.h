@@ -12,11 +12,6 @@ private:
 	
 	SQLSvrPool* sqlsvrpool;
 
-//	SQLHENV hEnv;
-//	SQLHDBC hDbc;
-//	SQLHSTMT hStmt;
-//	SQLRETURN ret;
-
 	TCHAR sql[256];
 
 	unsigned char shacode[64];

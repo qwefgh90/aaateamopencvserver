@@ -27,6 +27,14 @@
 //We make required headers
 #include "protocol.h"
 
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+
+#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/nonfree/features2d.hpp>
+
+
 
 //Function
 void dumpbyte(u_char* buf,u_int len);

@@ -45,6 +45,15 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	detector.detect( db_original, kps_db );
 	// Feature description 디스크립터 생성
 	extractor.compute( db_original, kps_db, m);
+	
+	if(remove(title)==0)
+	{
+		//임시파일 삭제
+	}else
+	{
+		printf("%s","Fail to delete temporary file\n");
+	}
+
 	result = true;
 
 	END:
@@ -143,7 +152,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			}
 		}
 		u_int size= good_matches.size();
-		printf("good matches size : %d\n",size);
+		printf("good matches size : %ld\n",size);
 
 		//Save count of a matching
 		goodMatch m;
@@ -160,7 +169,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	goodMatch max;
 	max.index=-1;
 	max.match_cnt=0;
-
+	
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
@@ -169,9 +178,9 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			max=cntSet[i];
 		}
 	}
-
+	printf("The best picture index %d, matching_count %ld\n",max.index,max.match_cnt);
 	//if bigger than minimum size
-	if (max.match_cnt > SiftEngine::MIN_MATCH &&( max.index>0))
+	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
 	{
 		result = true;
 		image = imageList[max.index];
@@ -180,6 +189,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		result = false;
 		image.store_code=-1;
 	}
+	
 	//return result
 	END:
 	return result;

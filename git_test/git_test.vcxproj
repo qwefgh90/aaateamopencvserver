@@ -39,7 +39,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-
     <IncludePath>$(OPENCV_BUILD)\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
     <LibraryPath>$(OPENCV_BUILD)\x86\vc10\lib;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
   </PropertyGroup>
@@ -96,6 +95,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Store_manager.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="testcase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonDatabasePool.cpp" />
@@ -119,6 +119,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Store_manager.cpp" />
+    <ClCompile Include="testcase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

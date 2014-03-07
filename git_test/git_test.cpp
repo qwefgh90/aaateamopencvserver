@@ -18,8 +18,14 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext );
 DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext );
 DWORD WINAPI ProcessThread(LPVOID recv_buf);
 CIocpSrv *g_pSrv;	//¼­¹ö °´Ã¼
+
+//TEST MODULE CHANG
+#include "testcase.h"
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+	//chang_test();
+
 	MSG msg;
 	HWND consolHwnd;			//Console Handle
 	HWND windowHwnd;			//CreateWindow Handle

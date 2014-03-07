@@ -16,6 +16,7 @@ Store_manager* Store_manager::GetStore_manager()
 Store_manager::Store_manager(void)
 {
 	dbm = DB_manager::GetDB_manager();
+	im = ImageManager::getImageManager();
 }
 
 
@@ -34,12 +35,28 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	vector<Imagelist> Imagevector;
 	dbm->Query_images(in_search, Imagevector);
 	//이미지 벡터에 담긴 이미지 경로를 Fetch하여 읽은 매트릭스값을 새로 만든 매트릭스 벡터에 저장
-	//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
 	//이미지 벡터, 이미지 리스트, 검색 구조제를 이미지매니저로 전달
-
-	//아웃 서치에 담아서 반환
-
-	//결과값을 분석기에 반환
+	if(im->matchingImage(imagelist, in_search.store.image, Imagevector))
+	{
+		//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
+		out_search.code = imagelist.store_code;
+		//검색된 상점에 대한 의견검색을 위해 선언
+		IN_More in_more;
+		OUT_More out_more;
+		//구조체에 검색한 상점의 인자들을 저장
+		in_more.code = imagelist.store_code;
+		in_more.comment_count = 0;
+		memcpy_s(in_more.cookie,64,in_search.cookie,64);
+		in_more.sort = 1;
+		dbm->Query_opi_search(in_more, out_more);
+		//아웃 서치에 담아서 반환
+		memcpy_s(out_search.opi,10*sizeof(out_search.opi[1]),out_more.opi,10*sizeof(out_more.opi[1]));
+		out_search.opi_cnt = out_more.opi_cnt;
+		out_search.result = out_more.result;
+		out_search.score = out_more.score;
+		//결과값을 분석기에 반환
+		return true;
+	}
 	return false;
 }
 
@@ -49,6 +66,7 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	Imagelist imagelist;
 	//등록하기 전 검색해서 이미 있는 건물인지 찾아보기 위해 선언 
 	IN_Search in_search;
+	OUT_Search out_search;
 	//이미지벡터를 지역변수로 선언
 	vector<Imagelist> Imagevector;
 
@@ -61,11 +79,12 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	in_search.store.longitude = in_report.store.longitude;
 
 	//우선 등록된 이미지가 있는지 검색
-	dbm->Query_images(in_search, Imagevector);
-	//이미지벡터를 이용해 이미지 매니저를 불러 검색
-	//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
-	//검색후 등록 안되있는 경우 이미지 등록
-	dbm->Query_image_register(in_report, out_report);
+	if(!Store_Search(in_search, out_search))
+	{
+		//검색후 등록 안되있는 경우 이미지 등록
+		dbm->Query_image_register(in_report, out_report);
+		return true;
+	}
 	//등록 되어있는 경우 등록되어있다고 알림
 	return false;
 }

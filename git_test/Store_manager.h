@@ -2,6 +2,7 @@
 
 #include"stdafx.h"
 #include"DB_manager.h"
+#include "ImageManager.h"
 
 class Store_manager
 {
@@ -9,6 +10,7 @@ private:
 	static Store_manager* singleton;	
 	
 	DB_manager* dbm;
+	ImageManager* im;
 
 public:
 	Store_manager(void);

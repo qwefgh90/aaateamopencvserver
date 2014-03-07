@@ -25,8 +25,6 @@ Store_manager::~Store_manager(void)
 
 }
 
-
-
 bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 {
 	//이미지 구조체를 선언
@@ -49,14 +47,17 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		memcpy_s(in_more.cookie,64,in_search.cookie,64);
 		in_more.sort = 1;
 		dbm->Query_opi_search(in_more, out_more);
-		//아웃 서치에 담아서 반환
-		memcpy_s(out_search.opi,10*sizeof(out_search.opi[1]),out_more.opi,10*sizeof(out_more.opi[1]));
+		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
+		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(OUT_Search), 
+			out_more.opi, out_more.opi_cnt*sizeof(OUT_Search));
 		out_search.opi_cnt = out_more.opi_cnt;
 		out_search.result = out_more.result;
 		out_search.score = out_more.score;
+		
 		//결과값을 분석기에 반환
 		return true;
 	}
+
 	return false;
 }
 
@@ -72,12 +73,15 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 
 	memcpy_s(in_search.cookie,64,in_report.cookie,64);
 	in_search.filter = in_report.filter;
-	memcpy_s(in_search.ID,21,in_report.ID,21);
+	
+	//memcpy_s(in_search.ID,21,in_report.ID,21);
+	//ID는 복사할 필요가 없음. 1)UNION 이라서 2)회원관리 모듈에서 ID -> COOKIE 변환 작업이일어남
+	
 	in_search.store.image.buf = in_report.store.image.buf;
 	in_search.store.image.len = in_report.store.image.len;
 	in_search.store.latitude = in_report.store.latitude;
 	in_search.store.longitude = in_report.store.longitude;
-
+	
 	//우선 등록된 이미지가 있는지 검색
 	if(!Store_Search(in_search, out_search))
 	{

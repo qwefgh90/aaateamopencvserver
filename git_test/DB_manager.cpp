@@ -315,9 +315,15 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
+	char* sort_no = "good";
+	if(in_more.sort == 1 )
+		sort_no = "good";
+	else
+		sort_no = "date";
+
 
 	int i=0;
-	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_more.code, in_more.sort, in_more.comment_count);
+	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_more.code, sort_no, in_more.comment_count);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{

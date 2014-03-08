@@ -24,6 +24,7 @@ public:
 	bool Signup(IN_Signup& in_signup, OUT_Signup &out_signup);
 	bool Leave(IN_Leave& in_leave, OUT_Leave &out_leave);
 	char* Check_Member(unsigned char* cookie);
+	bool cookiechk(u_char *in_cookie, u_char* vec_cookie);
 
 };
 

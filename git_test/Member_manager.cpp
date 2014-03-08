@@ -84,7 +84,7 @@ bool Member_manager::Logout(IN_Logout& in_logout, OUT_Logout &out_logout)
 {
 	for(int i = 0; i<(int)hash.size(); i++)
 	{
-		if(hash[i].cookie == in_logout.cookie)
+		if(memcmp(in_logout.cookie, hash[i].cookie,64) == 0)
 		{
 			hash.erase(hash.begin() + i);
 
@@ -119,7 +119,7 @@ bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 {
 	for(int i = 0; i<(int)hash.size(); i++)
 	{
-		if(memcmp((const char*)hash[i].cookie,(const char*)in_leave.cookie,64) == 0)
+		if(memcmp(in_leave.cookie, hash[i].cookie,64) == 0)
 		{
 			if(dbm->Query_leave(hash[i].ID))
 			{
@@ -141,4 +141,12 @@ bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 
 	out_leave.result = -1;
 	return false;
+}
+
+bool cookiechk(u_char* in_cookie, u_char* vec_cookie)
+{
+	if(memcmp(in_cookie,vec_cookie,64) == 0)
+		return true;
+	else
+		return false;
 }

@@ -81,10 +81,15 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	//우선 등록된 이미지가 있는지 검색
 	if(!Store_Search(in_search, out_search))
 	{
-		//검색후 등록 안되있는 경우 이미지 등록
-		dbm->Query_image_register(in_report, out_report);
+		//검색후 등록 안되있는 경우 이미지,sns 등록
+		if(dbm->Query_image_register(in_report, out_report))
+		{
+		}
+		//dbm->Query_opi_search(
 		return true;
 	}
+	else
+		out_report.result = 4;
 	//등록 되어있는 경우 등록되어있다고 알림
 	return false;
 }

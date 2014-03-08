@@ -91,6 +91,9 @@
     <ClInclude Include="CrossHelper.h">
       <Filter>DB Pool</Filter>
     </ClInclude>
+    <ClInclude Include="testcase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="CrossHelper.cpp">
       <Filter>DB Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="testcase.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,10 +6,11 @@ MenuAnalyzer* MenuAnalyzer::singleton=NULL;
 MenuAnalyzer::MenuAnalyzer(void){
 	//initialize member manager
 	member_manager = Member_manager::GetMember_manager();
+	store_manager = Store_manager::GetStore_manager();
 }
 MenuAnalyzer::~MenuAnalyzer(void){
 }
-//parse menu to structures and call assemble packet function
+//Parse menu to structures and call a function of assembling packet
 //param
 //@data received from mobile 
 //return
@@ -125,7 +126,10 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		packetToWriteComment(in,in_memory);
+		// false== f멤버 매니저 쿠키 인증
 		
+		// true==
+		// store_manager()
 		break;
 		}
 	case MODIFY_COMMENT://의견수정
@@ -165,7 +169,20 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		packetToReport(in,in_memory);
-		
+		//1)쿠키체크
+		//2)상점등록
+		if(store_manager->Store_report(in,out))
+		{
+			//성공
+			printf("상점 등록 성공\n");
+		}else
+		{
+			//실패
+			printf("상점 등록 실패\n");
+			
+		}
+		//3)패킷조립
+		packetFromReport(out_memory,out);
 		break;
 		}
 

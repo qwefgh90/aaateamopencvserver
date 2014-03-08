@@ -206,14 +206,14 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 		//?
 		*(strrchr(buf,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
-		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%s' and '%s' and gps_Latitude between '%s' and '%s'",
+		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
 			buf,
 			in_search.store.longitude - ERRORRANGE, in_search.store.longitude + ERRORRANGE,
 			in_search.store.latitude - ERRORRANGE, in_search.store.latitude + ERRORRANGE);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(sqlstatementhandle))
+			if(SQLFetch(sqlstatementhandle))
 			{
 				//이미지 벡터에 넣기 위해 선언
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Image_list.store_code, 4, NULL);
@@ -241,6 +241,8 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 //이미지 등록 쿼리
 bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_report)
 {
+	char nick[41];
+	int sns_id;
 	SQLHANDLE* psqlconnectionhandle;
 	SQLHANDLE  sqlstatementhandle;
 
@@ -259,15 +261,18 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 	//비트 AND연산을 통해 등록할 상점의 필터값을 알아내기
 	for ( int i = 0; i < filter_no ; i++)
 		if( in_report.filter & filter[i])
+		{
 			filter_id = i;
-	//상점 등록
-	sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image, in_report.store.longitude, in_report.store.latitude,in_report.filter);
+			break;
+		}
+			//상점 등록
+	sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image.buf, in_report.store.longitude, in_report.store.latitude,in_report.filter);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
 		//핸들을 닫은 후에 상점 키값을 이용해 상점 코드값을 알아내기
 		SQLCloseCursor(sqlstatementhandle);
-		sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.store.image);
+		sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.store.image.buf);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
@@ -275,8 +280,29 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &store_code, 4, NULL);
 			SQLCloseCursor(sqlstatementhandle);
 		}
+		//핸들을 닫은 후에 아이디를 이용해 닉네임 얻어오기
+
+		sprintf_s(sql,"select nick from member where ID='%s'",in_report.ID);
+
+		if(Sql_run(sql, sqlstatementhandle))
+		{
+			SQLFetch(sqlstatementhandle);
+			SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, nick, 40, NULL);
+			SQLCloseCursor(sqlstatementhandle);
+		}
+		//핸들을 닫기
+		sprintf_s(sql,"select sns_id from SNS where store_code=%d",store_code);
+
+		if(Sql_run(sql, sqlstatementhandle))
+		{
+			SQLFetch(sqlstatementhandle);
+			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
+			SQLCloseCursor(sqlstatementhandle);
+		}
+		//핸들을 닫기
+
 		//상점코드를 이용해 의견을 INSERT
-		sprintf_s(sql, "insert into SNS(nick, store_code, sns_con) values (%s,%d,%s)", in_report.ID, store_code, in_report.comment);
+		sprintf_s(sql, "insert into SNS(nick, store_code, sns_con, score) values ('%s',%d,'%s',%d)", nick, store_code, in_report.comment, in_report.comment_score);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
@@ -291,7 +317,12 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
 			out_report.code = store_code;
-			memcpy_s(out_report.opi,sizeof(out_report.opi[0]),in_report.comment,sizeof(in_report.comment));
+			memcpy_s(out_report.opi[0].comment,sizeof(out_report.opi[0]),in_report.comment,sizeof(in_report.comment));
+			out_report.opi[0].dislike_cnt = 0;
+			out_report.opi[0].like_cnt = 0;
+			strcpy_s(out_report.opi[0].nick,41,nick);
+			out_report.opi[0].sns_id = sns_id;
+			out_report.opi[0].dislike_cnt = 0;
 			out_report.opi_cnt = 1;
 			out_report.result = 1;
 			out_report.score = (float)in_report.comment_score;

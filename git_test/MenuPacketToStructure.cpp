@@ -223,7 +223,7 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	result = true;
 	return result;
 }
-const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4)+ (1) + (64)+(1)+(4)+(4) +(1) +4;
+const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4)+ (1) + (64)+(1)+(4)+(4) +(1) +4 +2;
 //데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 의견점수 + 마지막 구분자 + (의견/이미지 제외)
 bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
@@ -236,10 +236,10 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	float*	latitude = (float*)(filter+1 );
 	float*	longitude= (float*)(((u_char*)latitude)+4 );
 	printf("Packet Length : %ld\n",*((u_int*)memory.buf));
-	printf("GPS Latitude : %f, Longitude : %f\n",latitude,longitude);
+	printf("GPS Latitude : %f, Longitude : %f\n",*latitude,*longitude);
 
-	u_char* opinion_socre = ((u_char*)longitude)+4;
-	u_char* opinion = opinion_socre+1;
+	u_char* opinion_score = ((u_char*)longitude)+4;
+	u_char* opinion = opinion_score+1 +2;//구분자 \r\n 포함
 
 	u_int opinion_size=0;
 	u_int image_size=0;
@@ -251,7 +251,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	memcpy(&(out.store.longitude),longitude,4);		//경도
 
 	char* end_ptr =NULL;
-	end_ptr = strstr((char*)opinion,spliter.c_str());	//\r\n포인터
+	end_ptr = strstr((char*)opinion,spliter_end.c_str());	//\r\n포인터
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -273,7 +273,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	str = string((char*)opinion);
 	v = split(str,spliter);	//spliter를 기준으로 자른다 마지막엔 NULL이 있어야 하지만 존재 하지 않음, 임의로 NULL로 채워줌
 	strcpy(out.comment,v[0].c_str());		//글 내용 (현재 프로토콜에선 글 내용만 0번 인덱스로 나오게 된다)
-	out.comment_score = *opinion_socre;		//글 평점
+	out.comment_score = *opinion_score;		//글 평점
 
 	//이미지 복사
 	out.store.image.buf=new byte[image_size];		//추후 처리 후 할당해제 필요

@@ -70,6 +70,11 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	OUT_Search out_search;
 	//이미지벡터를 지역변수로 선언
 	vector<Imagelist> Imagevector;
+	char save_path[255]={0,};
+	time_t   current_time;
+	time( &current_time);
+	sprintf(save_path,"%ld",current_time);
+	
 
 	memcpy_s(in_search.cookie,64,in_report.cookie,64);
 	in_search.filter = in_report.filter;
@@ -82,14 +87,19 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	in_search.store.latitude = in_report.store.latitude;
 	in_search.store.longitude = in_report.store.longitude;
 	
+
 	//우선 등록된 이미지가 있는지 검색
 	if(!Store_Search(in_search, out_search))
 	{
-		//검색후 등록 안되있는 경우 이미지,sns 등록
-		if(dbm->Query_image_register(in_report, out_report))
+		//키생성
+		if(im->storeKey(in_search.store.image,save_path))
 		{
-			out_report.result = 1;
-			return true;
+			//검색후 등록 안되있는 경우 이미지,sns 등록
+			if(dbm->Query_image_register(in_report, out_report))
+			{
+				out_report.result = 1;
+				return true;
+			}
 		}
 	}
 	else

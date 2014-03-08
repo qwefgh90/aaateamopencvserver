@@ -80,6 +80,8 @@ bool SiftEngine::storeKey(__in Memory& memory,__in char* fname)
 		printf(e.err.c_str());
 		goto END;
 	}
+	//이미지 경로 복사
+	strcpy((char*)memory.buf,fname);
 	result = true;
 	END:
 	return result;

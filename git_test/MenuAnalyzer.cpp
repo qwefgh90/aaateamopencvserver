@@ -106,6 +106,11 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		packetToSearch(in,in_memory);
+		//1)쿠키검사
+
+		//2)상점검색
+
+		//3)패킷조립
 		
 		break;
 		}
@@ -169,7 +174,17 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		packetToReport(in,in_memory);
-		//1)쿠키체크
+		//1)쿠키체크/인증과정
+		if(member_manager->cookiechk(in.ID,in.cookie))
+		{
+			//성공
+		}else
+		{
+			//인증 실패
+			out.code=5;
+			goto END;
+		}
+		
 		//2)상점등록
 		if(store_manager->Store_report(in,out))
 		{
@@ -179,10 +194,14 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		{
 			//실패
 			printf("상점 등록 실패\n");
+			goto END;
 			
 		}
+END:
+
 		//3)패킷조립
 		packetFromReport(out_memory,out);
+		printf("result: %d @@@\n",out.result);
 		break;
 		}
 

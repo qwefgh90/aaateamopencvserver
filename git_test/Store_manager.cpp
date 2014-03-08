@@ -88,9 +88,9 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 		//검색후 등록 안되있는 경우 이미지,sns 등록
 		if(dbm->Query_image_register(in_report, out_report))
 		{
+			out_report.result = 1;
+			return true;
 		}
-		//dbm->Query_opi_search(
-		return true;
 	}
 	else
 		out_report.result = 4;
@@ -100,35 +100,40 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 
 bool Store_manager::Store_more(IN_More &in_more, OUT_More &out_more)
 {
-	dbm->Query_opi_search(in_more, out_more);
+	if(dbm->Query_opi_search(in_more, out_more))
+		return true;
 	//상점에 대한 의견 더보기
 	return false;
 }
 
 bool Store_manager::Store_opi_write(IN_Write_comment &in_write, OUT_Write_comment &out_write)
 {
-	dbm->Query_opi_register(in_write, out_write);
+	if(dbm->Query_opi_register(in_write, out_write))
+		return true;
 	//상점에 대한 의견 쓰기
 	return false;
 }
 
 bool Store_manager::Store_opi_delete(IN_Delete_comment &in_delete, OUT_Delete_comment &out_delete)
 {
-	dbm->Query_opi_delete(in_delete, out_delete);
+	if(dbm->Query_opi_delete(in_delete, out_delete))
+		return true;
 	//상점에 대한 의견 삭제하기
 	return false;
 }
 
 bool Store_manager::Store_opi_modify(IN_Modify_comment &in_modify, OUT_Modify_comment &out_modify)
 {
-	dbm->Query_opi_modify(in_modify, out_modify);
+	if(dbm->Query_opi_modify(in_modify, out_modify))
+		return true;
 	//상점에 대한 의견 수정하기
 	return false;
 }
 
 bool Store_manager::Store_like(IN_Like &in_like, OUT_Like &out_like)
 {
-	dbm->Query_opi_like(in_like, out_like);
+	if(dbm->Query_opi_like(in_like, out_like))
+		return true;
 	//의견에 대한 좋아요
 	return false;
 }

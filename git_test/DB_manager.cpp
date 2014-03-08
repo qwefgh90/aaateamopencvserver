@@ -329,6 +329,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 
 
 	int i=0;
+	//의견 검색 쿼리
 	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_more.code, sort_no, in_more.comment_count);
 
 	if(Sql_run(sql, sqlstatementhandle))
@@ -357,6 +358,8 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 	}
 	else
 	{
+		//검색이 안됨.
+		out_more.result = 0;
 		return false;
 	}
 
@@ -376,9 +379,11 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
+		out_more.result = 1;
 		return true;
 	}
 
+	out_more.result = 0;
 	return false;
 }
 
@@ -404,14 +409,19 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);
 	else 
+	{
+		out_write_opi.result = -1;
 		return false;
-
+	}
 	sprintf_s(sql, "select top 1 sns_id from SNS order by desc");
 
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);
 	else 
+	{
+		out_write_opi.result = -1;
 		return false;
+	}
 
 	if(SQLFetch(sqlstatementhandle))
 	{
@@ -446,6 +456,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 		}
 		else
 		{
+			out_write_opi.result = -1;
 			return false;
 		}
 
@@ -467,12 +478,13 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 			cout<<(*sqlsvrpool);
 			return true;
 		}
-
+		out_write_opi.result = -1;
 		return false;
 	}
 	//상점 코드, 의견, 평점, ID를 DB에 등록한다.
 	//의견들, 의견 개수, 평균평점을 리턴한다.
 
+	out_write_opi.result = 0;
 	return false;
 }
 
@@ -516,7 +528,10 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 			out_mod_opi.opi_cnt = i+1;
 		}
 		else
+		{
+			out_mod_opi.result = -1;
 			return false;
+		}
 
 		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_mod_opi.code);
 
@@ -534,14 +549,17 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
+			out_mod_opi.result = 1;
 			return true;
 		}
-
+		
+		out_mod_opi.result = -1;
 		return false;
 	}
 
 	//글번호를 이용해 글내용, 평점을 수정
 	//의견들, 의견개수, 평균평점을 리턴
+	out_mod_opi.result = 0;
 	return false;
 }
 
@@ -586,6 +604,7 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 		}
 		else
 		{
+			out_del_opi.result = -1;
 			return false;
 		}
 
@@ -605,14 +624,17 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
+			out_del_opi.result = 1;
 			return true;
 		}
-
+		
+		out_del_opi.result = -1;
 		return false;
 	}
 
 	//글번호를 이용해 의견을 삭제
 	//의견들, 의견개수, 평균평점을 리턴
+	out_del_opi.result = 0;
 	return false;
 }
 
@@ -645,8 +667,10 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
+		out_like_opi.result = 1;
 		return true;
 	}
+	out_like_opi.result = 0;
 	return false;
 }
 

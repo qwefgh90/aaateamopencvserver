@@ -294,7 +294,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			memcpy_s(out_report.opi,sizeof(out_report.opi[0]),in_report.comment,sizeof(in_report.comment));
 			out_report.opi_cnt = 1;
 			out_report.result = 1;
-			out_report.score = in_report.comment_score;
+			out_report.score = (float)in_report.comment_score;
 			return true;
 		}
 		else

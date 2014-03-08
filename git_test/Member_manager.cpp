@@ -56,8 +56,6 @@ bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 			memcpy_s(mem.ID,strlen(mem.ID)+1,db_login.ID,strlen(db_login.ID)+1);
 			
 			hash.push_back(mem);
-			for (int i=0;i<64;i++)
-			cout<<hash[0].cookie[i];
 
 			out_login.result = 1;
 			return true;

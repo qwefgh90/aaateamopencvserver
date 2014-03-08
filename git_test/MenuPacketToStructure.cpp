@@ -224,7 +224,7 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	return result;
 }
 const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4)+ (1) + (64)+(1)+(4)+(4) +(1) +4;
-//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 + 의견점수 + 마지막 구분자 + (의견/이미지 제외)
+//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 의견점수 + 마지막 구분자 + (의견/이미지 제외)
 bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
 	bool result = false;
@@ -235,7 +235,9 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	u_char* filter = cookie+64 ;
 	float*	latitude = (float*)(filter+1 );
 	float*	longitude= (float*)(((u_char*)latitude)+4 );
-	
+	printf("Packet Length : %ld\n",*((u_int*)memory.buf));
+	printf("GPS Latitude : %f, Longitude : %f\n",latitude,longitude);
+
 	u_char* opinion_socre = ((u_char*)longitude)+4;
 	u_char* opinion = opinion_socre+1;
 
@@ -258,9 +260,11 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 		end_ptr[3]=NULL;
 
 		opinion_size = ((u_char*)end_ptr-opinion);	//의견 길이
+		printf("Opinion length : %ld\n",opinion_size);
 		image = ((u_char*)(end_ptr+4));				//이미지 포인터
 		//데이터의 길이는 little endian 으로 저장되어 있어야함.
 		image_size = *((u_int*)memory.buf) - (SEARCH_SIZE_BUTIMAGE_OPINION + (opinion_size));//의견+점수 포함
+		printf("Image length : %ld\n",image_size);
 	}else
 	{
 		goto END;

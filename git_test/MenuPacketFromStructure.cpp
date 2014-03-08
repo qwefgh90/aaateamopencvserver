@@ -658,19 +658,19 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 	result = true;
 	return result;
 }
-bool packetFromReport(__out Memory& out, __in _OUT_Report& in)
+bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 {
 		bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
-	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size
+	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size //마지막 \r\n 제외
 	
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
-	u_int content_size[10]={0,};
 	u_int nic_size[10]={0,};
+	u_int content_size[10]={0,};
 	u_int like_cnt_size[10]={0,};
 	u_int dislike_cnt_size[10]={0,};
 

@@ -129,24 +129,22 @@ bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 				out_leave.result = 1;
 				return true;
 			}
-			else
-			{
-				cout<<"오류가 발생하였습니다."<<endl;
-
-				out_leave.result = 0;
-				return false;
-			}
 		}
 	}
+	cout<<"오류가 발생하였습니다."<<endl;
 
 	out_leave.result = -1;
 	return false;
 }
 
-bool cookiechk(u_char* in_cookie, u_char* vec_cookie)
+bool Member_manager::cookiechk(char* ID, u_char* in_cookie)
 {
-	if(memcmp(in_cookie,vec_cookie,64) == 0)
-		return true;
-	else
-		return false;
+	for(int i = 0; i<(int)hash.size(); i++)
+	{
+		if(memcmp(in_cookie, hash[i].cookie,64) == 0)
+		{
+			strcpy_s(ID,21,hash[i].ID);
+			return true;
+		}
+	}
 }

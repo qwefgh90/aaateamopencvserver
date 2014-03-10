@@ -145,4 +145,5 @@ bool Member_manager::cookiechk(char* ID, u_char* in_cookie)
 			return true;
 		}
 	}
+	return false;
 }

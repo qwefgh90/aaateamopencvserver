@@ -64,7 +64,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 {
 	//이미지 구조체를 선언
-	Imagelist imagelist;
+	//Imagelist imagelist;
 	//등록하기 전 검색해서 이미 있는 건물인지 찾아보기 위해 선언 
 	IN_Search in_search;
 	OUT_Search out_search;
@@ -73,7 +73,7 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	char save_path[255]={0,};
 	time_t   current_time;
 	time( &current_time);
-	sprintf(save_path,"%ld",current_time);
+	sprintf_s(save_path,"%ld",current_time);
 	
 
 	memcpy_s(in_search.cookie,64,in_report.cookie,64);
@@ -87,7 +87,7 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	in_search.store.latitude = in_report.store.latitude;
 	in_search.store.longitude = in_report.store.longitude;
 	
-
+	
 	//우선 등록된 이미지가 있는지 검색
 	if(!Store_Search(in_search, out_search))
 	{

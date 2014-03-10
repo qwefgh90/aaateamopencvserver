@@ -290,23 +290,21 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, nick, 40, NULL);
 			SQLCloseCursor(sqlstatementhandle);
 		}
-		//핸들을 닫기
-		sprintf_s(sql,"select sns_id from SNS where store_code=%d",store_code);
-
-		if(Sql_run(sql, sqlstatementhandle))
-		{
-			SQLFetch(sqlstatementhandle);
-			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
-			SQLCloseCursor(sqlstatementhandle);
-		}
-		//핸들을 닫기
-
 		//상점코드를 이용해 의견을 INSERT
 		sprintf_s(sql, "insert into SNS(nick, store_code, sns_con, score) values ('%s',%d,'%s',%d)", nick, store_code, in_report.comment, in_report.comment_score);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+			SQLCloseCursor(sqlstatementhandle);
+			
+			sprintf_s(sql,"select sns_id from SNS where store_code=%d",store_code);
+
+			if(Sql_run(sql, sqlstatementhandle))
+			{
+				SQLFetch(sqlstatementhandle);
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
+				SQLCloseCursor(sqlstatementhandle);
+			}
 
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
@@ -317,10 +315,10 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
 			out_report.code = store_code;
-			memcpy_s(out_report.opi[0].comment,sizeof(out_report.opi[0]),in_report.comment,sizeof(in_report.comment));
+			memcpy_s(out_report.opi[0].comment,sizeof(out_report.opi[0].comment),in_report.comment,sizeof(in_report.comment));
 			out_report.opi[0].dislike_cnt = 0;
 			out_report.opi[0].like_cnt = 0;
-			strcpy_s(out_report.opi[0].nick,41,nick);
+			strcpy_s(out_report.opi[0].nick,40,nick);
 			out_report.opi[0].sns_id = sns_id;
 			out_report.opi[0].dislike_cnt = 0;
 			out_report.opi_cnt = 1;

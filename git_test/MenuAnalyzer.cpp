@@ -201,7 +201,12 @@ END:
 
 		//3)패킷조립
 		packetFromReport(out_memory,out);
-		printf("result: %d @@@\n",out.result);
+		printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u",out.result,out.code,out.score,out.opi_cnt);
+		for (int i = 0 ; i < out.opi_cnt ; i++)
+		{
+			printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
+		}
+	
 		break;
 		}
 

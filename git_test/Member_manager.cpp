@@ -17,14 +17,13 @@ Member_manager* Member_manager::GetMember_manager()
 Member_manager::Member_manager(void)
 {
 	//DB_manager 생성(DB연결)
-	dbm = new DB_manager();
+	dbm = DB_manager::GetDB_manager();
 }
 
 //멤버 매니저 소멸자
 Member_manager::~Member_manager(void)
 {
-	//DB_manager 제거(DB연결 종료)
-	dbm->~DB_manager();
+
 }
 
 //로그인 함수

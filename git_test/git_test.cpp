@@ -62,7 +62,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		return nWSAError;
 	}
 	
-	initManager();
+	initManager();//Initialize Managers
 	g_pSrv = CIocpSrv::CreateInstance(PORT,5);
 	if ( !g_pSrv->CreateLitenSocket() )			//Win소켓 -> bind() listen() 초기화
 		printf("bind(), listen()실패\n");

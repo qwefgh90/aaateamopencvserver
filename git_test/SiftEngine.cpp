@@ -27,7 +27,9 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	cv::SiftDescriptorExtractor extractor( 3.0 );
 
 	std::vector<cv::KeyPoint> kps_db;
-	sprintf(title,"%ldimgfile",current_time);
+	sprintf(title,"%ldimgfile.jpg",current_time);
+	printf("Image Length : %u\n",len);
+	printf("Image Name Temp : %s\n",title);
 
 	//1)이미지 파일생성
 	FILE* f = fopen(title,"wb");
@@ -35,7 +37,9 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	fclose(f);
 	//2)이미지 로드 및 특징점 생성 (키 생성)
 	try{
-	db_original = cv::imread(title,CV_LOAD_IMAGE_GRAYSCALE);
+		printf("imread() Start\n");
+		db_original = cv::imread(title,CV_LOAD_IMAGE_GRAYSCALE);
+		printf("imread() End\n");
 	}catch(cv::Exception& e) {
 		printf("Exception occurred. createKey... ");
 		printf(e.err.c_str());
@@ -87,7 +91,7 @@ bool SiftEngine::storeKey(__in Memory& memory,__in char* fname)
 	return result;
 }
 /*
-	지정된 경로에 키를 호출
+	지정된 경로에 키를 반환
 */
 bool SiftEngine::loadKey(__in char* store_path,__out cv::Mat& mat)
 {

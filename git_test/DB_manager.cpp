@@ -198,7 +198,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 		if( in_search.filter & filter[i])
 		{
 			strcat_s(buf,"'");
-			_itoa_s(i,c,10);
+			_itoa_s(filter[i],c,10);
 			strcat_s(buf, c);
 			strcat_s(buf,"'");
 			strcat_s(buf,",");
@@ -213,11 +213,11 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			if(SQLFetch(sqlstatementhandle))
+			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				//이미지 벡터에 넣기 위해 선언
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Image_list.store_code, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Image_list.store_path, 40, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Image_list.store_path, 256, NULL);
 				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
@@ -355,25 +355,25 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		sort_no = "good";
 	else
 		sort_no = "date";
-
+	
 
 	int i=0;
 	//의견 검색 쿼리
-	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_more.code, sort_no, in_more.comment_count);
+	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%s' desc OFFSET %d ROWS FETCH NEXT 5 ROWS ONLY;", in_more.code, sort_no, in_more.comment_count);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
-		while(SQLFetch(sqlstatementhandle))
+		while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 		{
 			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_more.opi[i].sns_id, 4, NULL);
 			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_more.opi[i].nick, 30, NULL);
 			SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_more.opi[i].comment, 400, NULL);
-			SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_more.opi[i].like_cnt, 4, NULL);
-			SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_more.opi[i].dislike_cnt, 4, NULL);
+			SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_more.opi[i].like_cnt, 4, NULL);
+			SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_more.opi[i].dislike_cnt, 4, NULL);
 			i++;
 		}
-
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+		
+		SQLCloseCursor(sqlstatementhandle);
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
@@ -383,7 +383,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
-		out_more.opi_cnt = i+1;
+		out_more.opi_cnt = i;
 	}
 	else
 	{
@@ -392,13 +392,13 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		return false;
 	}
 
-	sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_more.code);
+	sprintf_s(sql, "select AVG(cast(score as Float)) avg from SNS where store_code=%d", in_more.code);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_more.score, 4, NULL);
-
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+		SQLFetch(sqlstatementhandle);
+		SQLGetData(sqlstatementhandle, 1, SQL_C_FLOAT, &out_more.score, sizeof(float), NULL);
+		SQLCloseCursor(sqlstatementhandle);
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
@@ -488,8 +488,8 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 			out_write_opi.result = -1;
 			return false;
 		}
-
-		sprintf_s(sql, "select AVG(b.score) from SNS a, score b where a.sns_id=b.sns_id and a.store_code='%s'", in_write_opi.code);
+		
+		sprintf_s(sql, "select AVG(score) from SNS a where a.store_code=%d", in_write_opi.code);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{

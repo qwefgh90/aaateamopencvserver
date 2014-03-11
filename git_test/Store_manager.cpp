@@ -48,8 +48,8 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		in_more.sort = 1;
 		dbm->Query_opi_search(in_more, out_more);
 		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
-		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(OUT_Search), 
-			out_more.opi, out_more.opi_cnt*sizeof(OUT_Search));
+		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(out_more.opi[1]), 
+			out_more.opi, out_more.opi_cnt*sizeof(out_more.opi[1]));
 		out_search.opi_cnt = out_more.opi_cnt;
 		out_search.result = out_more.result;
 		out_search.score = out_more.score;
@@ -103,7 +103,14 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 		}
 	}
 	else
+	{
+		out_report.code = out_search.code;
+		memcpy_s(out_report.opi, out_search.opi_cnt*sizeof(out_search.opi[1]), 
+			out_search.opi, out_search.opi_cnt*sizeof(out_search.opi[1]));
+		out_report.opi_cnt = out_search.opi_cnt;
+		out_report.score = out_search.score;
 		out_report.result = 4;
+	}
 	//등록 되어있는 경우 등록되어있다고 알림
 	return false;
 }

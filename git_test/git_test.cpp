@@ -3,6 +3,11 @@
 #include "stdafx.h"
 #include "IOCPServer.h"	//서버 동작에 관련된 헤더
 #include "MenuAnalyzer.h"
+#include "DB_manager.h"
+#include "Member_manager.h"
+#include "Store_manager.h"
+#include "ImageManager.h"
+
 #include "resource.h"
 //Tray 
 #define WM_USER_SHELLICON WM_USER + 1	//기존 메세지 +1
@@ -18,6 +23,8 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext );
 DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext );
 DWORD WINAPI ProcessThread(LPVOID recv_buf);
 CIocpSrv *g_pSrv;	//서버 객체
+
+void initManager();
 
 //TEST MODULE CHANG
 #include "testcase.h"
@@ -54,6 +61,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		return nWSAError;
 	}
+	
+	initManager();
 	g_pSrv = CIocpSrv::CreateInstance(PORT,5);
 	if ( !g_pSrv->CreateLitenSocket() )			//Win소켓 -> bind() listen() 초기화
 		printf("bind(), listen()실패\n");
@@ -446,4 +455,10 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 	}
 
 	return 0;
+}
+void initManager(){
+	Member_manager::GetMember_manager();
+	DB_manager::GetDB_manager();
+	Store_manager::GetStore_manager();
+	ImageManager::getImageManager();
 }

@@ -27,10 +27,10 @@ void chang_test(){
 	strcpy(fname,"gs25.jpg");
 	printf ("파일이름 %s\n",fname);
 	getMemoryFromImage(fname,m);
-	strcpy(fname,"gs25_2.jpg");
+	strcpy(fname,"hello.jpg");
 	printf ("파일이름 %s\n",fname);
 	getMemoryFromImage(fname,mem1);
-	strcpy(fname,"gs25_3.jpg");
+	strcpy(fname,"immm3.jpg");
 	printf ("파일이름 %s\n",fname);
 	getMemoryFromImage(fname,mem2);
 	/////////////////////////////////////////////////////////////////////////
@@ -72,4 +72,3 @@ void chang_test(){
 	printf("프로세스 종료\n");
 	TerminateProcess(GetCurrentProcess(),0);
 }
-

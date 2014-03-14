@@ -200,7 +200,7 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			//실패
 			printf("상점 등록 실패\n");
 			err_code=out.code;	//에러코드 세팅
-			goto ERRORCODE;
+			//goto ERRORCODE;	//에러코드가 아닌 정보를 관련 전송해줌
 			
 		}
 
@@ -208,7 +208,7 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		packetFromReport(out_memory,out);
 
 
-		printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u",out.result,out.code,out.score,out.opi_cnt);
+		printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
 		for (int i = 0 ; i < out.opi_cnt ; i++)
 		{
 			printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);

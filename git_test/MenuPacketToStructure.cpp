@@ -244,7 +244,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	//유효성 체크 : 의견필드
 	if(*(char*)opinion==0 ||( *(char*)opinion == '\r' && *(char*)(opinion+1) == '\n'))
 	{
-		printf("%s '%c'\n","opinion error : input :",*(char*)opinion);
+		printf("%s '%c'\n","Opinion error : input value : 0x%x",(int)(*(char*)opinion));
 		goto END;
 	}
 

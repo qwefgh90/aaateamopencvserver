@@ -23,6 +23,7 @@
 #include <sqlext.h>
 #include <iostream>
 #include <vector>
+#include <hash_map>
 
 //We make required headers
 #include "protocol.h"
@@ -40,6 +41,7 @@
 void dumpbyte(u_char* buf,u_int len);
 
 using namespace std;
+using namespace stdext;
 extern int a;
 extern string spliter;
 extern string spliter_end;

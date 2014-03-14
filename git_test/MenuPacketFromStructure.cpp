@@ -660,7 +660,8 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 }
 bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 {
-		bool result = false;
+		
+	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
@@ -762,6 +763,24 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	}
 	memcpy(local_end_spliter,spliter_end.c_str(),4);
 
+	result = true;
+	return result;
+}
+
+
+bool MenuAnalyzer::packetFromError(__out Memory& out,__in u_char err_code)
+{
+	bool result = false;
+
+	int length = 5;//5byte
+	u_char code = err_code;//error code
+
+	out.buf = new u_char[length];
+	memcpy_s(out.buf,4,&length,4);
+	memcpy_s(out.buf+4,1,&code,1);
+
+	out.len=length;
+	
 	result = true;
 	return result;
 }

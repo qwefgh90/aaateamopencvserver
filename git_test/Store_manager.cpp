@@ -32,6 +32,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	//이미지벡터를 지역변수로 선언
 	vector<Imagelist> Imagevector;
 	dbm->Query_images(in_search, Imagevector);
+	
 	//이미지 벡터에 담긴 이미지 경로를 Fetch하여 읽은 매트릭스값을 새로 만든 매트릭스 벡터에 저장
 	//이미지 벡터, 이미지 리스트, 검색 구조제를 이미지매니저로 전달
 	if(im->matchingImage(imagelist, in_search.store.image, Imagevector))
@@ -92,8 +93,10 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	if(!Store_Search(in_search, out_search))
 	{
 		//키생성
+		//in_search.image.buf 에 파일경로로 치환하여 저장
 		if(im->storeKey(in_search.store.image,save_path))
 		{
+			//in_report.image.buf 에 파일경로로 치환하여 저장
 			//검색후 등록 안되있는 경우 이미지,sns 등록
 			if(dbm->Query_image_register(in_report, out_report))
 			{

@@ -240,6 +240,14 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 
 	u_char* opinion_score = ((u_char*)longitude)+4;
 	u_char* opinion = opinion_score+1 +2;//구분자 \r\n 포함
+	
+	//유효성 체크 : 의견필드
+	if(*(char*)opinion==0 ||( *(char*)opinion == '\r' && *(char*)(opinion+1) == '\n'))
+	{
+		printf("%s '%c'\n","opinion error : input :",*(char*)opinion);
+		goto END;
+	}
+
 
 	u_int opinion_size=0;
 	u_int image_size=0;

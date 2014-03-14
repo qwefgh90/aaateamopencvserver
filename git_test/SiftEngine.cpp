@@ -118,6 +118,7 @@ bool SiftEngine::loadKey(__in char* store_path,__out cv::Mat& mat)
 //return success code
 bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat mat, __in vector<Imagelist>& imageList)
 {
+	printf("SiftEngine-> vector size%d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
 	bool result = false;
 	for(int i = 0; i<(int)imageList.size(); i++)

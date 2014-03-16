@@ -30,7 +30,7 @@ typedef struct _Imagelist{
 //캐시->이미지모듈로 넘겨주는 구조체(상점코드,상점xml경로,xml버퍼) 
 typedef struct _ImageBufferElement{
 	u_int store_code;
-	Memory m;
+	cv::Mat key_xml;
 	//매트릭스 객체 추가
 }ImageBufferElement;
 

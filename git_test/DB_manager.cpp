@@ -221,8 +221,8 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
-
-			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+			
+			SQLCloseCursor(sqlstatementhandle);
 
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
@@ -336,6 +336,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 
 }
 
+//의견 검색 쿼리
 bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 {
 	SQLHANDLE* psqlconnectionhandle;
@@ -465,23 +466,30 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
+		char* sort_no = "good";
+		if(in_write_opi.sort == 1 )
+			sort_no = "good";
+		else
+			sort_no = "date";
+
+
 		int i=0;
-		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_write_opi.code, in_write_opi.sort, in_write_opi.comment_count);
+		//의견 검색 쿼리
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%s' desc OFFSET %d ROWS FETCH NEXT 5 ROWS ONLY;", in_write_opi.code, sort_no, in_write_opi.comment_count);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(sqlstatementhandle))
+			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_write_opi.opi[i].sns_id, 4, NULL);
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_write_opi.opi[i].nick, 30, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_write_opi.opi[i].comment, 400, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_write_opi.opi[i].like_cnt, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_write_opi.opi[i].dislike_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_write_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_write_opi.opi[i].dislike_cnt, 4, NULL);
 				i++;
 			}
-
 			SQLCloseCursor(sqlstatementhandle);
-			out_write_opi.opi_cnt = i+1;
+			out_write_opi.opi_cnt = i;
 		}
 		else
 		{
@@ -537,24 +545,30 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 	if(Sql_run(sql, sqlstatementhandle))
 	{
 		SQLCloseCursor(sqlstatementhandle);
-		int i=0;
+		char* sort_no = "good";
+		if(in_mod_opi.sort == 1 )
+			sort_no = "good";
+		else
+			sort_no = "date";
 
-		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_mod_opi.code, in_mod_opi.sort, in_mod_opi.comment_count);
+
+		int i=0;
+		//의견 검색 쿼리
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%s' desc OFFSET %d ROWS FETCH NEXT 5 ROWS ONLY;", in_mod_opi.code, sort_no, in_mod_opi.comment_count);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(sqlstatementhandle))
+			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_mod_opi.opi[i].sns_id, 4, NULL);
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_mod_opi.opi[i].nick, 30, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_mod_opi.opi[i].comment, 400, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_mod_opi.opi[i].like_cnt, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_mod_opi.opi[i].dislike_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_mod_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_mod_opi.opi[i].dislike_cnt, 4, NULL);
 				i++;
 			}
-
 			SQLCloseCursor(sqlstatementhandle);
-			out_mod_opi.opi_cnt = i+1;
+			out_mod_opi.opi_cnt = i;
 		}
 		else
 		{
@@ -612,24 +626,31 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 	if(Sql_run(sql, sqlstatementhandle))
 	{
 		SQLCloseCursor(sqlstatementhandle);
-		int i=0;
 
-		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%c' desc limit 5 offset '%c'", in_del_opi.code, in_del_opi.sort, in_del_opi.comment_count);
+		char* sort_no = "good";
+		if(in_del_opi.sort == 1 )
+			sort_no = "good";
+		else
+			sort_no = "date";
+
+
+		int i=0;
+		//의견 검색 쿼리
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%s' desc OFFSET %d ROWS FETCH NEXT 5 ROWS ONLY;", in_del_opi.code, sort_no, in_del_opi.comment_count);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			while(SQLFetch(sqlstatementhandle))
+			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_del_opi.opi[i].sns_id, 4, NULL);
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_del_opi.opi[i].nick, 30, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_del_opi.opi[i].comment, 400, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_del_opi.opi[i].like_cnt, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_INTEGER, &out_del_opi.opi[i].dislike_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_del_opi.opi[i].like_cnt, 4, NULL);
+				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_del_opi.opi[i].dislike_cnt, 4, NULL);
 				i++;
 			}
-
 			SQLCloseCursor(sqlstatementhandle);
-			out_del_opi.opi_cnt = i+1;
+			out_del_opi.opi_cnt = i;
 		}
 		else
 		{

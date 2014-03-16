@@ -102,13 +102,23 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 			}
 		}
 	}
-	else
+	else //이미지가 이미 등록 되었을 경우 의견을 등록시켜주기(미구현)
 	{
+		IN_Write_comment in_write_opi;
+		OUT_Write_comment out_write_opi;
+		in_write_opi.code = out_search.code;
+		strcpy_s(in_write_opi.comment,in_report.comment);
+		in_write_opi.comment_count = 0;
+		in_write_opi.comment_score = in_report.comment_score;
+		memcpy_s(in_write_opi.cookie,64,in_report.cookie,64);
+		in_write_opi.sort = 2;
+
+		dbm->Query_opi_register(in_write_opi, out_write_opi);
 		out_report.code = out_search.code;
-		memcpy_s(out_report.opi, out_search.opi_cnt*sizeof(out_search.opi[1]), 
-			out_search.opi, out_search.opi_cnt*sizeof(out_search.opi[1]));
-		out_report.opi_cnt = out_search.opi_cnt;
-		out_report.score = out_search.score;
+		memcpy_s(out_report.opi, out_write_opi.opi_cnt*sizeof(out_write_opi.opi[1]), 
+			out_write_opi.opi, out_write_opi.opi_cnt*sizeof(out_write_opi.opi[1]));
+		out_report.opi_cnt = out_write_opi.opi_cnt;
+		out_report.score = out_write_opi.score;
 		out_report.result = 4;
 	}
 	//등록 되어있는 경우 등록되어있다고 알림

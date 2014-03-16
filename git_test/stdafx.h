@@ -26,7 +26,6 @@
 #include <hash_map>
 
 //We make required headers
-#include "protocol.h"
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
@@ -35,6 +34,7 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
 
+#include "protocol.h"
 
 
 //Function

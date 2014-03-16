@@ -13,6 +13,12 @@ typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 #define ERRORRANGE 0.001
 const unsigned char filter[filter_no] = { COFFEE, FOOD, RESTAURANT, HAIR, BAKERY, ETC};
 
+//메모리구조체
+typedef struct _Memory{
+	u_char* buf;
+	u_int len;
+}Memory;
+
 //DB->이미지모듈로 넘겨주는 구조체(상점 코드, 상점 키값)
 typedef struct _Imagelist{
 	u_int store_code;
@@ -21,11 +27,14 @@ typedef struct _Imagelist{
 	//매트릭스 객체 추가
 }Imagelist;
 
-//메모리구조체
-typedef struct _Memory{
-	u_char* buf;
-	u_int len;
-}Memory;
+//캐시->이미지모듈로 넘겨주는 구조체(상점코드,상점xml경로,xml버퍼) 
+typedef struct _ImageBufferElement{
+	u_int store_code;
+	Memory m;
+	//매트릭스 객체 추가
+}ImageBufferElement;
+
+
 
 typedef struct _Store{
 	float latitude;	//위도

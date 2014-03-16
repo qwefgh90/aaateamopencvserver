@@ -17,6 +17,8 @@ Store_manager::Store_manager(void)
 {
 	dbm = DB_manager::GetDB_manager();
 	im = ImageManager::getImageManager();
+	mm = Member_manager::GetMember_manager();
+	se = SiftEngine::getSiftEngine();
 }
 
 
@@ -164,3 +166,20 @@ bool Store_manager::Store_like(IN_Like &in_like, OUT_Like &out_like)
 	//의견에 대한 좋아요
 	return false;
 }
+
+//bool Store_manager::Create_cache(float latitude , float longitude, u_char* cookie)
+//{
+	//캐시 구조체 선언
+	//캐시 구조체 벡터 선언
+	//쿠키를 이용해 아이디를 찾기
+	//char ID[21];
+	//strcpy_s(ID,mm->Check_Member(cookie));
+	//while문 필요
+	//{
+	//경도 위도를 통해 일정범위 안에있는 상점코드, 상점경로를 DB에서 받아오기
+	//dbm->Query_Image_cache(경도, 위도, 받아올 캐시 구조체 벡터)
+	//받아온 캐시 구조체 벡터 안에 있는 상점 경로를 이용해 xml파일을 불러오기
+	//se->loadKey(상점 경로, 캐시 구조체에 있는 매트릭스)
+	//캐시 구조체를 벡터에 저장
+	//}
+//}

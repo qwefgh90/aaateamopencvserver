@@ -3,6 +3,8 @@
 #include"stdafx.h"
 #include"DB_manager.h"
 #include "ImageManager.h"
+#include "Member_manager.h"
+#include "SiftEngine.h"
 
 class Store_manager
 {
@@ -11,6 +13,8 @@ private:
 	
 	DB_manager* dbm;
 	ImageManager* im;
+	Member_manager* mm;
+	SiftEngine* se;
 
 public:
 	Store_manager(void);
@@ -25,7 +29,8 @@ public:
 	bool Store_opi_delete(IN_Delete_comment &in_delete, OUT_Delete_comment &out_delete);
 	bool Store_opi_modify(IN_Modify_comment &in_modify, OUT_Modify_comment &out_modify);
 	bool Store_like(IN_Like &in_like, OUT_Like &out_like);
-
+	//위도 경도 쿠키
+	bool Create_cache(float latitude , float longitude, u_char* cookie);
 
 };
 

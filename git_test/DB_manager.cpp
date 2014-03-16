@@ -734,3 +734,9 @@ bool DB_manager::Sql_run(char* sql, SQLHANDLE &hStmt)
 	}
 	return true;
 }
+//경도, 위도, 받을 캐시 구조체
+//bool DB_manager::Query_Image_cache(float 경도, float 위도, 캐시 구조체)
+//{
+	//경도 위도를 이용해 일점 범위 안에있는 상점들의 코드, 경로명을 받아오기
+	//구조체에 저장
+//}

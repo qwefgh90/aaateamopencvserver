@@ -22,7 +22,7 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 	u_int in_len=in_memory.len;				//buffer length from mobile
 
 	u_char proto_type;		//proto_type
-
+	u_char err_code=1;		//erorr_code
 	proto_type = *((u_char*)(in_buf+4));
 	printf ("proto: %d\n",proto_type);
 	switch(proto_type)
@@ -173,7 +173,12 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		OUT_Report out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
-		packetToReport(in,in_memory);
+		if(!packetToReport(in,in_memory))
+		{
+			//파싱 실패
+			err_code=out.code=3;	//에러코드 세팅
+			goto ERRORCODE;
+		}
 		//1)쿠키체크/인증과정
 		if(member_manager->cookiechk(in.ID,in.cookie))
 		{
@@ -181,8 +186,8 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		}else
 		{
 			//인증 실패
-			out.code=5;
-			goto END;
+			err_code=out.code=5;	//에러코드 세팅
+			goto ERRORCODE;
 		}
 		
 		//2)상점등록
@@ -194,14 +199,16 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		{
 			//실패
 			printf("상점 등록 실패\n");
-			goto END;
+			err_code=out.code;	//에러코드 세팅
+			//goto ERRORCODE;	//에러코드가 아닌 정보를 관련 전송해줌
 			
 		}
-END:
 
 		//3)패킷조립
 		packetFromReport(out_memory,out);
-		printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u",out.result,out.code,out.score,out.opi_cnt);
+
+
+		printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
 		for (int i = 0 ; i < out.opi_cnt ; i++)
 		{
 			printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
@@ -211,7 +218,16 @@ END:
 		}
 
 	}
+	//정상 패킷
 	dwResult= TRUE;
+	return dwResult;
+
+ERRORCODE:
+	//에러 처리 패킷 생성
+	printf("------  SEND ERROR PACKET  -----\n");
+	packetFromError(out_memory,err_code);
+	dwResult= TRUE;
+
 	return dwResult;
 }
 
@@ -223,8 +239,8 @@ MenuAnalyzer* MenuAnalyzer::GetMenuAnalyzer()
 	}
 	return singleton;
 }
-
-vector<string> MenuAnalyzer::split(string str, string sep){
+/*
+vector<string> MenuAnalyzer::split_(string str, string sep){
     char* cstr = const_cast<char*>(str.c_str());
     char* current;
     vector<std::string> arr;
@@ -232,6 +248,42 @@ vector<string> MenuAnalyzer::split(string str, string sep){
     while(current != NULL){
         arr.push_back(current);
         current=strtok(NULL, sep.c_str());
+    }
+    return arr;
+}*/
+
+vector<string> MenuAnalyzer::split(string str, string sep){
+    char* cstr = const_cast<char*>(str.c_str());
+    char* current = cstr;
+	char* next=  NULL;
+    vector<std::string> arr;
+
+    next=strstr(cstr,sep.c_str());
+	if(next!=NULL)
+	{
+		int i = 0;
+		for (i=0 ; i<sep.length();i++)
+		{
+			next[i]=NULL;
+		}
+		next= next+sep.length();
+
+	}
+    arr.push_back(current);
+
+    while(next != NULL){
+		current = next; 
+		next=strstr(next,sep.c_str());
+		if(next!=NULL)
+		{
+			int i = 0;
+			for (i=0 ; i<sep.length();i++)
+			{
+				next[i]=NULL;
+			}
+			next= next+sep.length();
+		}
+        arr.push_back(current);   
     }
     return arr;
 }

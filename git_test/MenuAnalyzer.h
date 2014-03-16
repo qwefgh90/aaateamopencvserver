@@ -41,4 +41,5 @@ private:
 	bool packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in);
 	bool packetFromLike(__out Memory&, __in OUT_Like&);
 	bool packetFromReport(__out Memory& out, __in _OUT_Report& in);
+	bool packetFromError(__out Memory& out,__in u_char err_code);
 };

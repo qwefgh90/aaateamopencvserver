@@ -18,8 +18,18 @@ bool getMemoryFromImage(char* fname, Memory& m)
 	fclose(f);
 	return true;
 }
-
+hash_map<string,int> h;
 void chang_test(){
+	string s("안녕");
+	string s1("퍼킹");
+	h.insert(hash_map<string,int>::value_type(s,1234));
+	h.insert(hash_map<string,int>::value_type(s1,4321));
+
+	string s2("안녕");
+	hash_map<string,int>::iterator iter = h.find(s2); 
+	printf ("%d\n",iter->second);
+	
+
 	Memory m;
 	Memory mem1;
 	Memory mem2;
@@ -27,7 +37,7 @@ void chang_test(){
 	strcpy(fname,"gs25.jpg");
 	printf ("파일이름 %s\n",fname);
 	getMemoryFromImage(fname,m);
-	strcpy(fname,"hello.jpg");
+	strcpy(fname,"hello_error.jpg");
 	printf ("파일이름 %s\n",fname);
 	getMemoryFromImage(fname,mem1);
 	strcpy(fname,"immm3.jpg");

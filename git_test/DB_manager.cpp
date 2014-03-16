@@ -385,6 +385,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
 		out_more.opi_cnt = i;
+		printf("opi_cnt %d\n",i);
 	}
 	else
 	{

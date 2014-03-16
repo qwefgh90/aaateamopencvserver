@@ -118,6 +118,7 @@ bool SiftEngine::loadKey(__in char* store_path,__out cv::Mat& mat)
 //return success code
 bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat mat, __in vector<Imagelist>& imageList)
 {
+	printf("SiftEngine-> vector size%d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
 	bool result = false;
 	for(int i = 0; i<(int)imageList.size(); i++)
@@ -132,6 +133,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 
 		try{
 		// ¸ÅÄª ¼öÇà
+		printf("path : %s\n",img.store_path);
 		cv::FlannBasedMatcher matcher;               
 		std::vector<cv::DMatch> matches;
 
@@ -141,7 +143,6 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 
 //		printf("img1 feature size : %d\n",kps_db.size());
 //		printf("img2 feature size : %d\n",kps_db2.size());
-		printf("path : %s\n",img.store_path);
 		printf("matches size : %d\n",matches.size());
 		for(int i=0; i<matches.size(); i++) {
 			double dist = matches[i].distance;

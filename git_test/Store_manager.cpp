@@ -167,19 +167,23 @@ bool Store_manager::Store_like(IN_Like &in_like, OUT_Like &out_like)
 	return false;
 }
 
-//bool Store_manager::Create_cache(float latitude , float longitude, u_char* cookie)
-//{
-	//캐시 구조체 선언
+bool Store_manager::Create_cache(float latitude , float longitude, u_char* cookie)
+{
 	//캐시 구조체 벡터 선언
+	vector<ImageBufferElement> Ibev;
 	//쿠키를 이용해 아이디를 찾기
-	//char ID[21];
-	//strcpy_s(ID,mm->Check_Member(cookie));
-	//while문 필요
-	//{
+	char ID[21];
+	mm->cookiechk(ID, cookie);
+	//for문 필요
 	//경도 위도를 통해 일정범위 안에있는 상점코드, 상점경로를 DB에서 받아오기
 	//dbm->Query_Image_cache(경도, 위도, 받아올 캐시 구조체 벡터)
+	dbm->Query_Image_cache(latitude, longitude, Ibev);
 	//받아온 캐시 구조체 벡터 안에 있는 상점 경로를 이용해 xml파일을 불러오기
+	for(int i = 0; i<(int)Ibev.size(); i++)
+		se->loadKey(Ibev[i].store_path, Ibev[i].key_xml);
 	//se->loadKey(상점 경로, 캐시 구조체에 있는 매트릭스)
 	//캐시 구조체를 벡터에 저장
-	//}
-//}
+	return true;
+
+
+}

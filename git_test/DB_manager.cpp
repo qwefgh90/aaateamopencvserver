@@ -203,7 +203,6 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			strcat_s(buf,"'");
 			strcat_s(buf,",");
 		}
-		//?
 		*(strrchr(buf,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
 		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
@@ -735,8 +734,42 @@ bool DB_manager::Sql_run(char* sql, SQLHANDLE &hStmt)
 	return true;
 }
 //경도, 위도, 받을 캐시 구조체
-//bool DB_manager::Query_Image_cache(float 경도, float 위도, 캐시 구조체)
-//{
+bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<ImageBufferElement> Ibev)
+{
 	//경도 위도를 이용해 일점 범위 안에있는 상점들의 코드, 경로명을 받아오기
+	
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
+	sprintf_s(sql, "select store_code,store_key from STORE where gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
+		longitude - ERRORRANGE, longitude + ERRORRANGE,
+		latitude - ERRORRANGE, latitude + ERRORRANGE);
+
+	//캐시 구조체 선언
+	ImageBufferElement Ibe;
+
+	if(Sql_run(sql, sqlstatementhandle))
+	{
+		while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
+		{
+			//이미지 벡터에 넣기 위해 선언
+			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Ibe.store_code, 4, NULL);
+			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Ibe.store_path, 256, NULL);
+			//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
+			Ibev.push_back(Ibe);
+		}
+		return true;
+	}
 	//구조체에 저장
-//}
+	return false;
+}

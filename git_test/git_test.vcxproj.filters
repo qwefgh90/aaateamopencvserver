@@ -97,10 +97,10 @@
     <ClInclude Include="testcase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImageCacheFactory.h">
+    <ClInclude Include="ImageCache.h">
       <Filter>Source Files\Cache</Filter>
     </ClInclude>
-    <ClInclude Include="ImageCache.h">
+    <ClInclude Include="ImageCacheFactory.h">
       <Filter>Source Files\Cache</Filter>
     </ClInclude>
   </ItemGroup>
@@ -156,10 +156,10 @@
     <ClCompile Include="testcase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImageCacheFactory.cpp">
+    <ClCompile Include="ImageCache.cpp">
       <Filter>Source Files\Cache</Filter>
     </ClCompile>
-    <ClCompile Include="ImageCache.cpp">
+    <ClCompile Include="ImageCacheFactory.cpp">
       <Filter>Source Files\Cache</Filter>
     </ClCompile>
   </ItemGroup>

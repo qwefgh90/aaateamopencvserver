@@ -34,5 +34,5 @@ public:
 	bool Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comment &out_mod_opi);
 	bool Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comment &out_del_opi);
 	bool Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi);
-	bool Query_Image_cache(u_int store_code);
+	bool Query_Image_cache(float 경도, float 위도, vector<ImageBufferElement> Ibev);
 };

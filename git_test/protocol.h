@@ -156,6 +156,14 @@ typedef struct _IN_Report{
 	char comment[400+1];
 	u_char comment_score;
 }IN_Report;
+typedef struct _IN_Cache{
+	union{
+		char ID[20+1];
+		unsigned char cookie[64];
+	};
+	float latitude;	//위도
+	float longitude;//경도
+}IN_Cache;
 
 //Opinion mini structure is contained 
 typedef struct _OUT_Opinion{
@@ -222,7 +230,7 @@ typedef struct _OUT_Delete_comment{
 
 typedef struct _OUT_Like{
 	unsigned char result;
-}OUT_Like;
+}OUT_Like, OUT_Cache;
 
 typedef struct _OUT_Report{
 	unsigned char result;

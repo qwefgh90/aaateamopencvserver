@@ -14,7 +14,8 @@ public:
 	bool loadKey(char* store_path,cv::Mat& mat);	//Create matrix from a file
 	//return success code
 	bool matchingImageWithVector(__out Imagelist& image ,cv::Mat mat, __in vector<Imagelist>& imageList);			//Match Image and vector
-
+	bool matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList);			//Match Image and vector
+	//바디 추가하면 끝
 private:
 	static SiftEngine* singleton;
 

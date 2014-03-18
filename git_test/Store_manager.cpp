@@ -171,8 +171,6 @@ bool Store_manager::Store_like(IN_Like &in_like, OUT_Like &out_like)
 bool Store_manager::Create_cache(IN_Cache in_cache)
 {
 	ImageCache* Ic = NULL;
-	//쿠키를 이용해 아이디를 찾기
-	mm->cookiechk(in_cache.ID, in_cache.cookie);
 	//이미지 캐시 팩토리에서 캐시 생성
 	Icf->createImageCache(in_cache.ID);
 	//ID에 대한 이미지 캐시 받아오기

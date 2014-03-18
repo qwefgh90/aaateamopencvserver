@@ -419,6 +419,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 
 bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_comment &out_write_opi)
 {
+	char nick[41];
 	SQLHANDLE* psqlconnectionhandle;
 	SQLHANDLE  sqlstatementhandle;
 
@@ -431,10 +432,21 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
+	
+	//핸들을 닫은 후에 아이디를 이용해 닉네임 얻어오기
+
+	sprintf_s(sql,"select nick from member where ID='%s'",in_write_opi.ID);
+
+	if(Sql_run(sql, sqlstatementhandle))
+	{
+		SQLFetch(sqlstatementhandle);
+		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, nick, 40, NULL);
+		SQLCloseCursor(sqlstatementhandle);
+	}
 
 	int sns_id = 0;
 
-	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s)", in_write_opi.ID, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
+	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
 
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);

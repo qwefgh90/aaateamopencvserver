@@ -5,6 +5,8 @@
 #include "ImageManager.h"
 #include "Member_manager.h"
 #include "SiftEngine.h"
+#include "ImageCacheFactory.h"
+#include "ImageCache.h"
 
 class Store_manager
 {
@@ -15,6 +17,7 @@ private:
 	ImageManager* im;
 	Member_manager* mm;
 	SiftEngine* se;
+	ImageCacheFactory* Icf;
 
 public:
 	Store_manager(void);
@@ -30,7 +33,7 @@ public:
 	bool Store_opi_modify(IN_Modify_comment &in_modify, OUT_Modify_comment &out_modify);
 	bool Store_like(IN_Like &in_like, OUT_Like &out_like);
 	//위도 경도 쿠키
-	bool Create_cache(float latitude , float longitude, u_char* cookie);
+	bool Create_cache(IN_Cache in_cache);
 
 };
 

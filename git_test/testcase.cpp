@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "testcase.h"
+#include "Store_manager.h"
+#include "ImageManager.h"
+#include "ImageCacheFactory.h"
 bool getMemoryFromImage(char* fname, Memory& m)
 {
 	FILE* f=0;
@@ -17,6 +20,43 @@ bool getMemoryFromImage(char* fname, Memory& m)
 	fread(m.buf,size,1,f);
 	fclose(f);
 	return true;
+}
+void chang_cache(){
+	Store_manager* m = Store_manager::GetStore_manager();
+	ImageManager* im = ImageManager::getImageManager();
+	ImageCacheFactory* icf = ImageCacheFactory::GetImageCacheFactory();
+
+	IN_Cache c;
+	c.longitude = 126.634046;
+	c.latitude=37.37479;
+	strcpy(c.ID,"Master");
+	
+	m->Create_cache(c);
+	
+	string str(c.ID);
+	ImageCache* ic = icf->getImageCache(str);
+	
+
+	ImageBufferElement ib;
+	Memory mm;
+	FILE * f= fopen("1395124071imgfile.jpg","rb");
+	
+	if(f==NULL)
+	{
+		printf("fopen fail\n");
+		return;
+	}
+	fseek(f,0,SEEK_END);
+	int	size = ftell(f);
+	printf("파일 사이즈 : %d\n",size);
+	fseek(f,0,SEEK_SET);
+	mm.buf = new u_char[size];
+	mm.len = size;
+	fread(mm.buf,size,1,f);
+	fclose(f);
+
+	im->matchingImageWithCache(ib,mm,ic->imageVector);
+
 }
 hash_map<string,int> h;
 void chang_test(){

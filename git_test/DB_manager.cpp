@@ -446,11 +446,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 	int sns_id = 0;
 
-<<<<<<< HEAD
-	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s,%d)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
-=======
 	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values ('%s',%d,'%s',%d)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
->>>>>>> 0802645d9e937e3934cbc3756b0f3851cf580235
 
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);

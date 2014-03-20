@@ -446,7 +446,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 	int sns_id = 0;
 
-	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
+	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s,%d)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
 
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);
@@ -455,7 +455,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 		out_write_opi.result = -1;
 		return false;
 	}
-	sprintf_s(sql, "select top 1 sns_id from SNS order by desc");
+	sprintf_s(sql, "select top 1 sns_id from SNS order by sns_id desc");
 
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);

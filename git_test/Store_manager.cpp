@@ -172,17 +172,18 @@ bool Store_manager::Create_cache(IN_Cache in_cache)
 {
 	ImageCache* Ic = NULL;
 	//이미지 캐시 팩토리에서 캐시 생성
-	Icf->createImageCache(in_cache.ID);
+	string str(in_cache.ID);
+	Icf->createImageCache(str);
 	//ID에 대한 이미지 캐시 받아오기
-	Ic = Icf->getImageCache(in_cache.ID);
+	Ic = Icf->getImageCache(str);
 	//일단 초기화 시켜주기
 	Ic->clearImageVector();
 	//경도 위도를 통해 일정범위 안에있는 상점코드, 상점경로를 DB에서 받아오기
 	//dbm->Query_Image_cache(경도, 위도, 받아올 캐시 구조체 벡터)
 	//캐시에 경도 위도 를 이용해 벡터에 넣는다.
-	dbm->Query_Image_cache(in_cache.latitude, in_cache.longitude, Ic->imageVector);
+	dbm->Query_Image_cache(in_cache.longitude, in_cache.latitude, Ic->imageVector);
+	printf ("imageCacheVector size : %d\n",Ic->imageVector.size());
 
-	
 	//캐시 구조체 벡터 선언
 	//받아온 캐시 구조체 벡터 안에 있는 상점 경로를 이용해 xml파일을 불러오기
 	for(int i = 0; i<(int)Ic->imageVector.size(); i++)
@@ -190,6 +191,4 @@ bool Store_manager::Create_cache(IN_Cache in_cache)
 	//se->loadKey(상점 경로, 캐시 구조체에 있는 매트릭스)
 	//캐시 구조체를 벡터에 저장
 	return true;
-
-
 }

@@ -446,7 +446,11 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 	int sns_id = 0;
 
+<<<<<<< HEAD
 	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values (%s,%d,%s,%d)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
+=======
+	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values ('%s',%d,'%s',%d)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
+>>>>>>> 0802645d9e937e3934cbc3756b0f3851cf580235
 
 	if(Sql_run(sql, sqlstatementhandle))
 		SQLCloseCursor(sqlstatementhandle);
@@ -458,21 +462,18 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 	sprintf_s(sql, "select top 1 sns_id from SNS order by sns_id desc");
 
 	if(Sql_run(sql, sqlstatementhandle))
+	{
+		SQLFetch(sqlstatementhandle);
+		SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
 		SQLCloseCursor(sqlstatementhandle);
+	}
 	else 
 	{
 		out_write_opi.result = -1;
 		return false;
 	}
 
-	if(SQLFetch(sqlstatementhandle))
-	{
-		SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
-
-		SQLCloseCursor(sqlstatementhandle);
-	}
-
-	sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values (%s,%d)", in_write_opi.ID, sns_id);
+	sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values ('%s',%d)", in_write_opi.ID, sns_id);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
@@ -487,7 +488,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 		int i=0;
 		//의견 검색 쿼리
-		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%s' desc OFFSET %d ROWS FETCH NEXT 5 ROWS ONLY;", in_write_opi.code, sort_no, in_write_opi.comment_count);
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code=%d order by %s desc OFFSET %d ROWS FETCH NEXT 5 ROWS ONLY;", in_write_opi.code, sort_no, in_write_opi.comment_count);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
@@ -509,11 +510,13 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 			return false;
 		}
 		
-		sprintf_s(sql, "select AVG(score) from SNS a where a.store_code=%d", in_write_opi.code);
+		sprintf_s(sql, "select AVG(cast(score as Float)) from SNS a where a.store_code=%d", in_write_opi.code);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
-			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_write_opi.score, 4, NULL);
+			SQLFetch(sqlstatementhandle);
+
+			SQLGetData(sqlstatementhandle, 1, SQL_C_FLOAT, &out_write_opi.score, sizeof(float), NULL);
 
 			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
 
@@ -782,6 +785,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 		}
 		return true;
 	}
+
 	//구조체에 저장
 	return false;
 }

@@ -82,6 +82,8 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="CrossHelper.h" />
     <ClInclude Include="DB_manager.h" />
+    <ClInclude Include="ImageCache.h" />
+    <ClInclude Include="ImageCacheFactory.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexQ.h" />
     <ClInclude Include="IOCPServer.h" />
@@ -102,6 +104,8 @@
     <ClCompile Include="CrossHelper.cpp" />
     <ClCompile Include="DB_manager.cpp" />
     <ClCompile Include="git_test.cpp" />
+    <ClCompile Include="ImageCache.cpp" />
+    <ClCompile Include="ImageCacheFactory.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="IndexQ.cpp" />
     <ClCompile Include="IOCPServer.cpp" />

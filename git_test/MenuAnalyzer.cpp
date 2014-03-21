@@ -107,7 +107,37 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&out,0,sizeof(out));
 		packetToSearch(in,in_memory);
 		//1)쿠키검사
+		if(member_manager->cookiechk(in.ID,in.cookie))
+		{
+			printf("쿠키성공\n");
+			if(store_manager->Store_Search(in,out))
+			{
+				printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
+				for (int i = 0 ; i < out.opi_cnt ; i++)
+				{
+					printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
+				}
+				printf("검색성공\n");
+				if(packetFromSearch(out_memory,out))
+				{
+					printf("패킷생성성공\n");
+				}else{
+					err_code = out.result;
+					dwResult=false;
+					goto ERRORCODE;
+				}
+			}else{
+				printf("Error Store Search \n");
+				err_code = out.result;
+				dwResult=false;
+				goto ERRORCODE;
+			}
 
+		}else{
+			err_code = out.result;
+			dwResult=false;
+			goto ERRORCODE;
+		}
 		//2)상점검색
 
 		//3)패킷조립

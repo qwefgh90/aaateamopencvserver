@@ -60,7 +60,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		//결과값을 분석기에 반환
 		return true;
 	}
-
+	out_search.result = 2;
 	return false;
 }
 

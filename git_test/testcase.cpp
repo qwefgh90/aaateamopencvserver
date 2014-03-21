@@ -27,8 +27,8 @@ void chang_cache(){
 	ImageCacheFactory* icf = ImageCacheFactory::GetImageCacheFactory();
 
 	IN_Cache c;
-	c.longitude = 126.634046;
-	c.latitude=37.37479;
+	c.longitude = 126.633911;
+	c.latitude = 37.375160;
 	strcpy(c.ID,"Master");
 	
 	m->Create_cache(c);
@@ -39,7 +39,7 @@ void chang_cache(){
 
 	ImageBufferElement ib;
 	Memory mm;
-	FILE * f= fopen("1395124071imgfile.jpg","rb");
+	FILE * f= fopen("1395371428imgfile.jpg","rb");
 	
 	if(f==NULL)
 	{
@@ -55,6 +55,7 @@ void chang_cache(){
 	fread(mm.buf,size,1,f);
 	fclose(f);
 
+	printf("hh\n");
 	im->matchingImageWithCache(ib,mm,ic->imageVector);
 
 }

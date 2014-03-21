@@ -67,7 +67,7 @@ bool DB_manager::Query_signup(IN_Signup in_signup)
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+		SQLCloseCursor(sqlstatementhandle);
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
@@ -112,8 +112,8 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, db_login.ID, 20, NULL);
 		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 20, NULL);
 		SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, nick, 40, NULL);
-
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+		
+		SQLCloseCursor(sqlstatementhandle);
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
@@ -149,8 +149,8 @@ bool DB_manager::Query_leave(char* ID)
 	sprintf_s(sql, "delete from member where ID='%s'", ID);
 	if(Sql_run(sql, sqlstatementhandle))
 	{	
-
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+		
+		SQLCloseCursor(sqlstatementhandle);
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);

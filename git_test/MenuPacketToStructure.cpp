@@ -136,7 +136,7 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 	u_char* sort = ((u_char*)code)+4;
 
 	u_char* opi_score = ((u_char*)sort)+1;
-	u_char* opinion = opi_score+1;
+	u_char* opinion = opi_score+3;
 	string str;
 	vector<string> v;
 

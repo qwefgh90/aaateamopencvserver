@@ -182,24 +182,31 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&out,0,sizeof(out));
 		packetToWriteComment(in,in_memory);
 		// false== f¸â¹ö ¸Å´ÏÀú ÄíÅ° ÀÎÁõ
-		if(store_manager->Store_opi_write(in,out))
+		if(member_manager->cookiechk(in.ID,in.cookie))
 		{
-			if(packetFromWriteComment(out_memory,out))
+			if(store_manager->Store_opi_write(in,out))
 			{
-				printf("result: %d @@@\nscore%f\nopi_cnt : %u\n",out.result,out.score,out.opi_cnt);
-				for (int i = 0 ; i < out.opi_cnt ; i++)
+				if(packetFromWriteComment(out_memory,out))
 				{
-					printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
-				}	
-			}
-			else{
-				err_code = out.result = 3;
+					printf("result: %d @@@\nscore%f\nopi_cnt : %u\n",out.result,out.score,out.opi_cnt);
+					for (int i = 0 ; i < out.opi_cnt ; i++)
+					{
+						printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
+					}	
+				}
+				else{
+					err_code = out.result = 3;
+					goto ERRORCODE;
+				}
+			}else
+			{
+				err_code = out.result;
 				goto ERRORCODE;
 			}
 		}else
 		{
-			err_code = out.result;
-			goto ERRORCODE;
+				err_code = out.result;
+				goto ERRORCODE;
 		}
 		
 		// true==

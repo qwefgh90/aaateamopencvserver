@@ -140,10 +140,10 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 	string str;
 	vector<string> v;
 
-	memcpy(out.cookie,cookie,64);
-	memcpy(&(out.code),code,4);
-	memcpy(&(out.sort),sort,4);
-	memcpy(&(out.comment_score),opi_score,4);
+	memcpy_s(out.cookie,64,cookie,64);
+	memcpy_s(&(out.code),4,code,4);
+	memcpy(&(out.sort),sort,1);
+	memcpy(&(out.comment_score),opi_score,1);
 
 	//char* pointer of comment
 	char* end_ptr =NULL;

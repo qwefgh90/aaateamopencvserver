@@ -6,7 +6,7 @@ class SiftEngine
 public:
 	static SiftEngine* getSiftEngine();
 
-	static const u_int MIN_MATCH = 20;
+	static const u_int MIN_MATCH = 15;
 
 	//return Matrix
 	bool createKey(__in Memory& memory,cv::Mat& m);	//Create a key for a Image

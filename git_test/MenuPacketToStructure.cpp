@@ -4,10 +4,17 @@
 bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 {
 	bool result = false;
-	
+	vector<string> v;
+	/*
+	if(memory.len<=5)
+	{
+		printf("%s","[ERR_packetToLogin] : INVALID ID/PASSWD PACKET\n");
+		goto END;
+	}
+	*/
 	string str((char*)(memory.buf+5));
 	//1)i d / p a s s w d
-	vector<string> v= split(str,spliter);
+	v= split(str,spliter);
 	
 	//2)final spliter
 	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
@@ -18,10 +25,15 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 		end_ptr[2]=NULL;
 		end_ptr[3]=NULL;
 	}
-
+	if(v.size()<=2)
+	{
+		printf("%s","[ERR_packetToLogin] : INVALID ID/PASSWD DATA\n");
+		goto END;
+	}
 	strcpy(out.ID,v[0].c_str());
 	strcpy(out.pass,v[1].c_str());
 	result = true;
+	END:
 	return result;
 }
 bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )

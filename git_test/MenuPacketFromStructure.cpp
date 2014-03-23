@@ -6,6 +6,7 @@ const u_int LOGIN_PACKET_SIZE_BUT_NICKNAME = (4)+(1)+(64)+4;
 bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 {
 	bool result = false;
+	__try{
 	u_int bytelen=0;
 	u_char result_login=0;
 	u_char *cookie=NULL;
@@ -33,7 +34,11 @@ bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 
 	memcpy(nick_ptr,nick,nick_len);
 	memcpy(((u_char*)nick_ptr)+nick_len,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
-
+	}__except(GetExceptionCode())
+	{
+		printf("%s","[ERR_packetFromLogin] ERROR HANDLER\n");
+		
+	}
 	result = true;
 	return result;
 }

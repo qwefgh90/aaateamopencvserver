@@ -15,9 +15,9 @@ MenuAnalyzer::~MenuAnalyzer(void){
 //@data received from mobile 
 //return
 //@buffer and size to send to mobile
-DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
+bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 {
-	DWORD dwResult=FALSE;
+	bool dwResult=FALSE;
 	u_char* in_buf=in_memory.buf;			//buffer from mobile(complete buffer available releasing)
 	u_int in_len=in_memory.len;				//buffer length from mobile
 
@@ -34,20 +34,38 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
 		//1)패킷에서 구조체 생성
-		this->packetToLogin(in,in_memory);
-		printf("id: %s@@@@\n",in.ID);
-		printf("passwd: %s@@@@\n",in.pass);
-		//2)생성된 구조체를 각 모듈에 전달
-		member_manager->Login(in,out);
-		printf("here is ! \n");
-		dumpbyte(out.cookie,64);
-		printf("nick: %s@@@\n",out.nick);
-		printf("result: %d@@@\n",out.result);
-		
-		//3)생성된 구조체에서 패킷을 생성
-		this->packetFromLogin(out_memory,out);
-		//4)모바일에서 패킷 전송
-		
+
+		if(this->packetToLogin(in,in_memory))
+		{
+			printf("id: %s@@@@\n",in.ID);
+			printf("passwd: %s@@@@\n",in.pass);
+			//2)생성된 구조체를 각 모듈에 전달
+
+			if(member_manager->Login(in,out))
+			{
+				printf("here is ! \n");
+				dumpbyte(out.cookie,64);
+				printf("nick: %s@@@\n",out.nick);
+				printf("result: %d@@@\n",out.result);
+
+				//3)생성된 구조체에서 패킷을 생성
+				if(this->packetFromLogin(out_memory,out))
+				{
+					err_code = out.result=3;
+					goto ERRORCODE;
+				}
+				//4)모바일에서 패킷 전송
+			}else
+			{
+				err_code = out.result;
+				goto ERRORCODE;
+			}
+		}else
+		{
+			err_code = out.result=3;
+			goto ERRORCODE;
+		}
+
 		break;
 		}
 	case SIGNUP:
@@ -162,6 +180,25 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		memset(&out,0,sizeof(out));
 		packetToWriteComment(in,in_memory);
 		// false== f멤버 매니저 쿠키 인증
+		if(store_manager->Store_opi_write(in,out))
+		{
+			if(packetFromWriteComment(out_memory,out))
+			{
+				printf("result: %d @@@\nscore%f\nopi_cnt : %u\n",out.result,out.score,out.opi_cnt);
+				for (int i = 0 ; i < out.opi_cnt ; i++)
+				{
+					printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
+				}	
+			}
+			else{
+				err_code = out.result = 3;
+				goto ERRORCODE;
+			}
+		}else
+		{
+			err_code = out.result;
+			goto ERRORCODE;
+		}
 		
 		// true==
 		// store_manager()
@@ -249,14 +286,14 @@ DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 
 	}
 	//정상 패킷
-	dwResult= TRUE;
+	dwResult= true;
 	return dwResult;
 
 ERRORCODE:
 	//에러 처리 패킷 생성
 	printf("------  SEND ERROR PACKET  -----\n");
 	packetFromError(out_memory,err_code);
-	dwResult= TRUE;
+	dwResult= true;
 
 	return dwResult;
 }

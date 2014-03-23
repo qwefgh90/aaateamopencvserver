@@ -10,7 +10,7 @@ public:
 	MenuAnalyzer(void);
 	~MenuAnalyzer(void);
 	static MenuAnalyzer* GetMenuAnalyzer();
-	DWORD MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory);
+	bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory);
 	vector<string> MenuAnalyzer::split(string str, string sep);
 	Member_manager* member_manager;
 	Store_manager* store_manager;

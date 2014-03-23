@@ -34,7 +34,7 @@ bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 
 		memcpy(nick_ptr,nick,nick_len);
 		memcpy(((u_char*)nick_ptr)+nick_len,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
-	}__except(GetExceptionCode())
+	}__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 		printf("%s","[ERR_packetFromLogin] ERROR HANDLER\n");
 
@@ -66,7 +66,7 @@ bool MenuAnalyzer::packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 		(*result_login_ptr) = result_login;
 		memcpy_s(end_spliter,4,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
 	}
-	__except(GetExceptionCode())
+	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 		printf("%s","[ERR_packetFromSignup] ERROR HANDLER\n");
 		goto END;

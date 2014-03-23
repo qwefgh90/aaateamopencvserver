@@ -7,33 +7,33 @@ bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 {
 	bool result = false;
 	__try{
-	u_int bytelen=0;
-	u_char result_login=0;
-	u_char *cookie=NULL;
-	u_char *nick=NULL;
-	u_int nick_len = strlen(in.nick);
+		u_int bytelen=0;
+		u_char result_login=0;
+		u_char *cookie=NULL;
+		u_char *nick=NULL;
+		u_int nick_len = strlen(in.nick);
 
-	bytelen = LOGIN_PACKET_SIZE_BUT_NICKNAME + nick_len;
-	result_login = in.result;
-	cookie=in.cookie;
-	nick=(u_char*)in.nick;
+		bytelen = LOGIN_PACKET_SIZE_BUT_NICKNAME + nick_len;
+		result_login = in.result;
+		cookie=in.cookie;
+		nick=(u_char*)in.nick;
 	
-	out.len = bytelen;
-	out.buf = new u_char[bytelen];
-	u_int* bytelen_ptr=(u_int*)out.buf;
-	u_char* result_login_ptr=((u_char*)bytelen_ptr)+4 ;
-	u_char* cookie_ptr=result_login_ptr+1 ;
-	u_char* nick_ptr=cookie_ptr+64 ;
-	//copy struct to new buf
+		out.len = bytelen;
+		out.buf = new u_char[bytelen];
+		u_int* bytelen_ptr=(u_int*)out.buf;
+		u_char* result_login_ptr=((u_char*)bytelen_ptr)+4 ;
+		u_char* cookie_ptr=result_login_ptr+1 ;
+		u_char* nick_ptr=cookie_ptr+64 ;
+		//copy struct to new buf
 	
-	(*bytelen_ptr) = bytelen;
+		(*bytelen_ptr) = bytelen;
 
-	(*result_login_ptr) = result_login;
+		(*result_login_ptr) = result_login;
 
-	memcpy(cookie_ptr,cookie,64);
+		memcpy(cookie_ptr,cookie,64);
 
-	memcpy(nick_ptr,nick,nick_len);
-	memcpy(((u_char*)nick_ptr)+nick_len,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
+		memcpy(nick_ptr,nick,nick_len);
+		memcpy(((u_char*)nick_ptr)+nick_len,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
 	}__except(GetExceptionCode())
 	{
 		printf("%s","[ERR_packetFromLogin] ERROR HANDLER\n");

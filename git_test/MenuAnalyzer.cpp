@@ -40,7 +40,6 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			printf("id: %s@@@@\n",in.ID);
 			printf("passwd: %s@@@@\n",in.pass);
 			//2)생성된 구조체를 각 모듈에 전달
-
 			if(member_manager->Login(in,out))
 			{
 				printf("here is ! \n");
@@ -51,6 +50,9 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//3)생성된 구조체에서 패킷을 생성
 				if(this->packetFromLogin(out_memory,out))
 				{
+				
+				}
+				else{
 					err_code = out.result=3;
 					goto ERRORCODE;
 				}

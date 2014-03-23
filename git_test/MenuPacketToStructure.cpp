@@ -25,7 +25,7 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 		end_ptr[2]=NULL;
 		end_ptr[3]=NULL;
 	}
-	if(v.size()<=2)
+	if(v.size()<2)
 	{
 		printf("%s","[ERR_packetToLogin] : INVALID ID/PASSWD DATA\n");
 		goto END;

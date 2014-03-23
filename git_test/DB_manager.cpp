@@ -776,14 +776,16 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
-		while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
-		{
-			//이미지 벡터에 넣기 위해 선언
-			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Ibe.store_code, 4, NULL);
-			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Ibe.store_path, 256, NULL);
-			//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
-			Ibev.push_back(Ibe);
-		}
+		//캐시 
+		for(int i= 0; i <10 ; i++)
+			if(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
+			{
+				//이미지 벡터에 넣기 위해 선언
+				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Ibe.store_code, 4, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Ibe.store_path, 256, NULL);
+				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
+				Ibev.push_back(Ibe);
+			}
 		return true;
 	}
 

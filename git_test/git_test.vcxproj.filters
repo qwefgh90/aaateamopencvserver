@@ -126,9 +126,6 @@
     <ClCompile Include="MenuPacketFromStructure.cpp">
       <Filter>Source Files\Analyzer</Filter>
     </ClCompile>
-    <ClCompile Include="DB_manager.cpp">
-      <Filter>Source Files\DataBase</Filter>
-    </ClCompile>
     <ClCompile Include="Member_manager.cpp">
       <Filter>Source Files\Member</Filter>
     </ClCompile>
@@ -161,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="ImageCacheFactory.cpp">
       <Filter>Source Files\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="DB_manager.cpp">
+      <Filter>Source Files\DataBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

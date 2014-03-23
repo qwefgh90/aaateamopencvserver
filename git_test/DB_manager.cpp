@@ -187,7 +187,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 	//필터를 담기위한 버퍼생성
 	char buf[50];
 	//필터의 번호를 저장하기 위한 버퍼
-	char c[2];
+	char c[5];
 	//버퍼 초기화
 	memset(buf,0,50);
 	//이미지 리스트를 생성

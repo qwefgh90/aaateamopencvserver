@@ -305,6 +305,11 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 				SQLCloseCursor(sqlstatementhandle);
 			}
 
+			sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values ('%s',%d)", in_report.ID, sns_id);
+
+			if(Sql_run(sql, sqlstatementhandle))
+				SQLCloseCursor(sqlstatementhandle);
+
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
 
@@ -674,8 +679,8 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 		if(Sql_run(sql, sqlstatementhandle))
 		{
 			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_del_opi.score, 4, NULL);
-
-			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+			
+			SQLCloseCursor(sqlstatementhandle);
 
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
@@ -718,7 +723,7 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
-		SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
+		SQLCloseCursor(sqlstatementhandle);
 
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);

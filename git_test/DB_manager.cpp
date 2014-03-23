@@ -305,11 +305,6 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 				SQLCloseCursor(sqlstatementhandle);
 			}
 
-			sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values ('%s',%d)", in_report.ID, sns_id);
-
-			if(Sql_run(sql, sqlstatementhandle))
-				SQLCloseCursor(sqlstatementhandle);
-
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
 
@@ -454,29 +449,6 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 	sprintf_s(sql, "insert into SNS(nick, store_code, sns_con,score) values ('%s',%d,'%s',%d)", nick, in_write_opi.code, in_write_opi.comment,in_write_opi.comment_score);
 
 	if(Sql_run(sql, sqlstatementhandle))
-		SQLCloseCursor(sqlstatementhandle);
-	else 
-	{
-		out_write_opi.result = -1;
-		return false;
-	}
-	sprintf_s(sql, "select top 1 sns_id from SNS order by sns_id desc");
-
-	if(Sql_run(sql, sqlstatementhandle))
-	{
-		SQLFetch(sqlstatementhandle);
-		SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &sns_id, 4, NULL);
-		SQLCloseCursor(sqlstatementhandle);
-	}
-	else 
-	{
-		out_write_opi.result = -1;
-		return false;
-	}
-
-	sprintf_s(sql, "insert into member_sns(mem_ID,sns_id) values ('%s',%d)", in_write_opi.ID, sns_id);
-
-	if(Sql_run(sql, sqlstatementhandle))
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
@@ -529,6 +501,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
+			out_write_opi.result = 1;
 			return true;
 		}
 		out_write_opi.result = -1;
@@ -719,7 +692,7 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
 
-	sprintf_s(sql, "update member_sns set val='%c' where mem_ID='%s' and sns_id='%s'", in_like_opi.like, in_like_opi.ID, in_like_opi.num);
+	sprintf_s(sql, "insert into member_sns values('%s',%d,%d)", in_like_opi.ID, in_like_opi.num, in_like_opi.like);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
@@ -734,6 +707,11 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
 		out_like_opi.result = 1;
+		return true;
+	}
+	else
+	{
+		out_like_opi.result = 6;
 		return true;
 	}
 	out_like_opi.result = 0;

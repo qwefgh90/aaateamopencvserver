@@ -2,7 +2,7 @@
 #include "MenuAnalyzer.h"
 
 const u_int LOGIN_PACKET_SIZE_BUT_NICKNAME = (4)+(1)+(64)+4;
-	//len + result + cookie + (exclude nick)
+//len + result + cookie + (exclude nick)
 bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 {
 	bool result = false;
@@ -17,7 +17,7 @@ bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 		result_login = in.result;
 		cookie=in.cookie;
 		nick=(u_char*)in.nick;
-	
+
 		out.len = bytelen;
 		out.buf = new u_char[bytelen];
 		u_int* bytelen_ptr=(u_int*)out.buf;
@@ -25,7 +25,7 @@ bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 		u_char* cookie_ptr=result_login_ptr+1 ;
 		u_char* nick_ptr=cookie_ptr+64 ;
 		//copy struct to new buf
-	
+
 		(*bytelen_ptr) = bytelen;
 
 		(*result_login_ptr) = result_login;
@@ -37,13 +37,13 @@ bool MenuAnalyzer::packetFromLogin(__out Memory& out, __in OUT_Login& in)
 	}__except(GetExceptionCode())
 	{
 		printf("%s","[ERR_packetFromLogin] ERROR HANDLER\n");
-		
+
 	}
 	result = true;
 	return result;
 }
 const u_int SIGNUP_PACKET_SIZE = (4)+(1)+4;
-	//len + result
+//len + result
 bool MenuAnalyzer::packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 {
 	bool result = false;
@@ -53,14 +53,14 @@ bool MenuAnalyzer::packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 
 		bytelen = SIGNUP_PACKET_SIZE;
 		result_login = in.result;
-	
+
 		out.len = bytelen;
 		out.buf = new u_char[bytelen];
 
 		u_int* bytelen_ptr=(u_int*)out.buf;
 		u_char* result_login_ptr=((u_char*)bytelen_ptr)+4;
 		u_char* end_spliter = result_login_ptr+1;
-	
+
 		(*bytelen_ptr) = bytelen;
 
 		(*result_login_ptr) = result_login;
@@ -72,7 +72,7 @@ bool MenuAnalyzer::packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 		goto END;
 	}
 	result = true;
-	END:
+END:
 	return result;
 }
 bool MenuAnalyzer::packetFromLogout(__out Memory& out, __in OUT_Logout& in)
@@ -84,19 +84,19 @@ bool MenuAnalyzer::packetFromLogout(__out Memory& out, __in OUT_Logout& in)
 
 	bytelen = SIGNUP_PACKET_SIZE;
 	result_login = in.result;
-	
+
 	out.len = bytelen;
 	out.buf = new u_char[bytelen];
 
 	u_int* bytelen_ptr=(u_int*)out.buf;
 	u_char* result_login_ptr=((u_char*)bytelen_ptr)+4;
 	u_char* end_spliter = result_login_ptr+1;
-	
+
 	(*bytelen_ptr) = bytelen;
 
 	(*result_login_ptr) = result_login;
 	memcpy(end_spliter,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
-	
+
 	result = true;
 	return result;
 }
@@ -109,24 +109,24 @@ bool MenuAnalyzer::packetFromLeave(__out Memory& out, __in OUT_Leave& in)
 
 	bytelen = SIGNUP_PACKET_SIZE;
 	result_login = in.result;
-	
+
 	out.len = bytelen;
 	out.buf = new u_char[bytelen];
 
 	u_int* bytelen_ptr=(u_int*)out.buf;
 	u_char* result_login_ptr=((u_char*)bytelen_ptr)+4;
 	u_char* end_spliter = result_login_ptr+1;
-	
+
 	(*bytelen_ptr) = bytelen;
 
 	(*result_login_ptr) = result_login;
 	memcpy(end_spliter,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
-	
+
 	result = true;
 	return result;
 }
 const u_int SEARCH_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+(4)+2;
-												//마지막 \r\n하나빼고..
+//마지막 \r\n하나빼고..
 bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 {
 	bool result = false;
@@ -135,7 +135,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size
-	
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int content_size[10]={0,};
@@ -194,7 +194,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	char* dislike_ptr[10]={0,};
 
 	unsigned char* local_end_spliter = NULL;
-	
+
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
@@ -235,16 +235,16 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	return result;
 }
 const u_int MORE_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+2;
-												//마지막 \r\n하나빼고..
+//마지막 \r\n하나빼고..
 bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 {
-		bool result = false;
+	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = MORE_PACKET_SIZE_BUT_CONTENT ;	//init byte size
-	
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int content_size[10]={0,};
@@ -301,7 +301,7 @@ bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 	char* dislike_ptr[10]={0,};
 
 	unsigned char* local_end_spliter = NULL;
-	
+
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
@@ -343,13 +343,13 @@ bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 }
 bool MenuAnalyzer::packetFromWriteComment(__out Memory& out, __in OUT_Write_comment& in)
 {
-			bool result = false;
+	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = MORE_PACKET_SIZE_BUT_CONTENT ;	//init byte size
-	
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int content_size[10]={0,};
@@ -406,7 +406,7 @@ bool MenuAnalyzer::packetFromWriteComment(__out Memory& out, __in OUT_Write_comm
 	char* dislike_ptr[10]={0,};
 
 	unsigned char* local_end_spliter = NULL;
-	
+
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
@@ -448,13 +448,13 @@ bool MenuAnalyzer::packetFromWriteComment(__out Memory& out, __in OUT_Write_comm
 }
 bool MenuAnalyzer::packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in)
 {
-			bool result = false;
+	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = MORE_PACKET_SIZE_BUT_CONTENT ;	//init byte size
-	
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int content_size[10]={0,};
@@ -511,7 +511,7 @@ bool MenuAnalyzer::packetFromModifyComment(__out Memory& out, __in OUT_Modify_co
 	char* dislike_ptr[10]={0,};
 
 	unsigned char* local_end_spliter = NULL;
-	
+
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
@@ -553,13 +553,13 @@ bool MenuAnalyzer::packetFromModifyComment(__out Memory& out, __in OUT_Modify_co
 }
 bool MenuAnalyzer::packetFromDeleteComment(__out Memory& out, __in OUT_Delete_comment& in)
 {
-			bool result = false;
+	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = MORE_PACKET_SIZE_BUT_CONTENT ;	//init byte size
-	
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int content_size[10]={0,};
@@ -616,7 +616,7 @@ bool MenuAnalyzer::packetFromDeleteComment(__out Memory& out, __in OUT_Delete_co
 	char* dislike_ptr[10]={0,};
 
 	unsigned char* local_end_spliter = NULL;
-	
+
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
@@ -657,7 +657,7 @@ bool MenuAnalyzer::packetFromDeleteComment(__out Memory& out, __in OUT_Delete_co
 	return result;
 }
 const u_int LIKE_PACKET_SIZE = 5;
-												//마지막 \r\n하나빼고..
+//마지막 \r\n하나빼고..
 bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 {
 	bool result = false;
@@ -671,14 +671,14 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 }
 bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 {
-		
+
 	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size //마지막 \r\n 제외
-	
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int nic_size[10]={0,};
@@ -737,7 +737,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	char* dislike_ptr[10]={0,};
 
 	unsigned char* local_end_spliter = NULL;
-	
+
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
@@ -791,7 +791,7 @@ bool MenuAnalyzer::packetFromError(__out Memory& out,__in u_char err_code)
 	memcpy_s(out.buf+4,1,&code,1);
 
 	out.len=length;
-	
+
 	result = true;
 	return result;
 }

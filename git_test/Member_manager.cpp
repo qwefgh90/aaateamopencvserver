@@ -89,7 +89,7 @@ bool Member_manager::Logout(IN_Logout& in_logout, OUT_Logout &out_logout)
 			return true;
 		}
 	}
-	out_logout.result = 0;
+	out_logout.result = 5;
 	return false;
 }
 
@@ -130,7 +130,7 @@ bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 	}
 	cout<<"회원탈퇴에서 오류가 발생하였습니다."<<endl;
 
-	out_leave.result = -1;
+	out_leave.result = 5;
 	return false;
 }
 

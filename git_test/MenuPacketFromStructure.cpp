@@ -47,26 +47,32 @@ const u_int SIGNUP_PACKET_SIZE = (4)+(1)+4;
 bool MenuAnalyzer::packetFromSignup(__out Memory& out, __in OUT_Signup& in)
 {
 	bool result = false;
+	__try{
+		u_int bytelen=0;
+		u_char result_login=0;
 
-	u_int bytelen=0;
-	u_char result_login=0;
-
-	bytelen = SIGNUP_PACKET_SIZE;
-	result_login = in.result;
+		bytelen = SIGNUP_PACKET_SIZE;
+		result_login = in.result;
 	
-	out.len = bytelen;
-	out.buf = new u_char[bytelen];
+		out.len = bytelen;
+		out.buf = new u_char[bytelen];
 
-	u_int* bytelen_ptr=(u_int*)out.buf;
-	u_char* result_login_ptr=((u_char*)bytelen_ptr)+4;
-	u_char* end_spliter = result_login_ptr+1;
+		u_int* bytelen_ptr=(u_int*)out.buf;
+		u_char* result_login_ptr=((u_char*)bytelen_ptr)+4;
+		u_char* end_spliter = result_login_ptr+1;
 	
-	(*bytelen_ptr) = bytelen;
+		(*bytelen_ptr) = bytelen;
 
-	(*result_login_ptr) = result_login;
-	memcpy(end_spliter,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
-	
+		(*result_login_ptr) = result_login;
+		memcpy_s(end_spliter,4,spliter_end.c_str(),4);	//\r\n\r\n spliter_end
+	}
+	__except(GetExceptionCode())
+	{
+		printf("%s","[ERR_packetFromSignup] ERROR HANDLER\n");
+		goto END;
+	}
 	result = true;
+	END:
 	return result;
 }
 bool MenuAnalyzer::packetFromLogout(__out Memory& out, __in OUT_Logout& in)

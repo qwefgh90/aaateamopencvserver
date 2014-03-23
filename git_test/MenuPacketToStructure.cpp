@@ -53,11 +53,18 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 		end_ptr[2]=NULL;
 		end_ptr[3]=NULL;
 	}
-	
+
+	if(v.size()<3)
+	{
+		printf("%s","[ERR_packetToSignup] packet data error\n");
+		goto END;
+	}
+
 	strcpy(out.ID,v[0].c_str());
 	strcpy(out.pass,v[1].c_str());
 	strcpy(out.nick,v[2].c_str());
 	result = true;
+	END:
 	return result;
 }
 bool MenuAnalyzer::packetToLogout(__out IN_Logout& out, __in Memory& memory )

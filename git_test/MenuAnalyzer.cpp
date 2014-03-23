@@ -42,7 +42,6 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			//2)생성된 구조체를 각 모듈에 전달
 			if(member_manager->Login(in,out))
 			{
-				printf("here is ! \n");
 				dumpbyte(out.cookie,64);
 				printf("nick: %s@@@\n",out.nick);
 				printf("result: %d@@@\n",out.result);
@@ -50,7 +49,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//3)생성된 구조체에서 패킷을 생성
 				if(this->packetFromLogin(out_memory,out))
 				{
-				
+					
 				}
 				else{
 					err_code = out.result=3;
@@ -76,17 +75,35 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		OUT_Signup out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
-		packetToSignup(in,in_memory);
-		printf("id: %s@@@@\n",in.ID);
-		printf("passwd: %s@@@@\n",in.pass);
-		printf("nick: %s@@@@\n",in.nick);
+		if(packetToSignup(in,in_memory))
+		{
+			printf("id: %s@@@@\n",in.ID);
+			printf("passwd: %s@@@@\n",in.pass);
+			printf("nick: %s@@@@\n",in.nick);
 
-		//2)생성된 구조체를 각 모듈에 전달
-		member_manager->Signup(in,out);
-		printf("result: %d@@@@\n",out.result);
-		//3)생성된 구조체에서 패킷을 생성
-		this->packetFromSignup(out_memory,out);
-		//4)모바일에서 패킷 전송
+			//2)생성된 구조체를 각 모듈에 전달
+			if(member_manager->Signup(in,out))
+			{
+				printf("result: %d@@@@\n",out.result);
+				//3)생성된 구조체에서 패킷을 생성
+				if(this->packetFromSignup(out_memory,out))
+				{
+
+				}else
+				{
+					err_code = out.result=3;
+					goto ERRORCODE;
+				}
+				//4)모바일에서 패킷 전송
+			}else{
+				err_code = out.result;
+				goto ERRORCODE;
+			}
+		}else
+		{
+			err_code = out.result=3;
+			goto ERRORCODE;
+		}
 		break;
 		}
 	case LOGOUT://로그아웃
@@ -95,13 +112,29 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 		OUT_Logout out;	//로그인 응답 구조체
 		memset(&in,0,sizeof(in));
 		memset(&out,0,sizeof(out));
-		packetToLogout(in,in_memory);
+		if(packetToLogout(in,in_memory))
+		{
+			if(member_manager->Logout(in,out))
+			{
+				printf("result: %d@@@\n",out.result);
 
-		member_manager->Logout(in,out);
-		
-		printf("result: %d@@@\n",out.result);
-		
-		this->packetFromLogout(out_memory,out);
+				if(this->packetFromLogout(out_memory,out))
+				{
+
+				}else
+				{
+					err_code = out.result=3;
+					goto ERRORCODE;
+				}
+			}else{
+				err_code = out.result;
+				goto ERRORCODE;
+			}
+		}else
+		{
+			err_code = out.result=3;
+			goto ERRORCODE;
+		}
 		break;
 		}
 	case LEAVE://회원탈퇴

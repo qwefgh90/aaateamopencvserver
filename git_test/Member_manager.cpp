@@ -128,7 +128,7 @@ bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 			}
 		}
 	}
-	cout<<"오류가 발생하였습니다."<<endl;
+	cout<<"회원탈퇴에서 오류가 발생하였습니다."<<endl;
 
 	out_leave.result = -1;
 	return false;

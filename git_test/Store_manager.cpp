@@ -34,7 +34,13 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	Imagelist imagelist;
 	//이미지벡터를 지역변수로 선언
 	vector<Imagelist> Imagevector;
-	dbm->Query_images(in_search, Imagevector);
+	
+	if(!dbm->Query_images(in_search, Imagevector))
+	{
+		cout<<"이미지 벡터 등록에 실패하였습니다."<<endl;
+		out_search.result = 2;
+		return false;
+	}
 	//이미지 벡터에 담긴 이미지 경로를 Fetch하여 읽은 매트릭스값을 새로 만든 매트릭스 벡터에 저장
 	//이미지 벡터, 이미지 리스트, 검색 구조제를 이미지매니저로 전달
 	if(im->matchingImage(imagelist, in_search.store.image, Imagevector))

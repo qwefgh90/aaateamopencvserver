@@ -39,6 +39,7 @@
 
 //Function
 void dumpbyte(u_char* buf,u_int len);
+int Compare( const void *arg1, const void *arg2 );
 
 using namespace std;
 using namespace stdext;

@@ -773,6 +773,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 				Ibev.push_back(Ibe);
 			}
 		//현재 위치와 상점 위치간의 거리 비교 후 qsort이용
+			//Compare함수는 stdafx.cpp에있음
 			qsort(&Ibev, (int)Ibev.size(), sizeof(Ibev), Compare);
 			for(int i= 10; i <50 ; i++)
 				Ibev.erase(Ibev.begin()+i);

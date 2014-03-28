@@ -22,16 +22,16 @@ bool getMemoryFromImage(char* fname, Memory& m)
 	return true;
 }
 void chang_cache(){
-	/*char* a =NULL;
+	char* a =NULL;
 	__try{
-		//*a = 'a';
+		*a = 'a';
 	}
 	__except( EXCEPTION_EXECUTE_HANDLER )
 	{
 		printf( "ERROR Found. \n");
 	}
 	return;
-*/
+
 
 	Store_manager* m = Store_manager::GetStore_manager();
 	ImageManager* im = ImageManager::getImageManager();
@@ -44,11 +44,11 @@ void chang_cache(){
 
 	m->Create_cache(c);
 	
-	string str(c.ID);
-	ImageCache* ic = icf->getImageCache(str);
+	//string str(c.ID);
+	ImageCache* ic ;//= icf->getImageCache(str);
 	
 
-	ImageBufferElement ib;
+	//ImageBufferElement ib;
 	Memory mm;
 	FILE * f= fopen("1395371428imgfile.jpg","rb");
 	
@@ -67,7 +67,7 @@ void chang_cache(){
 	fclose(f);
 
 	printf("hh\n");
-	im->matchingImageWithCache(ib,mm,ic->imageVector);
+	//im->matchingImageWithCache(ib,mm,ic->imageVector);
 
 }
 hash_map<string,int> h;

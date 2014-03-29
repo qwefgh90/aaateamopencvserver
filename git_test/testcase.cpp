@@ -22,6 +22,7 @@ bool getMemoryFromImage(char* fname, Memory& m)
 	return true;
 }
 void chang_cache(){
+<<<<<<< HEAD
 	char* a =NULL;
 	__try{
 		*a = 'a';
@@ -31,6 +32,17 @@ void chang_cache(){
 		printf( "ERROR Found. \n");
 	}
 	return;
+=======
+	//char* a =NULL;
+	//__try{
+	//	*a = 'a';
+	//}
+	//__except( EXCEPTION_EXECUTE_HANDLER )
+	//{
+	//	printf( "ERROR Found. \n");
+	//}
+	//return;
+>>>>>>> ec607a0a0f5f803ed27f2bac764486ec81e1c0d7
 
 
 	Store_manager* m = Store_manager::GetStore_manager();
@@ -38,8 +50,8 @@ void chang_cache(){
 	ImageCacheFactory* icf = ImageCacheFactory::GetImageCacheFactory();
 
 	IN_Cache c;
-	c.longitude = 126.633911;
-	c.latitude = 37.375160;
+	c.longitude = 126.633537;
+	c.latitude = 37.374126;
 	strcpy(c.ID,"Master");
 
 	m->Create_cache(c);

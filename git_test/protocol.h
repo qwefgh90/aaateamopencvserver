@@ -34,6 +34,7 @@ typedef struct _ImageBufferElement{
 	cv::Mat key_xml;
 	float latitude;	//위도
 	float longitude;//경도
+	float distance;//거리
 	//매트릭스 객체 추가
 }ImageBufferElement;
 

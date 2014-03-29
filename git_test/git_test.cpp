@@ -32,8 +32,8 @@ void initManager();
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//chang_test();
-	chang_cache();
-	return 0;
+	//chang_cache();
+	//return 0;
 
 	MSG msg;
 	HWND consolHwnd;			//Console Handle
@@ -437,8 +437,8 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 		//IO버퍼 포함	//소켓 포함
 		pSD = pSrv->UpdataCompletionPort(sdAccept,ClientAddr);	
 
-		if (pSD == NULL)
-			break;
+		if (pSD == NULL)	//사용할 수 있는 소켓이 없을경우
+			continue;
 
 		if ( !pSrv->GetStatus() )
 			break;

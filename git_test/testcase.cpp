@@ -22,7 +22,6 @@ bool getMemoryFromImage(char* fname, Memory& m)
 	return true;
 }
 void chang_cache(){
-<<<<<<< HEAD
 	char* a =NULL;
 	__try{
 		*a = 'a';
@@ -32,7 +31,6 @@ void chang_cache(){
 		printf( "ERROR Found. \n");
 	}
 	return;
-=======
 	//char* a =NULL;
 	//__try{
 	//	*a = 'a';
@@ -42,7 +40,6 @@ void chang_cache(){
 	//	printf( "ERROR Found. \n");
 	//}
 	//return;
->>>>>>> ec607a0a0f5f803ed27f2bac764486ec81e1c0d7
 
 
 	Store_manager* m = Store_manager::GetStore_manager();

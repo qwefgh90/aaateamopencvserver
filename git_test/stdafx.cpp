@@ -16,3 +16,9 @@ void dumpbyte(u_char* buf,u_int len)
 		printf("0x%x ",buf[i]);
 	printf("\n");
 }
+
+//길이를 비교하는 함수
+int Compare( const void *arg1, const void *arg2 )
+{
+	return sqrt(pow((*(ImageBufferElement**)arg1)->longitude,2) + pow((*(ImageBufferElement**)arg2)->latitude,2));
+}

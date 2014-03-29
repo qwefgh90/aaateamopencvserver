@@ -32,6 +32,8 @@ typedef struct _ImageBufferElement{
 	u_int store_code;
 	char store_path[256];
 	cv::Mat key_xml;
+	float latitude;	//위도
+	float longitude;//경도
 	//매트릭스 객체 추가
 }ImageBufferElement;
 

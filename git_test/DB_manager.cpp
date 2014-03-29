@@ -187,7 +187,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 	//필터를 담기위한 버퍼생성
 	char buf[50];
 	//필터의 번호를 저장하기 위한 버퍼
-	char c[2];
+	char c[5];
 	//버퍼 초기화
 	memset(buf,0,50);
 	//이미지 리스트를 생성
@@ -745,28 +745,44 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
 
-	sprintf_s(sql, "select store_code,store_key from STORE where gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
+	sprintf_s(sql, "select store_code,store_key,gps_Latitude,gps_Longitude from STORE where gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
 		longitude - ERRORRANGE, longitude + ERRORRANGE,
 		latitude - ERRORRANGE, latitude + ERRORRANGE);
 
 	//캐시 구조체 선언
 	ImageBufferElement Ibe;
-
+	//위도,경도 거리 임시저장할 변수 선언
+	float t_long;
+	float t_lati;
 	if(Sql_run(sql, sqlstatementhandle))
 	{
-		//캐시 
-		for(int i= 0; i <10 ; i++)
+		//검색된거 일단 저장
+		for(int i= 0; i <50 ; i++)
 			if(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				//이미지 벡터에 넣기 위해 선언
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &Ibe.store_code, 4, NULL);
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Ibe.store_path, 256, NULL);
-				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
+				SQLGetData(sqlstatementhandle, 3, SQL_C_FLOAT, &Ibe.latitude, 4, NULL);
+				SQLGetData(sqlstatementhandle, 4, SQL_C_FLOAT, &Ibe.longitude, 4, NULL);
+				//받아온 위도,경도를 현재 위치와 빼서 거리를 저장
+				t_long =  abs(longitude - Ibe.longitude);
+				t_lati =  abs(latitude - Ibe.latitude);
+				Ibe.longitude = t_long*40000/360*cos(Ibe.latitude);
+				Ibe.latitude = t_lati*40000/360;
 				Ibev.push_back(Ibe);
 			}
+		//현재 위치와 상점 위치간의 거리 비교 후 qsort이용
+			//Compare함수는 stdafx.cpp에있음
+			qsort(&Ibev, (int)Ibev.size(), sizeof(Ibev), Compare);
+			for(int i= 10; i <50 ; i++)
+				Ibev.erase(Ibev.begin()+i);
 		return true;
 	}
-
 	//구조체에 저장
 	return false;
 }
+//경도 위도를 km로 환산 하여 구해야함
+
+//db에서 받아온 좌표를 벡터에 임시 저장하고 현재 좌표 - db에서 받아온 좌표를 절대값으로 설정한 후
+//벡터를 sort해서 오름차순으로 정렬한다. 그 후 최대 10개를 이미지 벡터에 저장

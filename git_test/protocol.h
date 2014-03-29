@@ -2,7 +2,7 @@
 
 #define filter_no 6
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
-	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,REPORT=11}PROTO_TYPE;
+	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,REPORT=11,CACHE=12}PROTO_TYPE;
 
 #define COFFEE 0x01
 #define FOOD 0x02
@@ -233,7 +233,7 @@ typedef struct _OUT_Delete_comment{
 
 typedef struct _OUT_Like{
 	unsigned char result;
-}OUT_Like, OUT_Cache;
+}OUT_Like, OUT_Cache;	//캐시 출력구조체도 포함
 
 typedef struct _OUT_Report{
 	unsigned char result;
@@ -242,4 +242,3 @@ typedef struct _OUT_Report{
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Report;
-

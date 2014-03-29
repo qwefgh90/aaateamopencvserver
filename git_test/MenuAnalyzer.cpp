@@ -441,7 +441,39 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 
 			break;
 		}
+	case CACHE:
+		{
+			IN_Cache in;	//로그인 요청 구조체
+			OUT_Cache out;	//로그인 응답 구조체
+			memset(&in,0,sizeof(in));
+			memset(&out,0,sizeof(out));
+			if(packetToCache(in,in_memory))
+			{
+				if(member_manager->cookiechk(in.ID,in.cookie))
+				{
+					if(store_manager->Create_cache(in))
+					{
+						if(packetFromCache(out_memory,out))
+						{
 
+						}else{
+							err_code = out.result = 3;
+							goto ERRORCODE;
+						}
+					}else{
+						err_code = out.result;
+						goto ERRORCODE;
+					}
+				}else{
+					err_code = out.result=5;
+					goto ERRORCODE;
+				}
+			}else{
+				err_code = out.result=3;
+				goto ERRORCODE;
+			}
+			break;
+		}
 	}
 	//정상 패킷
 	dwResult= true;

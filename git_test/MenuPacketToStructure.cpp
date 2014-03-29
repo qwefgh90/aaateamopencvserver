@@ -312,3 +312,22 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	return result;
 
 }
+bool MenuAnalyzer::packetToCache(__out IN_Cache& out, __in Memory& memory){
+	bool result = false;
+	u_char* cookie = memory.buf+5;
+	float* latitude = (float*)(cookie + 64);
+	float* longitude = (float*)((u_char*)latitude + 4);
+	
+	if(memcpy_s(out.cookie,64*sizeof(u_char),cookie,64*sizeof(u_char)))
+	{
+		printf_s("s\n","memcpy_s() is failed");
+		goto END;
+	}else{}
+	//¼º°ø
+	out.latitude = *latitude;
+	out.longitude = * longitude;
+
+	result = true;
+	END:
+	return result;
+}

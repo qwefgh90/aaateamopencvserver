@@ -656,7 +656,7 @@ bool MenuAnalyzer::packetFromDeleteComment(__out Memory& out, __in OUT_Delete_co
 	result = true;
 	return result;
 }
-const u_int LIKE_PACKET_SIZE = 5;
+const u_int LIKE_PACKET_SIZE = 5 + 4;
 //마지막 \r\n하나빼고..
 bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 {
@@ -664,8 +664,12 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 	out.buf = new u_char[LIKE_PACKET_SIZE];
 	out.len = LIKE_PACKET_SIZE;
 	u_int* size = (u_int*)(out.buf);
-	*size = LIKE_PACKET_SIZE;
-	*((u_char*)(size+4)) = in.result;
+	*size = LIKE_PACKET_SIZE;		//2)패킷길이
+	*((u_char*)(size+4)) = in.result;//3)결과복사
+	
+	char* end_sp = (char*)(out.buf+5);
+	memcpy_s(end_sp,4,spliter_end.c_str(),4);	//마지막 구분자
+
 	result = true;
 	return result;
 }
@@ -791,6 +795,22 @@ bool MenuAnalyzer::packetFromError(__out Memory& out,__in u_char err_code)
 	memcpy_s(out.buf+4,1,&code,1);
 
 	out.len=length;
+
+	result = true;
+	return result;
+}
+
+bool MenuAnalyzer::packetFromCache(__out Memory& out,__in OUT_Cache& in)
+{
+	bool result = false;
+	out.buf = new u_char[LIKE_PACKET_SIZE];
+	out.len = LIKE_PACKET_SIZE;
+	u_int* size = (u_int*)(out.buf);
+	*size = LIKE_PACKET_SIZE;		//패킷 길이
+
+	*((u_char*)(size+4)) = in.result;	//응답 결과
+	char* end_sp = (char*)(out.buf+5);
+	memcpy_s(end_sp,4,spliter_end.c_str(),4);//마지막 구분자
 
 	result = true;
 	return result;

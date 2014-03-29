@@ -32,8 +32,8 @@ void initManager();
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//chang_test();
-	//chang_cache();
-	//return 0;
+	chang_cache();
+	return 0;
 
 	MSG msg;
 	HWND consolHwnd;			//Console Handle

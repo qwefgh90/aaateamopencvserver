@@ -770,13 +770,14 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 				t_lati =  abs(latitude - Ibe.latitude);
 				Ibe.longitude = t_long*40000/360*cos(Ibe.latitude);
 				Ibe.latitude = t_lati*40000/360;
+				Ibe.distance = sqrt(pow(Ibe.longitude,2) + pow(Ibe.latitude,2));
 				Ibev.push_back(Ibe);
 			}
 		//현재 위치와 상점 위치간의 거리 비교 후 qsort이용
 			//Compare함수는 stdafx.cpp에있음
-			qsort(&Ibev, (int)Ibev.size(), sizeof(Ibev), Compare);
-			for(int i= 10; i <50 ; i++)
-				Ibev.erase(Ibev.begin()+i);
+			sort(Ibev.begin(), Ibev.end(), Compare);
+			for(int i= 0; ((int)Ibev.size() > 10) && (i < 40); i++)
+				Ibev.erase(Ibev.begin()+10);
 		return true;
 	}
 	//구조체에 저장

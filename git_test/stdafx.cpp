@@ -18,7 +18,7 @@ void dumpbyte(u_char* buf,u_int len)
 }
 
 //길이를 비교하는 함수
-int Compare( const void *arg1, const void *arg2 )
+bool Compare( ImageBufferElement &arg1, ImageBufferElement &arg2 )
 {
-	return sqrt(pow((*(ImageBufferElement**)arg1)->longitude,2) + pow((*(ImageBufferElement**)arg2)->latitude,2));
+	return arg1.distance < arg2.distance;
 }

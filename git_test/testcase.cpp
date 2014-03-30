@@ -3,6 +3,7 @@
 #include "Store_manager.h"
 #include "ImageManager.h"
 #include "ImageCacheFactory.h"
+#include "Member_manager.h"
 bool getMemoryFromImage(char* fname, Memory& m)
 {
 	FILE* f=0;
@@ -20,6 +21,16 @@ bool getMemoryFromImage(char* fname, Memory& m)
 	fread(m.buf,size,1,f);
 	fclose(f);
 	return true;
+}
+void chang_cookie(){
+	DB_manager::GetDB_manager();
+	Member_manager* m=  Member_manager::GetMember_manager();
+	IN_Login in;OUT_Login out;
+	strcpy_s(in.ID,21,"Master");
+	strcpy_s(in.pass,21,"123123");
+	m->Login(in,out);
+	while(1);
+	
 }
 void chang_cache(){
 	char* a =NULL;

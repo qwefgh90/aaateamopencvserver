@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include <time.h>
 #define filter_no 6
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,REPORT=11,CACHE=12}PROTO_TYPE;
@@ -50,7 +50,7 @@ typedef struct _Store{
 //¸â¹ö¼¼¼Ç
 typedef struct _MemberSession{
 	char ID[20+1];
-	u_int valid_stamp;
+	time_t valid_stamp;
 	unsigned char cookie[64];
 }MemberSession;
 

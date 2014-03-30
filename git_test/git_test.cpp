@@ -33,6 +33,8 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	//chang_test();
 	//chang_cache();
+	//initManager();
+	//chang_cookie();
 	//return 0;
 
 	MSG msg;

@@ -18,12 +18,13 @@ Member_manager::Member_manager(void)
 {
 	//DB_manager 생성(DB연결)
 	dbm = DB_manager::GetDB_manager();
+	startChecking();
 }
 
 //멤버 매니저 소멸자
 Member_manager::~Member_manager(void)
 {
-
+	stopChecking();
 }
 
 //로그인 함수
@@ -53,6 +54,7 @@ bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 			sha512((unsigned char*)to_hash,strlen(to_hash),out_login.cookie,0);
 			memcpy_s(mem.cookie,64,out_login.cookie,64);
 			memcpy_s(mem.ID,strlen(mem.ID)+1,db_login.ID,strlen(db_login.ID)+1);
+			time(&mem.valid_stamp);				//쿠키 유효시간 발급
 			
 			hash.push_back(mem);
 
@@ -141,8 +143,60 @@ bool Member_manager::cookiechk(char* ID, u_char* in_cookie)
 		if(memcmp(in_cookie, hash[i].cookie,64) == 0)
 		{
 			strcpy_s(ID,21,hash[i].ID);
+			time(&hash[i].valid_stamp);	//쿠키 유효기간 갱신
 			return true;
 		}
 	}
 	return false;
+}
+bool Member_manager::startChecking()
+{
+	bool result;
+	HANDLE hThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)CheckWorkerWrap,this,0,NULL);
+	if(hThread!=NULL)
+	{
+		CloseHandle(hThread);
+	}else{
+		printf_s("%s\n","Cookie startCookieChecking is failed");
+		
+		goto END;
+
+	}
+	bState = true;	//Thread Switch
+	result =true;
+	END:
+	return result;
+}
+bool Member_manager::stopChecking()
+{
+	bool result;
+	bState = false;	//Thread Switch
+
+	result =TRUE;
+	END:
+	return result;
+}
+DWORD WINAPI Member_manager::CheckWorkerWrap(void * object)
+{
+	return ((Member_manager*)object)->CheckWorker();
+}
+
+bool Member_manager::CheckWorker()
+{
+	time_t current_t=0;
+	while(bState)
+	{
+		time(&current_t);
+		for (int i =0 ; i< hash.size() ; i++){
+			if(current_t-hash[i].valid_stamp > TIME_OUT_COOKIE_SECOND)
+			{
+				printf_s("%s Cookie timeout// Erase Cookie\n",hash[i].ID);
+				hash.erase(hash.begin()+i);
+				i--;
+			}
+		}
+
+		Sleep(TIME_OUT);
+	}
+	return true;
 }

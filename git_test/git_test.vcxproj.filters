@@ -19,9 +19,6 @@
     <Filter Include="Source Files\DataBase">
       <UniqueIdentifier>{8761d53e-0fe3-4b82-ab87-e7bec7ddd340}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Resources">
-      <UniqueIdentifier>{d26f3922-bd6e-4ab5-a8f4-2dc2f694161f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Member">
       <UniqueIdentifier>{7777d014-cec8-4d76-af2e-adb890dc500e}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Source Files\Cache">
       <UniqueIdentifier>{ab2a7b3d-1d36-4541-b913-773893e4a428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network\Resources">
+      <UniqueIdentifier>{d26f3922-bd6e-4ab5-a8f4-2dc2f694161f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +152,6 @@
     <ClCompile Include="CrossHelper.cpp">
       <Filter>DB Pool</Filter>
     </ClCompile>
-    <ClCompile Include="testcase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ImageCache.cpp">
       <Filter>Source Files\Cache</Filter>
     </ClCompile>
@@ -163,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="DB_manager.cpp">
       <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="testcase.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

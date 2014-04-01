@@ -24,7 +24,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 	u_char proto_type;		//proto_type
 	u_char err_code=1;		//erorr_code
 	proto_type = *((u_char*)(in_buf+4));
-	printf ("proto: %d\n",proto_type);
+	printf ("proto num: %d\n",proto_type);
 	switch(proto_type)
 	{
 	case LOGIN:

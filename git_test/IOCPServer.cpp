@@ -137,18 +137,27 @@ void CIocpSrv::ReleaseData(PSOCKET_DATA pSD)
 	memset(pSD->IOData[1].Buf,0,sizeof(pSD->IOData[1].Buf));
 	if(pSD->IOData[0].completeBuf!=NULL)	//버퍼 자원해제
 	{
+
 		u_char* temp=pSD->IOData[0].completeBuf;
+		printf("free addr0 : %x\n",temp);
 		delete[] temp;
 		pSD->IOData[0].completeBuf=NULL;
 	}
 	if(pSD->IOData[1].completeBuf!=NULL)
 	{
+		__try{
 		u_char* temp=pSD->IOData[1].completeBuf;
+		printf("free addr1 : %x\n",temp);
 		delete[] temp;
 		pSD->IOData[1].completeBuf=NULL;
 
 		pSD->IOData[1].wsabuf.buf=NULL;
 		pSD->IOData[1].wsabuf.len=0;
+		}__except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			printf("%s","[ERR_ReleaseData] ERROR HANDLER\n");
+
+		}
 	}
 	
 }

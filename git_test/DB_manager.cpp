@@ -26,7 +26,7 @@ DB_manager::DB_manager(void)
 	/*Create a pool that will have 3 cached connections and will swell upto a 
 	total of 5 connections. Returns the number of cached connections or -1 on error
 	*/
-	if(sqlsvrpool->CreatePool(3, 5)<=0){
+	if(sqlsvrpool->CreatePool(10, 100)<=0){
 		cout<<"Error creating database pool\n";
 		cout<<sqlsvrpool->GetLastSystemError()<<endl;	//If it's asystem error
 	}
@@ -778,6 +778,16 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 			sort(Ibev.begin(), Ibev.end(), Compare);
 			for(int i= 0; ((int)Ibev.size() > 10) && (i < 40); i++)
 				Ibev.erase(Ibev.begin()+10);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
 		return true;
 	}
 	//구조체에 저장

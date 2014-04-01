@@ -26,7 +26,7 @@ DB_manager::DB_manager(void)
 	/*Create a pool that will have 3 cached connections and will swell upto a 
 	total of 5 connections. Returns the number of cached connections or -1 on error
 	*/
-	if(sqlsvrpool->CreatePool(3, 5)<=0){
+	if(sqlsvrpool->CreatePool(10, 100)<=0){
 		cout<<"Error creating database pool\n";
 		cout<<sqlsvrpool->GetLastSystemError()<<endl;	//If it's asystem error
 	}
@@ -69,12 +69,10 @@ bool DB_manager::Query_signup(IN_Signup in_signup)
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
-		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 
 		/*Release the connection back into the pool*/
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
-
+		
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
 		return true;
@@ -115,12 +113,10 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 		
 		SQLCloseCursor(sqlstatementhandle);
 
-		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 
 		/*Release the connection back into the pool*/
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
-
+		
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
 		return true;
@@ -152,8 +148,6 @@ bool DB_manager::Query_leave(char* ID)
 		
 		SQLCloseCursor(sqlstatementhandle);
 
-		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 
 		/*Release the connection back into the pool*/
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -203,6 +197,11 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			strcat_s(buf,"'");
 			strcat_s(buf,",");
 		}
+		if(*buf==0)
+		{
+			printf("filter value is not exist\n");
+			return false;
+		}
 		*(strrchr(buf,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
 		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
@@ -223,8 +222,6 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			
 			SQLCloseCursor(sqlstatementhandle);
 
-			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -305,8 +302,6 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 				SQLCloseCursor(sqlstatementhandle);
 			}
 
-			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -375,9 +370,6 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		
 		SQLCloseCursor(sqlstatementhandle);
 
-		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
-
 		/*Release the connection back into the pool*/
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
@@ -401,12 +393,10 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		SQLGetData(sqlstatementhandle, 1, SQL_C_FLOAT, &out_more.score, sizeof(float), NULL);
 		SQLCloseCursor(sqlstatementhandle);
 
-		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 
 		/*Release the connection back into the pool*/
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
-
+		
 		/*Dispaly the pool information*/
 		cout<<(*sqlsvrpool);
 		out_more.result = 1;
@@ -493,8 +483,6 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
 
-			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -573,8 +561,6 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 
 			SQLFreeHandle(SQL_HANDLE_STMT, sqlstatementhandle );
 
-			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -655,8 +641,6 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 			
 			SQLCloseCursor(sqlstatementhandle);
 
-			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -698,8 +682,6 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
-		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 
 		/*Release the connection back into the pool*/
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
@@ -778,6 +760,14 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 			sort(Ibev.begin(), Ibev.end(), Compare);
 			for(int i= 0; ((int)Ibev.size() > 10) && (i < 40); i++)
 				Ibev.erase(Ibev.begin()+10);
+
+
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+			/*Dispaly the pool information*/
+			cout<<(*sqlsvrpool);
+
 		return true;
 	}
 	//구조체에 저장

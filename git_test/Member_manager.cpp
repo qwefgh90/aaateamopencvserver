@@ -18,13 +18,13 @@ Member_manager::Member_manager(void)
 {
 	//DB_manager 생성(DB연결)
 	dbm = DB_manager::GetDB_manager();
-	startChecking();
+	//startChecking();
 }
 
 //멤버 매니저 소멸자
 Member_manager::~Member_manager(void)
 {
-	stopChecking();
+	//stopChecking();
 }
 
 //로그인 함수

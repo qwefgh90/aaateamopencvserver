@@ -147,7 +147,7 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 
 	//char* pointer of comment
 	char* end_ptr =NULL;
-	end_ptr = strstr((char*)opinion,spliter.c_str());
+	end_ptr = strstr((char*)opinion,spliter_end.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -158,9 +158,7 @@ bool MenuAnalyzer::packetToWriteComment(__out IN_Write_comment& out, __in Memory
 	{
 		goto END;
 	}
-	str = string((char*)opinion);
-	v= split(str,spliter);//spliter를 기준으로 자른다 마지막엔 NULL이 있어야 하지만 존재 하지 않음, 임의로 NULL로 채워줌
-	strcpy(out.comment,v[0].c_str());//400bytes buffer
+	strcpy_s(out.comment,strlen((char*)opinion)+1,(char*)opinion);//400bytes buffer
 	
 	result = true;
 	END:
@@ -190,7 +188,7 @@ bool MenuAnalyzer::packetToModifyComment(__out IN_Modify_comment& out, __in Memo
 
 	//char* pointer of comment
 	char* end_ptr =NULL;
-	end_ptr = strstr((char*)opinion,spliter.c_str());
+	end_ptr = strstr((char*)opinion,spliter_end.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -201,9 +199,7 @@ bool MenuAnalyzer::packetToModifyComment(__out IN_Modify_comment& out, __in Memo
 	{
 		goto END;
 	}
-	str = string((char*)opinion);
-	v= split(str,spliter);//spliter를 기준으로 자른다 마지막엔 NULL이 있어야 하지만 존재 하지 않음, 임의로 NULL로 채워줌
-	strcpy(out.comment,v[0].c_str());
+	strcpy_s(out.comment,strlen((char*)opinion)+1,(char*)opinion);//400bytes buffer
 	
 	result = true;
 	END:
@@ -248,7 +244,6 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
 	bool result = false;
 	string str;
-	vector<string> v;
 
 	u_char* cookie = memory.buf+5 ;
 	u_char* filter = cookie+64 ;
@@ -297,9 +292,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 		goto END;
 	}
 
-	str = string((char*)opinion);
-	v = split(str,spliter);	//spliter를 기준으로 자른다 마지막엔 NULL이 있어야 하지만 존재 하지 않음, 임의로 NULL로 채워줌
-	strcpy(out.comment,v[0].c_str());		//글 내용 (현재 프로토콜에선 글 내용만 0번 인덱스로 나오게 된다)
+	strcpy_s(out.comment,strlen((char*)opinion)+1,(char*)opinion);		//글 내용 (현재 프로토콜에선 글 내용만 0번 인덱스로 나오게 된다)
 	out.comment_score = *opinion_score;		//글 평점
 
 	//이미지 복사

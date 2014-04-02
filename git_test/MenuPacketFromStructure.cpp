@@ -799,7 +799,7 @@ bool MenuAnalyzer::packetFromError(__out Memory& out,__in u_char err_code)
 	result = true;
 	return result;
 }
-
+ 
 bool MenuAnalyzer::packetFromCache(__out Memory& out,__in OUT_Cache& in)
 {
 	bool result = false;

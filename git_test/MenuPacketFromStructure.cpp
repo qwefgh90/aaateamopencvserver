@@ -207,11 +207,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 		like_ptr[i]=((char*)conten_ptr[i])+content_size[i];
 		dislike_ptr[i]=((char*)like_ptr[i])+like_cnt_size[i];
 		////////////////memory copy
-<<<<<<< HEAD
 		sprintf(big_buffer,"%u\r\n",(in.opi+i)->sns_id);  
-=======
-		sprintf(big_buffer,"%u\r\n",(in.opi+i)->sns_id);
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 		memcpy(num_ptr[i],big_buffer,num_size[i]);
 
 		sprintf(big_buffer,"%s\r\n",(in.opi+i)->nick);

@@ -55,13 +55,8 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 		//임시파일 삭제
 	//}else
 //	{
-<<<<<<< HEAD
 //		printf("%s","[createKey]Fail to delete temporary file\n");
 //	}
-=======
-	//	printf("%s","Fail to delete temporary file\n");
-	//}
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 
 	result = true;
 
@@ -222,15 +217,9 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		
 		double max_dist = 0.0, min_dist = 100.0;
 
-<<<<<<< HEAD
 	//	printf("img1 feature size : %d\n",kps_db.size());
 	//	printf("img2 feature size : %d\n",kps_db2.size());
 		printf("Matches size : %d\n",matches.size());
-=======
-//		printf("img1 feature size : %d\n",kps_db.size());
-//		printf("img2 feature size : %d\n",kps_db2.size());
-//		printf("Matches size : %d\n",matches.size());
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 		for(int i=0; i<matches.size(); i++) {
 			double dist = matches[i].distance;
 			if ( dist < min_dist ) min_dist = dist;

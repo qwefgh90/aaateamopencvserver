@@ -63,11 +63,7 @@ bool DB_manager::Query_signup(IN_Signup in_signup)
 
 	//아이디, 비번, 닉네임을 DB테이블에 삽입
 	sprintf_s(sql, "insert into member values ('%s','%s','%s')", in_signup.ID, in_signup.pass, in_signup.nick);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 	if(Sql_run(sql, sqlstatementhandle))
 	{
 		SQLCloseCursor(sqlstatementhandle);

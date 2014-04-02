@@ -18,21 +18,13 @@ Member_manager::Member_manager(void)
 {
 	//DB_manager 생성(DB연결)
 	dbm = DB_manager::GetDB_manager();
-<<<<<<< HEAD
 	startChecking();
-=======
-	//startChecking();
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 }
 
 //멤버 매니저 소멸자
 Member_manager::~Member_manager(void)
 {
-<<<<<<< HEAD
 	stopChecking();
-=======
-	//stopChecking();
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 }
 
 //로그인 함수
@@ -160,12 +152,8 @@ bool Member_manager::cookiechk(char* ID, u_char* in_cookie)
 bool Member_manager::startChecking()
 {
 	bool result;
-<<<<<<< HEAD
 	HANDLE hThread =NULL;
 	hThread=	CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)CheckWorkerWrap,this,0,NULL);
-=======
-	HANDLE hThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)CheckWorkerWrap,this,0,NULL);
->>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 	if(hThread!=NULL)
 	{
 		CloseHandle(hThread);

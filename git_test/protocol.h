@@ -12,6 +12,7 @@ typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 #define ETC 0x20
 #define ERRORRANGE 0.001
 const unsigned char filter[filter_no] = { COFFEE, FOOD, RESTAURANT, HAIR, BAKERY, ETC};
+#define IMAGE_DEBUG_MSG 1
 
 //메모리구조체
 typedef struct _Memory{

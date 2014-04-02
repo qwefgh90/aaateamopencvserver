@@ -32,7 +32,6 @@ DB_manager::DB_manager(void)
 	}
 
 	/*Dispaly the pool information*/
-	cout<<(*sqlsvrpool);
 }
 
 //DB 자원해제
@@ -74,7 +73,6 @@ bool DB_manager::Query_signup(IN_Signup in_signup)
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 		
 		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 		return true;
 	}
 	else
@@ -118,7 +116,6 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 		
 		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 		return true;
 	}
 
@@ -153,7 +150,6 @@ bool DB_manager::Query_leave(char* ID)
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 		return true;
 	}
 	else
@@ -227,7 +223,6 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 			return true;
 		}
 
@@ -307,7 +302,6 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 			out_report.code = store_code;
 			memcpy_s(out_report.opi[0].comment,sizeof(out_report.opi[0].comment),in_report.comment,sizeof(in_report.comment));
 			out_report.opi[0].dislike_cnt = 0;
@@ -374,7 +368,6 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 		out_more.opi_cnt = i;
 		printf("opi_cnt %d\n",i);
 	}
@@ -398,7 +391,6 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 		
 		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 		out_more.result = 1;
 		return true;
 	}
@@ -488,7 +480,6 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 			out_write_opi.result = 1;
 			return true;
 		}
@@ -566,7 +557,6 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 			out_mod_opi.result = 1;
 			return true;
 		}
@@ -646,7 +636,6 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 			out_del_opi.result = 1;
 			return true;
 		}
@@ -687,7 +676,6 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 		/*Dispaly the pool information*/
-		cout<<(*sqlsvrpool);
 		out_like_opi.result = 1;
 		return true;
 	}
@@ -765,7 +753,6 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
 			/*Dispaly the pool information*/
-			cout<<(*sqlsvrpool);
 
 		return true;
 	}

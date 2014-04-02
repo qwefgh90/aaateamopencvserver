@@ -28,8 +28,8 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 
 	std::vector<cv::KeyPoint> kps_db;
 	sprintf(title,"%ldimgfile.jpg",current_time);
-	printf("Image Length : %u\n",len);
-	printf("Image Name Temp : %s\n",title);
+//	printf("Image Length : %u\n",len);
+//	printf("Image Name Temp : %s\n",title);
 
 	//1)이미지 파일생성
 	FILE* f = fopen(title,"wb");
@@ -37,9 +37,9 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	fclose(f);
 	//2)이미지 로드 및 특징점 생성 (키 생성)
 	try{
-		printf("imread() Start\n");
+	//	printf("imread() Start\n");
 		db_original = cv::imread(title,CV_LOAD_IMAGE_GRAYSCALE);
-		printf("imread() End\n");
+	//	printf("imread() End\n");
 	}catch(cv::Exception& e) {
 		printf("Exception occurred. createKey... ");
 		printf(e.err.c_str());
@@ -194,7 +194,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 }
 bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat mat, __in vector<Imagelist>& imageList)
 {
-	printf("SiftEngine-> vector size%d\n",imageList.size());
+	printf("[SiftEngine] Vector Size : %d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
 	bool result = false;
 	for(int i = 0; i<(int)imageList.size(); i++)
@@ -209,7 +209,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 
 		try{
 		// 매칭 수행
-		printf("path : %s\n",img.store_path);
+		printf("image path : %s\n",img.store_path);
 		cv::FlannBasedMatcher matcher;               
 		std::vector<cv::DMatch> matches;
 
@@ -219,7 +219,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 
 //		printf("img1 feature size : %d\n",kps_db.size());
 //		printf("img2 feature size : %d\n",kps_db2.size());
-		printf("matches size : %d\n",matches.size());
+//		printf("Matches size : %d\n",matches.size());
 		for(int i=0; i<matches.size(); i++) {
 			double dist = matches[i].distance;
 			if ( dist < min_dist ) min_dist = dist;
@@ -261,7 +261,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld\n",max.index,max.match_cnt);
+	printf("The best picture index %d, The best matching_count %ld\n",max.index,max.match_cnt);
 	//if bigger than minimum size
 	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
 	{

@@ -24,7 +24,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 	u_char proto_type;		//proto_type
 	u_char err_code=1;		//erorr_code
 	proto_type = *((u_char*)(in_buf+4));
-	printf ("proto: %d\n",proto_type);
+	printf_s("protocol type : %d\n",proto_type);
 	switch(proto_type)
 	{
 	case LOGIN:
@@ -37,14 +37,14 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 
 			if(this->packetToLogin(in,in_memory))
 			{
-				printf("id: %s@@@@\n",in.ID);
-				printf("passwd: %s@@@@\n",in.pass);
+				printf_s("[LOGIN]id: %s\n",in.ID);
+				printf_s("[LOGIN]passwd: %s\n",in.pass);
 				//2)생성된 구조체를 각 모듈에 전달
 				if(member_manager->Login(in,out))
 				{
 					dumpbyte(out.cookie,64);
-					printf("nick: %s@@@\n",out.nick);
-					printf("result: %d@@@\n",out.result);
+					printf("[LOGIN_RESULT]nick: %s\n",out.nick);
+					printf("[LOGIN_RESULT]result: %d\n",out.result);
 
 					//3)생성된 구조체에서 패킷을 생성
 					if(this->packetFromLogin(out_memory,out))
@@ -58,11 +58,13 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 					//4)모바일에서 패킷 전송
 				}else
 				{
+				printf_s("%s\n","[LOGIN]Login Fail ");
 					err_code = out.result;
 					goto ERRORCODE;
 				}
 			}else
 			{
+				printf_s("%s\n","[LOGIN]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -77,14 +79,14 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			memset(&out,0,sizeof(out));
 			if(packetToSignup(in,in_memory))
 			{
-				printf("id: %s@@@@\n",in.ID);
-				printf("passwd: %s@@@@\n",in.pass);
-				printf("nick: %s@@@@\n",in.nick);
+				printf("[SIGNUP]id: %s\n",in.ID);
+				printf("[SIGNUP]passwd: %s\n",in.pass);
+				printf("[SIGNUP]nick: %s\n",in.nick);
 
 				//2)생성된 구조체를 각 모듈에 전달
 				if(member_manager->Signup(in,out))
 				{
-					printf("result: %d@@@@\n",out.result);
+					printf("[SIGNUP]result: %d\n",out.result);
 					//3)생성된 구조체에서 패킷을 생성
 					if(this->packetFromSignup(out_memory,out))
 					{
@@ -95,10 +97,12 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 					}
 					//4)모바일에서 패킷 전송
 				}else{
+					printf_s("%s\n","[SIGNUP]Signup Fail");
 					err_code = out.result;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[SIGNUP]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -114,7 +118,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			{
 				if(member_manager->Logout(in,out))
 				{
-					printf("result: %d@@@\n",out.result);
+					printf("[LOGOUT]result: %d\n",out.result);
 					if(this->packetFromLogout(out_memory,out))
 					{
 
@@ -127,6 +131,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[LOGOUT]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -153,6 +158,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[LEAVE]Leave Fail");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
@@ -161,6 +167,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//	goto ERRORCODE;
 				//}
 			}else{
+				printf_s("%s\n","[LEAVE]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -195,15 +202,18 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[SEARCH]검색 실패");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 
 				}else{
+					printf_s("%s\n","[SEARCH]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[SEARCH]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -233,14 +243,17 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[MORE]Searching more data failed");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 				}else{
+					printf_s("%s\n","[MORE]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[MORE]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -272,16 +285,19 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 						}
 					}else
 					{
+						printf_s("%s\n","[WRITE_COMMENT]Write Fail");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 				}else
 				{
+					printf_s("%s\n","[WRITE_COMMENT]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else
 			{
+				printf_s("%s\n","[WRITE_COMMENT]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -310,14 +326,17 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[MODIFY_COMMENT]Modify Fail");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 				}else{
+					printf_s("%s\n","[MODIFY_COMMENT]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[MODIFY_COMMENT]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -344,14 +363,17 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[DELETE_COMMENT]Delete Fail");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 				}else{
+					printf_s("%s\n","[DELETE_COMMENT]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[DELETE_COMMENT]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -378,14 +400,17 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[LIKE]Like Fail");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 				}else{
+					printf_s("%s\n","[LIKE]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[LIKE]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -398,8 +423,10 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			OUT_Report out;	//로그인 응답 구조체
 			memset(&in,0,sizeof(in));
 			memset(&out,0,sizeof(out));
+			
 			if(!packetToReport(in,in_memory))
 			{
+				printf_s("%s\n","[REPORT]Parse Fail");
 				//파싱 실패
 				err_code=out.code=3;	//에러코드 세팅
 				goto ERRORCODE;
@@ -410,6 +437,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//성공
 			}else
 			{
+				printf_s("%s\n","[REPORT]Not Authorized");
 				//인증 실패
 				err_code=out.code=5;	//에러코드 세팅
 				goto ERRORCODE;
@@ -431,7 +459,6 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 
 			//3)패킷조립
 			packetFromReport(out_memory,out);
-
 
 			printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
 			for (int i = 0 ; i < out.opi_cnt ; i++)
@@ -461,14 +488,17 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							goto ERRORCODE;
 						}
 					}else{
+						printf_s("%s\n","[CACHE]Cache Fail");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 				}else{
+					printf_s("%s\n","[CACHE]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				printf_s("%s\n","[CACHE]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
@@ -481,7 +511,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 
 ERRORCODE:
 	//에러 처리 패킷 생성
-	printf("------  SEND ERROR PACKET  -----\n");
+	printf_s("%s","------SEND ERROR PACKET-----\n");
 	packetFromError(out_memory,err_code);
 	dwResult= true;
 

@@ -132,7 +132,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
-
+	
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size
 
@@ -177,7 +177,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	out.len = bytelen;
 	//1)point memory buffer
 	u_int* bytelen_ptr = (u_int*)out.buf;
-	u_char* result_login_ptr = (u_char*)bytelen_ptr+4;
+	u_char* result_login_ptr = (uchar*)bytelen_ptr+4;
 	u_int* code_ptr = (u_int*)(result_login_ptr+1);
 	float* avg_score_ptr = (float*)((u_char*)code_ptr+4);
 	//2)copy to packet buffer
@@ -185,7 +185,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	*result_login_ptr = in.result;
 	*code_ptr = in.code;
 	*avg_score_ptr = in.score;
-
+	
 	//opinion pointer array variables 
 	char* num_ptr[10]={0,};
 	char* nic_ptr[10]={0,};
@@ -229,7 +229,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter_end.c_str(),4);
+	memcpy_s(local_end_spliter,2,spliter.c_str(),2);
 
 	result = true;
 	return result;
@@ -808,10 +808,9 @@ bool MenuAnalyzer::packetFromCache(__out Memory& out,__in OUT_Cache& in)
 	u_int* size = (u_int*)(out.buf);
 	*size = LIKE_PACKET_SIZE;		//패킷 길이
 
-	*((u_char*)(size+4)) = in.result;	//응답 결과
+	*((u_char*)(size)+4) = in.result;	//응답 결과
 	char* end_sp = (char*)(out.buf+5);
 	memcpy_s(end_sp,4,spliter_end.c_str(),4);//마지막 구분자
-
 	result = true;
 	return result;
 }

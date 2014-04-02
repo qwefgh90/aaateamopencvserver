@@ -127,6 +127,8 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 	//5)allocate memory of completebuffer
 	pSD->IOData[1].completeBuf = new u_char[length];
 	memcpy_s(pSD->IOData[1].completeBuf,length,send_data.buf,length);
+
+	delete[] send_data.buf;
 	printf("new addr %x\n",pSD->IOData[1].completeBuf);
 	//6)assemble send buffer
 	pSD->IOData[1].nTotalBytes = length;

@@ -336,7 +336,7 @@ bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter_end.c_str(),4);
+	memcpy_s(local_end_spliter,2,spliter.c_str(),2);
 
 	result = true;
 	return result;
@@ -441,7 +441,7 @@ bool MenuAnalyzer::packetFromWriteComment(__out Memory& out, __in OUT_Write_comm
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter_end.c_str(),4);
+	memcpy_s(local_end_spliter,2,spliter.c_str(),2);
 
 	result = true;
 	return result;
@@ -546,7 +546,7 @@ bool MenuAnalyzer::packetFromModifyComment(__out Memory& out, __in OUT_Modify_co
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter_end.c_str(),4);
+	memcpy_s(local_end_spliter,2,spliter.c_str(),2);
 
 	result = true;
 	return result;
@@ -651,7 +651,7 @@ bool MenuAnalyzer::packetFromDeleteComment(__out Memory& out, __in OUT_Delete_co
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter_end.c_str(),4);
+	memcpy_s(local_end_spliter,2,spliter.c_str(),2);
 
 	result = true;
 	return result;
@@ -776,7 +776,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter.c_str(),2);
+	memcpy_s(local_end_spliter,2,spliter.c_str(),2);
 
 	result = true;
 	return result;

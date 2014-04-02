@@ -76,7 +76,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="ReadMe.txt" />
+    <None Include="TimerCheck.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />

@@ -25,6 +25,7 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf);
 CIocpSrv *g_pSrv;	//¼­¹ö °´Ã¼
 
 void initManager();
+void destroyMnager();
 
 //TEST MODULE CHANG
 #include "testcase.h"
@@ -471,4 +472,8 @@ void initManager(){
 	DB_manager::GetDB_manager();
 	Store_manager::GetStore_manager();
 	ImageManager::getImageManager();
+}
+
+void destroyMnager(){
+	
 }

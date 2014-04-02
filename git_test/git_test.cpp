@@ -316,13 +316,10 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			}
 			else if(pIOD->nCurrentBytes == pIOD->nTotalBytes) // 다보냈을시에 초기화
 			{
-<<<<<<< HEAD
 				//1)통신 바로 종료
 				pSD->Status = false;
 				pSrv->m_SocketIndexQ.Put( pSD->index );
 				pSrv->CloseClient( pSD );
-=======
->>>>>>> a3f662ed7579e98e7efccfe56488f4a2936c1fc0
 				printf("Send all packet!!\n");
 				//1)통신 바로 종료
 				pSD->Status = false;

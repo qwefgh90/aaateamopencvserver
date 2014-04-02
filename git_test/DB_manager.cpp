@@ -761,11 +761,8 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 			for(int i= 0; ((int)Ibev.size() > 10) && (i < 40); i++)
 				Ibev.erase(Ibev.begin()+10);
 
-<<<<<<< HEAD
 			/*Dispaly the pool information*/
 			cout<<(*sqlsvrpool);
-=======
->>>>>>> a3f662ed7579e98e7efccfe56488f4a2936c1fc0
 
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);

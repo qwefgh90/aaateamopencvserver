@@ -11,7 +11,7 @@ MenuAnalyzer::MenuAnalyzer(void){
 MenuAnalyzer::~MenuAnalyzer(void){
 }
 //Parse menu to structures and call a function of assembling packet
-//param
+//paramf
 //@data received from mobile 
 //return
 //@buffer and size to send to mobile
@@ -42,7 +42,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//2)생성된 구조체를 각 모듈에 전달
 				if(member_manager->Login(in,out))
 				{
-					dumpbyte(out.cookie,64);
+					//dumpbyte(out.cookie,64);
 					printf("[LOGIN_RESULT]nick: %s\n",out.nick);
 					printf("[LOGIN_RESULT]result: %d\n",out.result);
 

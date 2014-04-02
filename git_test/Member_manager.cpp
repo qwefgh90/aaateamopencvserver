@@ -47,8 +47,8 @@ bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 		{
 			strcpy_s(out_login.nick,strlen(nick)+1,nick);
 
-			cout<<db_login.ID<<" "<<db_login.pass<<" "<<nick<<endl;
-			cout<<db_login.ID<<" 님 로그인 성공"<<endl;
+			//cout<<db_login.ID<<" "<<db_login.pass<<" "<<nick<<endl;
+			//cout<<db_login.ID<<" 님 로그인 성공"<<endl;
 
 			sprintf_s(to_hash,"%s%s",db_login.ID,db_login.pass);
 			sha512((unsigned char*)to_hash,strlen(to_hash),out_login.cookie,0);

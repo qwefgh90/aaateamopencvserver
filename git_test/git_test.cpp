@@ -124,9 +124,9 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 	int length =send_data.len;	//buffer length
 
 	//5)allocate memory of completebuffer
-	pSD->IOData[1].completeBuf = new byte[length];
-	memcpy(pSD->IOData[1].completeBuf,send_data.buf,length);
-
+	pSD->IOData[1].completeBuf = new u_char[length];
+	memcpy_s(pSD->IOData[1].completeBuf,length,send_data.buf,length);
+	printf("new addr %x\n",pSD->IOData[1].completeBuf);
 	//6)assemble send buffer
 	pSD->IOData[1].nTotalBytes = length;
 	pSD->IOData[1].wsabuf.buf = (char*)pSD->IOData[1].completeBuf;		//To send data to Mobile
@@ -315,12 +315,18 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			}
 			else if(pIOD->nCurrentBytes == pIOD->nTotalBytes) // 다보냈을시에 초기화
 			{
+<<<<<<< HEAD
 				//1)통신 바로 종료
 				pSD->Status = false;
 				pSrv->m_SocketIndexQ.Put( pSD->index );
 				pSrv->CloseClient( pSD );
+=======
+>>>>>>> a3f662ed7579e98e7efccfe56488f4a2936c1fc0
 				printf("Send all packet!!\n");
-
+				//1)통신 바로 종료
+				pSD->Status = false;
+				pSrv->m_SocketIndexQ.Put( pSD->index );
+				pSrv->CloseClient( pSD );
 				pSrv->ReleaseData( pSD );
 				//2)다음 통신 대기
 				//nRet = WSARecv( pSD->Socket, &(pSD->IOData[0].wsabuf), 1, &dwRecvNBytes,

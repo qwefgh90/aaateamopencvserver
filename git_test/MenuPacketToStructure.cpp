@@ -95,7 +95,7 @@ bool MenuAnalyzer::packetToLeave(__out IN_Leave& out, __in Memory& memory )
 const u_int SEARCH_SIZE_BUTIMAGE = (4)+ (1) + (64)+(1)+(4)+(4)  +4;
 //데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 각각 구분자 + 마지막 구분자 +(이미지 크기 제외)
 bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
-{  
+{    
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;		//쿠키
 	u_char* filter = cookie+64 ;			//필터

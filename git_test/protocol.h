@@ -10,7 +10,11 @@ typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 #define HAIR 0x08
 #define BAKERY 0x10
 #define ETC 0x20
+<<<<<<< HEAD
 #define ERRORRANGE 1
+=======
+#define ERRORRANGE 0.001
+>>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 const unsigned char filter[filter_no] = { COFFEE, FOOD, RESTAURANT, HAIR, BAKERY, ETC};
 #define IMAGE_DEBUG_MSG 1
 

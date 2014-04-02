@@ -267,7 +267,11 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			}
 			else if(pIOD->nCurrentBytes == pIOD->nTotalBytes) // 다보냈을시에 초기화
 			{
+<<<<<<< HEAD
 				printf("[Write]Send All- total : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+=======
+				printf("[Write Data Info]Send all packets - totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+>>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 				//1)통신 바로 종료
 				pSD->Status = false;
 				pSrv->m_SocketIndexQ.Put( pSD->index );
@@ -326,7 +330,11 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 				}
 			}else if(pIOD->nTotalBytes == pIOD->nCurrentBytes)
 			{
+<<<<<<< HEAD
 				printf("[Read]All Received - total : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+=======
+				printf("[Read Data]All data Received - totalsize : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+>>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 			
 				memcpy(pBuffer+(pIOD->nCurrentBytes-dwIoSize),pIOD->wsabuf.buf,dwIoSize);	//받은 일부 데이터를 전체 버퍼에 복사
 				//printf("bufdata : %s\n",pBuffer+4);
@@ -456,7 +464,11 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 
 		//사실 6번째 매개변수는 소켓데이터 구조체의 주소와 마찬가지이다.
 		nRet = WSARecv( sdAccept, &(pSD->IOData[0].wsabuf), 1, &dwRecvNBytes, &dwFlags, &(pSD->IOData[0].Overlapped), NULL);
+<<<<<<< HEAD
 		printf("\n\n\n");
+=======
+		printf("--\n--\n--\n");
+>>>>>>> 09982a80de71a02e5862698e6d6bf58b9067a0a4
 		if (nRet == SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError())) {
 			pSrv->CloseClient(pSD);
 			printf("WSARecv ERROR\n");

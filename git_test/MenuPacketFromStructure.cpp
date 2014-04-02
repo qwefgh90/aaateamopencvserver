@@ -776,7 +776,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	}else{
 		local_end_spliter = ((u_char*)avg_score_ptr)+4;
 	}
-	memcpy(local_end_spliter,spliter_end.c_str(),4);
+	memcpy(local_end_spliter,spliter.c_str(),2);
 
 	result = true;
 	return result;

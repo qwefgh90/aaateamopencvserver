@@ -103,7 +103,7 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	float* longitude = (float*)((u_char*)latitude+4) ;		//경도
 	u_char* image_buf = (u_char*)longitude+8 ;	//image
 	u_int	image_size = *((u_int*)memory.buf)-SEARCH_SIZE_BUTIMAGE;	//image size // 이미지 끝의 구분자는 없음(마지막)
-	
+	    
 	printf("[SEARCH]GPS Latitude : %f, Longitude : %f\n",*latitude,*longitude);
 	memcpy(out.cookie,cookie,64);
 

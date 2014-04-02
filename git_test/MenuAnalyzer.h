@@ -11,7 +11,7 @@ public:
 	~MenuAnalyzer(void);
 	static MenuAnalyzer* GetMenuAnalyzer();
 	bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory);
-	vector<string> MenuAnalyzer::split(string str, string sep);
+	bool MenuAnalyzer::split(__in vector<string>& v,string str, string sep);
 	Member_manager* member_manager;
 	Store_manager* store_manager;
 	

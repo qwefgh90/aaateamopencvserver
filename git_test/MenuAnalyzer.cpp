@@ -509,12 +509,11 @@ current=strtok(NULL, sep.c_str());
 return arr;
 }*/
 
-vector<string> MenuAnalyzer::split(string str, string sep){
+bool MenuAnalyzer::split(__in vector<string>& arr,string str, string sep){
 	char* cstr = const_cast<char*>(str.c_str());
 	char* current = cstr;
 	char* next=  NULL;
-	vector<std::string> arr;
-
+	bool result = false;
 	next=strstr(cstr,sep.c_str());
 	if(next!=NULL)
 	{
@@ -526,7 +525,8 @@ vector<string> MenuAnalyzer::split(string str, string sep){
 		next= next+sep.length();
 
 	}
-	arr.push_back(current);
+	string temp(cstr);
+	arr.push_back(temp);
 
 	while(next != NULL){
 		current = next; 
@@ -540,7 +540,9 @@ vector<string> MenuAnalyzer::split(string str, string sep){
 			}
 			next= next+sep.length();
 		}
-		arr.push_back(current);   
+		string temp(current);
+		arr.push_back(temp); 
 	}
-	return arr;
+	result=true;
+	return result;
 }

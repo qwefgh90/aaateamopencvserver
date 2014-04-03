@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{08a0f333-0261-4cb1-aec6-cff1d5dc09ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataBase">
+      <UniqueIdentifier>{8761d53e-0fe3-4b82-ab87-e7bec7ddd340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Resources">
+      <UniqueIdentifier>{d26f3922-bd6e-4ab5-a8f4-2dc2f694161f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Member">
+      <UniqueIdentifier>{7777d014-cec8-4d76-af2e-adb890dc500e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Analyzer">
+      <UniqueIdentifier>{ff05e1fd-6049-4cd8-943e-70bd79e8815a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Store">
+      <UniqueIdentifier>{3b86a0e9-0ff8-4ef5-95da-8212ca392d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sift">
+      <UniqueIdentifier>{063d6fbc-33ab-43fb-9491-1eb38c14ae62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DB Pool">
+      <UniqueIdentifier>{00498534-2e94-4d76-9f41-b147728181e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cache">
+      <UniqueIdentifier>{ab2a7b3d-1d36-4541-b913-773893e4a428}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IOCPServer.h">
+      <Filter>Source Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexQ.h">
+      <Filter>Source Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuAnalyzer.h">
+      <Filter>Source Files\Analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DB_manager.h">
+      <Filter>Source Files\DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Member_manager.h">
+      <Filter>Source Files\Member</Filter>
+    </ClInclude>
+    <ClInclude Include="sha512.h">
+      <Filter>Source Files\Member</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Source Files\Member</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>Source Files\Store</Filter>
+    </ClInclude>
+    <ClInclude Include="SiftEngine.h">
+      <Filter>Source Files\Sift</Filter>
+    </ClInclude>
+    <ClInclude Include="Store_manager.h">
+      <Filter>Source Files\Store</Filter>
+    </ClInclude>
+    <ClInclude Include="SQLSvrPool.h">
+      <Filter>DB Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossHelper.h">
+      <Filter>DB Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="testcase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCache.h">
+      <Filter>Source Files\Cache</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageCacheFactory.h">
+      <Filter>Source Files\Cache</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="git_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IOCPServer.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexQ.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuAnalyzer.cpp">
+      <Filter>Source Files\Analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuPacketToStructure.cpp">
+      <Filter>Source Files\Analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuPacketFromStructure.cpp">
+      <Filter>Source Files\Analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="Member_manager.cpp">
+      <Filter>Source Files\Member</Filter>
+    </ClCompile>
+    <ClCompile Include="sha512.c">
+      <Filter>Source Files\Member</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>Source Files\Store</Filter>
+    </ClCompile>
+    <ClCompile Include="SiftEngine.cpp">
+      <Filter>Source Files\Sift</Filter>
+    </ClCompile>
+    <ClCompile Include="Store_manager.cpp">
+      <Filter>Source Files\Store</Filter>
+    </ClCompile>
+    <ClCompile Include="SQLSvrPool.cpp">
+      <Filter>DB Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonDatabasePool.cpp">
+      <Filter>DB Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossHelper.cpp">
+      <Filter>DB Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCache.cpp">
+      <Filter>Source Files\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageCacheFactory.cpp">
+      <Filter>Source Files\Cache</Filter>
+    </ClCompile>
+    <ClCompile Include="DB_manager.cpp">
+      <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="testcase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

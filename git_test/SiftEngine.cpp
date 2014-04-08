@@ -38,14 +38,14 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	//2)이미지 로드 및 특징점 생성 (키 생성)
 	try{
 	//	printf("imread() Start\n");
-		db_original = cv::imread(title,CV_LOAD_IMAGE_GRAYSCALE);
+	db_original = cv::imread(title,CV_LOAD_IMAGE_GRAYSCALE);
+	cv::equalizeHist(db_original, db_original); //equalize the histogram
 	//	printf("imread() End\n");
 	}catch(cv::Exception& e) {
 		printf("Exception occurred. createKey... ");
 		printf(e.err.c_str());
 		goto END;
 	}
-
 	detector.detect( db_original, kps_db );
 	// Feature description 디스크립터 생성
 	extractor.compute( db_original, kps_db, m);

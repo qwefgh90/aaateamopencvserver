@@ -39,7 +39,7 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	try{
 	//	printf("imread() Start\n");
 	db_original = cv::imread(title,CV_LOAD_IMAGE_GRAYSCALE);
-	cv::equalizeHist(db_original, db_original); //equalize the histogram
+	//cv::equalizeHist(db_original, db_original); //equalize the histogram
 	//	printf("imread() End\n");
 	}catch(cv::Exception& e) {
 		printf("Exception occurred. createKey... ");

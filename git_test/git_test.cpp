@@ -71,8 +71,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	g_pSrv = CIocpSrv::CreateInstance(PORT,5);
 	if ( !g_pSrv->CreateLitenSocket() )			//Win소켓 -> bind() listen() 초기화
 		printf("bind(), listen()실패\n");
-	g_pSrv->StartThreadRoutine(WorkerThread,1);
-	g_pSrv->StartThreadRoutine(AcceptThread,1);
+	g_pSrv->StartThreadRoutine(WorkerThread,1);	//작업 처리 스레드
+	g_pSrv->StartThreadRoutine(AcceptThread,1);	//접속 대기
 	//3)서버 생성
 	//4)서버 IOCP큐 쓰레드 생성
 	//5)서버 동작
@@ -377,18 +377,18 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 
 	//4)release resource (malloc)
 	
-	int length = send_data.len;	//buffer length
+	int send_len = send_data.len;	//buffer length
 
 	//5)allocate memory of completebuffer
-	pSD->IOData[1].completeBuf = new u_char[length];
-	memcpy_s(pSD->IOData[1].completeBuf,length,send_data.buf,length);
+	pSD->IOData[1].completeBuf = new u_char[send_len];
+	memcpy_s(pSD->IOData[1].completeBuf,send_len,send_data.buf,send_len);
 	delete[] send_data.buf;
 
 	//printf("new addr %x\n",pSD->IOData[1].completeBuf);
 	//6)assemble send buffer
-	pSD->IOData[1].nTotalBytes = length;
+	pSD->IOData[1].nTotalBytes = send_len;
 	pSD->IOData[1].wsabuf.buf = (char*)pSD->IOData[1].completeBuf;		//To send data to Mobile
-	pSD->IOData[1].wsabuf.len = length;									//To send data to Mobile
+	pSD->IOData[1].wsabuf.len = send_len;									//To send data to Mobile
 
 	nRet = WSASend( pSD->Socket, &(pSD->IOData[1].wsabuf), 1, &dwSendNBytes,
 		dwFlags, &(pSD->IOData[1].Overlapped), NULL);
@@ -445,7 +445,6 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 		//SOCKET_DATA	//WSAOVERLAPPED 를 포함한 클래스
 		//IO버퍼 포함	//소켓 포함
 		pSD = pSrv->UpdataCompletionPort(sdAccept,ClientAddr);	
-
 		if (pSD == NULL)	//사용할 수 있는 소켓이 없을경우
 			continue;
 
@@ -461,7 +460,6 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 			pSrv->CloseClient(pSD);
 			printf("WSARecv ERROR\n");
 		}
-
 		Sleep(0);
 	}
 

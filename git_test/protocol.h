@@ -50,39 +50,39 @@ typedef struct _Store{
 
 //멤버세션
 typedef struct _MemberSession{
-	char ID[20+1];
+	char ID[30+1];
 	time_t valid_stamp;
 	unsigned char cookie[64];
 }MemberSession;
 
 typedef struct _IN_Login{
-	char ID[20+1];
+	char ID[30+1];
 	char pass[20+1];
 }IN_Login;
 
 typedef struct _IN_Signup{
-	char ID[20+1];
+	char ID[30+1];
 	char pass[20+1];
-	char nick[40+1];
+	char nick[16+1];
 }IN_Signup;
 
 typedef struct _IN_Logout{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 }IN_Logout;
 
 typedef struct _IN_Leave{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 }IN_Leave;
 
 typedef struct _IN_Search{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_char filter;
@@ -94,7 +94,7 @@ typedef struct _IN_Search{
 
 typedef struct _IN_More{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -104,7 +104,7 @@ typedef struct _IN_More{
 
 typedef struct _IN_Write_comment{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -116,7 +116,7 @@ typedef struct _IN_Write_comment{
 
 typedef struct _IN_Modify_comment{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -129,7 +129,7 @@ typedef struct _IN_Modify_comment{
 
 typedef struct _IN_Delete_comment{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_int code;
@@ -140,7 +140,7 @@ typedef struct _IN_Delete_comment{
 
 typedef struct _IN_Like{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_int num;
@@ -149,7 +149,7 @@ typedef struct _IN_Like{
 
 typedef struct _IN_Report{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	u_char filter;
@@ -162,7 +162,7 @@ typedef struct _IN_Report{
 }IN_Report;
 typedef struct _IN_Cache{
 	union{
-		char ID[20+1];
+		char ID[30+1];
 		unsigned char cookie[64];
 	};
 	float latitude;	//위도
@@ -172,7 +172,7 @@ typedef struct _IN_Cache{
 //Opinion mini structure is contained 
 typedef struct _OUT_Opinion{
 	unsigned int sns_id;
-	char nick[41+1];
+	char nick[16+1];
 	char comment[400+1];
 	u_int like_cnt;
 	u_int dislike_cnt;

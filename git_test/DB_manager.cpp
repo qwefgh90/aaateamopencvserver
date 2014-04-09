@@ -671,13 +671,21 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
+		if(in_like_opi.like == 1)
+			sprintf_s(sql, "UPDATE SNS SET good = good + 1 WHERE sns_id = %d;", in_like_opi.num);
+		else if(in_like_opi.like == -1)
+			sprintf_s(sql, "UPDATE SNS SET bed = bed + 1 WHERE sns_id = %d;", in_like_opi.num);
 
-		/*Release the connection back into the pool*/
-		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+		if(Sql_run(sql, sqlstatementhandle))
+		{
+			SQLCloseCursor(sqlstatementhandle);
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
-		/*Dispaly the pool information*/
-		out_like_opi.result = 1;
-		return true;
+			/*Dispaly the pool information*/
+			out_like_opi.result = 1;
+			return true;
+		}
 	}
 	else
 	{

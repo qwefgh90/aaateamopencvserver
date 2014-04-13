@@ -105,9 +105,9 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 		//아이디와 비번이 일치하는게 있을 경우
 		//SELECT한 DATA의 아이디와 비밀번호, 닉네임을 반환
 		SQLFetch(sqlstatementhandle);
-		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, db_login.ID, 20, NULL);
+		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, db_login.ID, 30, NULL);
 		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 20, NULL);
-		SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, nick, 40, NULL);
+		SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, nick, 16, NULL);
 		
 		SQLCloseCursor(sqlstatementhandle);
 
@@ -278,7 +278,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 		if(Sql_run(sql, sqlstatementhandle))
 		{
 			SQLFetch(sqlstatementhandle);
-			SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, nick, 40, NULL);
+			SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, nick, 16, NULL);
 			SQLCloseCursor(sqlstatementhandle);
 		}
 		//상점코드를 이용해 의견을 INSERT
@@ -355,7 +355,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 		{
 			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_more.opi[i].sns_id, 4, NULL);
-			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_more.opi[i].nick, 30, NULL);
+			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_more.opi[i].nick, 16, NULL);
 			SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_more.opi[i].comment, 400, NULL);
 			SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_more.opi[i].like_cnt, 4, NULL);
 			SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_more.opi[i].dislike_cnt, 4, NULL);
@@ -450,7 +450,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_write_opi.opi[i].sns_id, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_write_opi.opi[i].nick, 30, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_write_opi.opi[i].nick, 16, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_write_opi.opi[i].comment, 400, NULL);
 				SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_write_opi.opi[i].like_cnt, 4, NULL);
 				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_write_opi.opi[i].dislike_cnt, 4, NULL);
@@ -529,7 +529,7 @@ bool DB_manager::Query_opi_modify(IN_Modify_comment in_mod_opi, OUT_Modify_comme
 			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_mod_opi.opi[i].sns_id, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_mod_opi.opi[i].nick, 30, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_mod_opi.opi[i].nick, 16, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_mod_opi.opi[i].comment, 400, NULL);
 				SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_mod_opi.opi[i].like_cnt, 4, NULL);
 				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_mod_opi.opi[i].dislike_cnt, 4, NULL);
@@ -608,7 +608,7 @@ bool DB_manager::Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comme
 			while(SQLFetch(sqlstatementhandle) == SQL_SUCCESS)
 			{
 				SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &out_del_opi.opi[i].sns_id, 4, NULL);
-				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_del_opi.opi[i].nick, 30, NULL);
+				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, out_del_opi.opi[i].nick, 16, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, out_del_opi.opi[i].comment, 400, NULL);
 				SQLGetData(sqlstatementhandle, 4, SQL_INTEGER, &out_del_opi.opi[i].like_cnt, 4, NULL);
 				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &out_del_opi.opi[i].dislike_cnt, 4, NULL);
@@ -671,13 +671,21 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
+		if(in_like_opi.like == 1)
+			sprintf_s(sql, "UPDATE SNS SET good = good + 1 WHERE sns_id = %d;", in_like_opi.num);
+		else if(in_like_opi.like == -1)
+			sprintf_s(sql, "UPDATE SNS SET bed = bed + 1 WHERE sns_id = %d;", in_like_opi.num);
 
-		/*Release the connection back into the pool*/
-		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+		if(Sql_run(sql, sqlstatementhandle))
+		{
+			SQLCloseCursor(sqlstatementhandle);
+			/*Release the connection back into the pool*/
+			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
-		/*Dispaly the pool information*/
-		out_like_opi.result = 1;
-		return true;
+			/*Dispaly the pool information*/
+			out_like_opi.result = 1;
+			return true;
+		}
 	}
 	else
 	{

@@ -665,7 +665,7 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 	out.len = LIKE_PACKET_SIZE;
 	u_int* size = (u_int*)(out.buf);
 	*size = LIKE_PACKET_SIZE;		//2)패킷길이
-	*((u_char*)(size+4)) = in.result;//3)결과복사
+	*((u_char*)size+4) = in.result;//3)결과복사
 	
 	char* end_sp = (char*)(out.buf+5);
 	memcpy_s(end_sp,4,spliter_end.c_str(),4);	//마지막 구분자

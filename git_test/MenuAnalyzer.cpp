@@ -539,7 +539,7 @@ current=strtok(NULL, sep.c_str());
 return arr;
 }*/
 
-bool MenuAnalyzer::split(__in vector<string>& arr,string str, string sep){
+bool MenuAnalyzer::split(__in vector<string*>& arr,string str, string sep){
 	char* cstr = const_cast<char*>(str.c_str());
 	char* current = cstr;
 	char* next=  NULL;
@@ -555,7 +555,8 @@ bool MenuAnalyzer::split(__in vector<string>& arr,string str, string sep){
 		next= next+sep.length();
 
 	}
-	string temp(cstr);
+
+	string* temp = new string(cstr);
 	arr.push_back(temp);
 
 	while(next != NULL){
@@ -570,7 +571,7 @@ bool MenuAnalyzer::split(__in vector<string>& arr,string str, string sep){
 			}
 			next= next+sep.length();
 		}
-		string temp(current);
+		string* temp = new string(current);
 		arr.push_back(temp); 
 	}
 	result=true;

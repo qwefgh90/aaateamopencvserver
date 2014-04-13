@@ -53,13 +53,13 @@ class CIocpSrv
 	PSOCKET_DATA m_pSockets;
 	HANDLE m_hIOCP;						//IOCP핸들	//생산자에서 초기화
 	//생성자 (Construction)
-	CIocpSrv(int port = 9001,int maxconnection=2000) : m_Port(port),m_MaxConnection(maxconnection)
+	CIocpSrv(int port = 9001,int maxconnection=2000) : m_Port(port),m_MaxConnection(maxconnection),m_SocketIndexQ(maxconnection)
 	{
-		
 		m_Status = true;
 		// 클라이언트가 수시로 들어왔다 나갔다 하기때문에
 		// 잦은 파일I/O를 를 방지하고자 미리 생성해 놓는다.
 		m_pSockets = new SOCKET_DATA[maxconnection];		//최대 Connection개수 만큼 구조체 생성
+
 		int i;
 
 		for (i=0; i<maxconnection; i++) 

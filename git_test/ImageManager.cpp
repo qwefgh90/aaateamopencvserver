@@ -2,6 +2,9 @@
 #include "ImageManager.h"
 
 ImageManager* ImageManager::singleton= NULL;
+ImageManager::ImageManager(){
+	sift = SiftEngine::getSiftEngine();
+}
 ImageManager* ImageManager::getImageManager()
 {
 	if(ImageManager::singleton==NULL)
@@ -14,7 +17,6 @@ ImageManager* ImageManager::getImageManager()
 bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __in vector<Imagelist>& imageList)
 {
 	bool result = false;
-	SiftEngine* sift = SiftEngine::getSiftEngine();
 	
 	cv::Mat target;
 	//Create key
@@ -35,7 +37,6 @@ bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __i
 bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList)
 {
 	bool result = false;
-	SiftEngine* sift = SiftEngine::getSiftEngine();
 	
 	cv::Mat target;
 	//Create key

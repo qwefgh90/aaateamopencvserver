@@ -5,6 +5,7 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 {
 	bool result = false;
 	vector<string*> v;
+	u_int packetlen = memory.len;
 	/*
 	if(memory.len<=5)
 	{
@@ -14,7 +15,8 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 	*/
 	
 	//2)final spliter
-	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
+	u_char* end_ptr = NULL;
+	end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;
@@ -49,7 +51,8 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 	//1)i d / p a s s w d
 	
 	//2)end spliter
-	u_char* end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
+	u_char* end_ptr = NULL;
+	end_ptr = (u_char*)strstr((char*)(memory.buf+5),spliter_end.c_str());
 	if(end_ptr!=NULL)
 	{
 		end_ptr[0]=NULL;

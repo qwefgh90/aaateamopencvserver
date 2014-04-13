@@ -5,7 +5,8 @@ class ImageManager
 {
 private:
 	static ImageManager* singleton;
-	
+	SiftEngine* sift;
+	ImageManager();
 public:
 	static ImageManager* getImageManager();
 	bool matchingImage(__out Imagelist& image,__in Memory& memory, __in vector<Imagelist>& imageList);

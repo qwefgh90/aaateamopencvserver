@@ -4,7 +4,7 @@
 bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 {
 	bool result = false;
-	vector<string> v;
+	vector<string*> v;
 	/*
 	if(memory.len<=5)
 	{
@@ -32,8 +32,11 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 		printf("%s","[ERR_packetToLogin] : INVALID ID/PASSWD DATA\n");
 		goto END;
 	}
-	strcpy(out.ID,v[0].c_str());
-	strcpy(out.pass,v[1].c_str());
+	strcpy(out.ID,v[0]->c_str());
+	delete v[0];
+	strcpy(out.pass,v[1]->c_str());
+	delete v[1];
+	v.clear();
 	result = true;
 	END:
 	return result;
@@ -41,7 +44,7 @@ bool MenuAnalyzer::packetToLogin(__out IN_Login& out, __in Memory& memory)
 bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 {
 	bool result = false;
-	vector<string> v;
+	vector<string*> v;
 	
 	//1)i d / p a s s w d
 	
@@ -65,9 +68,13 @@ bool MenuAnalyzer::packetToSignup(__out IN_Signup& out, __in Memory& memory )
 		goto END;
 	}
 
-	strcpy(out.ID,v[0].c_str());
-	strcpy(out.pass,v[1].c_str());
-	strcpy(out.nick,v[2].c_str());
+	strcpy(out.ID,v[0]->c_str());
+	delete v[0];
+	strcpy(out.pass,v[1]->c_str());
+	delete v[1];
+	strcpy(out.nick,v[2]->c_str());
+	delete v[2];
+	v.clear();
 	result = true;
 	END:
 	return result;
@@ -237,9 +244,9 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	u_int* num = (u_int*)(cookie+64) ;		//글 번호
 	u_char* like = ((u_char*)num)+4 ;			//글 개수
 	
-	memcpy(out.cookie,cookie,64);
-	memcpy(&(out.num),num,4);					//글번호
-	memcpy(&(out.like),like,1);					//좋아요 , 싫어요 구분값
+	memcpy_s(out.cookie,64,cookie,64);				//쿠키
+	memcpy_s(&(out.num),4,num,4);					//글번호
+	memcpy_s(&(out.like),1,like,1);					//좋아요 , 싫어요 구분값
 	
 	result = true;
 	return result;

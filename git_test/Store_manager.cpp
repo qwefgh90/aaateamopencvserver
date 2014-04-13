@@ -182,6 +182,8 @@ bool Store_manager::Create_cache(IN_Cache in_cache)
 	Icf->createImageCache(str);
 	//ID에 대한 이미지 캐시 받아오기
 	Ic = Icf->getImageCache(str);
+	if(Ic==NULL)
+		return false;
 	//일단 초기화 시켜주기
 	Ic->clearImageVector();
 	//경도 위도를 통해 일정범위 안에있는 상점코드, 상점경로를 DB에서 받아오기

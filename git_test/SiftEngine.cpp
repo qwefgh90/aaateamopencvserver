@@ -22,6 +22,7 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	time_t   current_time;
 	time( &current_time);
 	cv::Mat db_original;
+	cv::Mat db;
 	// SIFT feature detector and feature extractor
 	cv::SiftFeatureDetector detector( 0.05, 5.0 );
 	cv::SiftDescriptorExtractor extractor( 3.0 );
@@ -46,9 +47,12 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 		printf(e.err.c_str());
 		goto END;
 	}
-	detector.detect( db_original, kps_db );
+	cv::resize( db_original, db, cv::Size(db_original.cols/2,
+	db_original.rows/2),0,0,CV_INTER_NN);
+
+	detector.detect( db, kps_db );
 	// Feature description 디스크립터 생성
-	extractor.compute( db_original, kps_db, m);
+	extractor.compute( db, kps_db, m);
 	
 	//if(remove(title)==0)
 	//{
@@ -128,7 +132,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		std::vector<cv::DMatch> matches;
 		try{
 			
-		matcher.match(mat, img.key_xml, matches);		//매칭함수 호출
+		matcher.match(img.key_xml, mat, matches);		//매칭함수 호출
 		
 		double max_dist = 0.0, min_dist = 100.0;
 
@@ -206,14 +210,13 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			goto END;
 			printf("loadKey() Fail\n");
 		}
-
 		try{
 		// 매칭 수행
 		printf("image path : %s\n",img.store_path);
 		cv::FlannBasedMatcher matcher;               
 		std::vector<cv::DMatch> matches;
 
-		matcher.match(mat, compareM, matches);		//매칭함수 호출
+		matcher.match(compareM,mat, matches);		//매칭함수 호출
 		
 		double max_dist = 0.0, min_dist = 100.0;
 
@@ -273,7 +276,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		image.store_code=-1;
 	}
 	
-	//return result
+	//return result 
 	END:
 	return result;
 

@@ -3,6 +3,7 @@
 #define filter_no 6
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,REPORT=11,CACHE=12}PROTO_TYPE;
+typedef enum{NEW=1,LIKE=0}SORT;
 
 #define COFFEE 0x01
 #define FOOD 0x02
@@ -85,6 +86,7 @@ typedef struct _IN_Search{
 		char ID[30+1];
 		unsigned char cookie[64];
 	};
+	u_char sort;
 	u_char filter;
 	Store store;	//상점 구조체
 //	float latitude;	//위도

@@ -130,6 +130,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		ImageBufferElement img = imageList[i];
 		cv::FlannBasedMatcher matcher;               
 		std::vector<cv::DMatch> matches;
+		u_int total_match_size=0;
 		try{
 			
 		matcher.match(img.key_xml, mat, matches);		//매칭함수 호출
@@ -138,8 +139,9 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 
 //		printf("img1 feature size : %d\n",kps_db.size());
 //		printf("img2 feature size : %d\n",kps_db2.size());
-		printf("matches size : %d\n",matches.size());
-		for(int i=0; i<matches.size(); i++) {
+		total_match_size=matches.size();
+		printf("matches size : %d\n",total_match_size);
+		for(int i=0; i<total_match_size; i++) {
 			double dist = matches[i].distance;
 			if ( dist < min_dist ) min_dist = dist;
 			if ( dist > max_dist ) max_dist = dist;
@@ -148,18 +150,19 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		// drawing only good matches (dist less than 2*min_dist)
 		std::vector<cv::DMatch> good_matches;
 
-		for (int i=0; i<matches.size(); i++) {
+		for (int i=0; i<total_match_size; i++) {
 			if (matches[i].distance <= 2*min_dist) {
 				good_matches.push_back( matches[i] );
 			}
 		}
-		u_int size= good_matches.size();
-		printf("good matches size : %ld\n",size);
+		u_int good_size= good_matches.size();
+		printf("good matches size : %ld\n",good_size);
 
 		//Save count of a matching
 		goodMatch m;
 		m.index=i;				//image index in vector
-		m.match_cnt=size;		//match size
+		m.total_match_cnt=total_match_size;
+		m.match_cnt=good_size;		//good match size
 		cntSet.push_back(m);	//save matching results to vector
 
 		} catch(cv::Exception& e) {

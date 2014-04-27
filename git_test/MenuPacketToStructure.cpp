@@ -109,7 +109,8 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	bool result = false;
 	u_char* cookie = memory.buf+5 ;		//쿠키
 	u_char* filter = cookie+64 ;			//필터
-	float* latitude = (float*)(filter+1) ;		//위도
+	u_char* sort = (filter+1);
+	float* latitude = (float*)(sort+1) ;		//위도
 	float* longitude = (float*)((u_char*)latitude+4) ;		//경도
 	u_char* image_buf = (u_char*)longitude+8 ;	//image
 	u_int	image_size = *((u_int*)memory.buf)-SEARCH_SIZE_BUTIMAGE;	//image size // 이미지 끝의 구분자는 없음(마지막)
@@ -117,6 +118,7 @@ bool MenuAnalyzer::packetToSearch(__out IN_Search& out, __in Memory& memory )
 	printf("[SEARCH]GPS Latitude : %f, Longitude : %f\n",*latitude,*longitude);
 	memcpy(out.cookie,cookie,64);
 
+	out.sort = *sort;
 	out.filter = *filter;
 	memcpy(&(out.store.latitude),latitude,4);
 	memcpy(&(out.store.longitude),longitude,4);

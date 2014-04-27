@@ -68,7 +68,7 @@ class CIocpSrv
 			m_SocketIndexQ.Put(i);
 		}
 
-		StartUp();
+		StartUp();	//WSA Setup
 		m_hIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,NULL,0,0);
 		
 		if (m_hIOCP == NULL)		//객체 생성 실패 생성자 실패

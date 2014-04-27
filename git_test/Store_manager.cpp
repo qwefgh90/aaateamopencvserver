@@ -56,7 +56,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		in_more.code = matchcache.store_code;
 		in_more.comment_count = 0;
 		memcpy_s(in_more.cookie,64,in_search.cookie,64);
-		in_more.sort = 1;
+		in_more.sort = in_search.sort;
 		dbm->Query_opi_search(in_more, out_more);
 		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
 		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(out_more.opi[1]), 
@@ -67,9 +67,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		
 		//결과값을 분석기에 반환
 		return true;
-	}
-
-	if(!dbm->Query_images(in_search, Imagevector))
+	}else if(!dbm->Query_images(in_search, Imagevector, Ic->imageVector) // 캐시 안에있는 이미지는 제외하고 검색해야하므로 벡터를 인자로 넣어 SQL의 not in구문을 이용해야 한다.
 	{
 		cout<<"이미지 벡터 등록에 실패하였습니다."<<endl;
 		out_search.result = 2;

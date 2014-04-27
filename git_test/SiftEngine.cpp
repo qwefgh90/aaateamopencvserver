@@ -184,7 +184,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.match_cnt < cntSet[i].percent)
+		if(max.percent < cntSet[i].percent)
 		{
 			max=cntSet[i];
 		}
@@ -277,7 +277,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.match_cnt < cntSet[i].percent)
+		if(max.percent < cntSet[i].percent)
 		{
 			max=cntSet[i];
 		}

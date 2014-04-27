@@ -56,7 +56,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		in_more.code = matchcache.store_code;
 		in_more.comment_count = 0;
 		memcpy_s(in_more.cookie,64,in_search.cookie,64);
-		in_more.sort = 1;
+		in_more.sort = in_search.sort;
 		dbm->Query_opi_search(in_more, out_more);
 		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
 		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(out_more.opi[1]), 

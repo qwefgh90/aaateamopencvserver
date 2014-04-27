@@ -159,7 +159,7 @@ bool DB_manager::Query_leave(char* ID)
 }
 
 //이미지 검색 쿼리
-bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevector)
+bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevector, vector<ImageBufferElement> &imageVector)
 {
 	SQLHANDLE* psqlconnectionhandle;
 	SQLHANDLE  sqlstatementhandle;
@@ -176,6 +176,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 
 	//필터를 담기위한 버퍼생성
 	char buf[50];
+	char not[200];
 	//필터의 번호를 저장하기 위한 버퍼
 	char c[5];
 	//버퍼 초기화
@@ -199,6 +200,13 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			return false;
 		}
 		*(strrchr(buf,','))=NULL;
+		for( int i = 0; i < (int)imageVector.size() ; i++)
+		{
+			_itoa_s(imageVector[i].store_code,c,10);
+			strcat_s(not, c);
+			strcat_s(not, ",");
+		}
+		*(strrchr(not,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
 		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
 			buf,
@@ -215,7 +223,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
-			
+
 			SQLCloseCursor(sqlstatementhandle);
 
 

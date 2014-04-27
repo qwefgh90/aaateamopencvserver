@@ -136,7 +136,7 @@ bool MenuAnalyzer::packetToMore(__out IN_More& out, __in Memory& memory )
 	u_char* cookie = memory.buf+5 ;
 	u_int* code = (u_int*)(cookie+64 );
 	u_char* sort = ((u_char*)code)+4 ;
-	u_char* opi_cnt = opi_cnt +1 ;
+	u_char* opi_cnt = sort +1 ;
 	
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.code),code,4);

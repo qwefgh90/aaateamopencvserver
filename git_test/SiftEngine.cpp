@@ -211,29 +211,23 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	printf("[SiftEngine] Vector Size : %d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
 	bool result = false;
-	for(int i = 0; i<(int)imageList.size(); i++)
+	for ( int i = 0 ; i < (int)imageList.size(); i++)
 	{
-		Imagelist img = imageList[i];
-		cv::Mat compareM;
-		if(!loadKey(img.store_path,compareM))
-		{
-			goto END;
-			printf("loadKey() Fail\n");
-		}
-		try{
-		// 매칭 수행
-		printf("image path : %s\n",img.store_path);
+		ImageBufferElement img = imageList[i];
 		cv::FlannBasedMatcher matcher;               
 		std::vector<cv::DMatch> matches;
-
-		matcher.match(compareM,mat, matches);		//매칭함수 호출
+		u_int total_match_size=0;
+		try{
+			
+		matcher.match(img.key_xml, mat, matches);		//매칭함수 호출
 		
 		double max_dist = 0.0, min_dist = 100.0;
 
-	//	printf("img1 feature size : %d\n",kps_db.size());
-	//	printf("img2 feature size : %d\n",kps_db2.size());
-		printf("Matches size : %d\n",matches.size());
-		for(int i=0; i<matches.size(); i++) {
+//		printf("img1 feature size : %d\n",kps_db.size());
+//		printf("img2 feature size : %d\n",kps_db2.size());
+		total_match_size=matches.size();
+		printf("matches size : %d\n",total_match_size);
+		for(int i=0; i<total_match_size; i++) {
 			double dist = matches[i].distance;
 			if ( dist < min_dist ) min_dist = dist;
 			if ( dist > max_dist ) max_dist = dist;
@@ -242,18 +236,25 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		// drawing only good matches (dist less than 2*min_dist)
 		std::vector<cv::DMatch> good_matches;
 
-		for (int i=0; i<matches.size(); i++) {
+		for (int i=0; i<total_match_size; i++) {
 			if (matches[i].distance <= 2*min_dist) {
 				good_matches.push_back( matches[i] );
 			}
 		}
-		u_int size= good_matches.size();
-		printf("good matches size : %ld\n",size);
+		u_int good_size= good_matches.size();
+		printf("good matches size : %ld\n",good_size);
 
 		//Save count of a matching
 		goodMatch m;
 		m.index=i;				//image index in vector
-		m.match_cnt=size;		//match size
+		m.total_match_cnt=total_match_size;
+		m.match_cnt=good_size;		//good match size
+		if(m.total_match_cnt != 0){
+			m.percent = (good_size / total_match_size) * 100;
+		}else{
+			m.percent = 0;
+		}
+
 		cntSet.push_back(m);	//save matching results to vector
 
 		} catch(cv::Exception& e) {
@@ -265,18 +266,19 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	goodMatch max;
 	max.index=-1;
 	max.match_cnt=0;
-	
+	max.percent = 0; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.match_cnt < cntSet[i].match_cnt)
+		if(max.match_cnt < cntSet[i].percent)
 		{
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, The best matching_count %ld\n",max.index,max.match_cnt);
+	printf("The best picture index %d, matching_count %ld matching_percent %ld\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
-	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
+
+	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))
 	{
 		result = true;
 		image = imageList[max.index];
@@ -286,7 +288,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		image.store_code=-1;
 	}
 	
-	//return result 
+	//return result
 	END:
 	return result;
 

@@ -128,10 +128,11 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	for ( int i = 0 ; i < (int)imageList.size(); i++)
 	{
 		ImageBufferElement img = imageList[i];
-		cv::FlannBasedMatcher matcher;               
+		cv::FlannBasedMatcher matcher;          
+		u_int totalmatchsize=0;
+
 		std::vector<cv::DMatch> matches;
 		try{
-			
 		matcher.match(img.key_xml, mat, matches);		//매칭함수 호출
 		
 		double max_dist = 0.0, min_dist = 100.0;
@@ -153,14 +154,21 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 				good_matches.push_back( matches[i] );
 			}
 		}
-		u_int size= good_matches.size();
-		printf("good matches size : %ld\n",size);
+		u_int goodmatch_size= good_matches.size();
+		printf("good matches size : %ld\n",goodmatch_size);
 
 		//Save count of a matching
 		goodMatch m;
+		memset(&m,0,sizeof(goodMatch));
 		m.index=i;				//image index in vector
-		m.match_cnt=size;		//match size
-		cntSet.push_back(m);	//save matching results to vector
+		m.match_cnt=goodmatch_size;		//match size
+		m.total_match_cnt = totalmatchsize;
+				if(m.total_match_cnt != 0){
+			m.percent = (u_int)((double)goodmatch_size / totalmatchsize) * 100;
+		}else{
+			m.percent = 0;
+		}
+
 
 		} catch(cv::Exception& e) {
 			printf("Exception occurred. Match images... ");
@@ -175,12 +183,12 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.match_cnt < cntSet[i].match_cnt)
+		if(max.match_cnt < cntSet[i].percent)
 		{
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld\n",max.index,max.match_cnt);
+	printf("The best picture index %d, matching_count %ld matching_percent %ld\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 
 	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))
@@ -249,7 +257,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		m.match_cnt=goodmatch_size;		//match size
 		m.total_match_cnt = totalmatchsize;
 				if(m.total_match_cnt != 0){
-			m.percent = (goodmatch_size / totalmatchsize) * 100;
+			m.percent = (u_int)((double)goodmatch_size / totalmatchsize) * 100;
 		}else{
 			m.percent = 0;
 		}

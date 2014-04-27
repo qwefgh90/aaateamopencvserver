@@ -166,7 +166,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		m.total_match_cnt = totalmatchsize;
 				if(m.total_match_cnt != 0){
 			m.percent = ((float)goodmatch_size / (float)totalmatchsize) * 100;
-			printf("percent %f\n",m.percent);
+			//printf("percent : %f\n",m.percent);
 		}else{
 			m.percent = 0.f;
 		}
@@ -186,15 +186,15 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.percent < cntSet[i].percent)
+		if(max.match_cnt < cntSet[i].match_cnt)
 		{
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
+	printf("The best picture index %d, good_match_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 
-	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))
+	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
 	{
 		result = true;
 		image = imageList[max.index];
@@ -262,7 +262,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		m.percent = 0.f;
 		if(m.total_match_cnt != 0){
 			m.percent = ((float)goodmatch_size / (float)totalmatchsize) * 100;
-			printf("percent %f\n",m.percent);
+			//printf("percent : %f\n",m.percent);
 		}else{
 			m.percent = 0;
 		}
@@ -281,15 +281,15 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.percent < cntSet[i].percent)
+		if(max.match_cnt < cntSet[i].match_cnt)
 		{
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
+	printf("The best picture index %d, good_match_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 
-	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))
+	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
 	{
 		result = true;
 		image = imageList[max.index];

@@ -154,6 +154,7 @@ typedef struct _IN_Report{
 		char ID[30+1];
 		unsigned char cookie[64];
 	};
+	u_char sort;
 	u_char filter;
 	Store store;		//상점 구조체
 	//float latitude;	//위도

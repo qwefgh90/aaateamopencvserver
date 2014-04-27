@@ -67,9 +67,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		
 		//결과값을 분석기에 반환
 		return true;
-	}
-
-	if(!dbm->Query_images(in_search, Imagevector))
+	}else if(!dbm->Query_images(in_search, Imagevector, Ic->imageVector) // 캐시 안에있는 이미지는 제외하고 검색해야하므로 벡터를 인자로 넣어 SQL의 not in구문을 이용해야 한다.
 	{
 		cout<<"이미지 벡터 등록에 실패하였습니다."<<endl;
 		out_search.result = 2;

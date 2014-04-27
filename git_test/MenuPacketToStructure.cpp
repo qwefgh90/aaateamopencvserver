@@ -265,7 +265,8 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 
 	u_char* cookie = memory.buf+5 ;
 	u_char* filter = cookie+64 ;
-	float*	latitude = (float*)(filter+1 );
+	u_char* sort = (filter+1);
+	float*	latitude = (float*)(sort+1 );
 	float*	longitude= (float*)(((u_char*)latitude)+4 );
 	printf("[REPORT]GPS Latitude : %f, Longitude : %f\n",*latitude,*longitude);
 
@@ -283,9 +284,10 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	u_int opinion_size=0;
 	u_int image_size=0;
 	u_char* image=NULL;
-
+	
 	memcpy(out.cookie,cookie,64);
 	memcpy(&(out.filter),filter,1);				//필터
+	out.sort = *sort;							//정렬값
 	memcpy(&(out.store.latitude),latitude,4);			//위도
 	memcpy(&(out.store.longitude),longitude,4);		//경도
 

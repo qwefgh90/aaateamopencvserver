@@ -32,9 +32,43 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 {
 	//이미지 구조체를 선언
 	Imagelist imagelist;
+	//캐시검색성공후 저장을 위한 이미지 구조체 선언
+	ImageBufferElement matchcache;
 	//이미지벡터를 지역변수로 선언
 	vector<Imagelist> Imagevector;
 	
+	ImageCache* Ic = NULL;
+	//이미지 캐시 팩토리에서 캐시 생성
+	string str(in_search.ID);
+	Icf->createImageCache(str);
+	//ID에 대한 이미지 캐시 받아오기
+	Ic = Icf->getImageCache(str);
+	//NULL일 경우 검사 안해야됨
+	//캐시를 우선으로 검색
+	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector))
+	{
+		out_search.code = matchcache.store_code;
+		
+		//검색된 상점에 대한 의견검색을 위해 선언
+		IN_More in_more;
+		OUT_More out_more;
+		//구조체에 검색한 상점의 인자들을 저장
+		in_more.code = matchcache.store_code;
+		in_more.comment_count = 0;
+		memcpy_s(in_more.cookie,64,in_search.cookie,64);
+		in_more.sort = 1;
+		dbm->Query_opi_search(in_more, out_more);
+		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
+		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(out_more.opi[1]), 
+			out_more.opi, out_more.opi_cnt*sizeof(out_more.opi[1]));
+		out_search.opi_cnt = out_more.opi_cnt;
+		out_search.result = out_more.result;
+		out_search.score = out_more.score;
+		
+		//결과값을 분석기에 반환
+		return true;
+	}
+
 	if(!dbm->Query_images(in_search, Imagevector))
 	{
 		cout<<"이미지 벡터 등록에 실패하였습니다."<<endl;

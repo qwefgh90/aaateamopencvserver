@@ -189,7 +189,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld\n",max.index,max.match_cnt);
+	printf("The best picture index %d, matching_count %ld matching_percent %ld\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
 	{

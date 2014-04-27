@@ -180,7 +180,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	goodMatch max;
 	max.index=-1;
 	max.match_cnt=0;
-	
+	max.percent = 0; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{

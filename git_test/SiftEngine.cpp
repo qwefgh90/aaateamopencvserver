@@ -165,10 +165,12 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		m.match_cnt=goodmatch_size;		//match size
 		m.total_match_cnt = totalmatchsize;
 				if(m.total_match_cnt != 0){
-			m.percent = (u_int)((double)goodmatch_size / totalmatchsize) * 100;
+			m.percent = ((float)goodmatch_size / (float)totalmatchsize) * 100;
+			printf("percent %f\n",m.percent);
 		}else{
-			m.percent = 0;
+			m.percent = 0.f;
 		}
+		cntSet.push_back(m);	//save matching results to vector
 
 
 		} catch(cv::Exception& e) {
@@ -180,7 +182,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	goodMatch max;
 	max.index=-1;
 	max.match_cnt=0;
-	max.percent = 0; max.total_match_cnt=0;
+	max.percent = 0.f; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
@@ -189,7 +191,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld matching_percent %ld\% \n",max.index,max.match_cnt,max.percent);
+	printf("The best picture index %d, matching_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 
 	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))
@@ -257,8 +259,10 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		m.index=i;				//image index in vector
 		m.match_cnt=goodmatch_size;		//match size
 		m.total_match_cnt = totalmatchsize;
-				if(m.total_match_cnt != 0){
-			m.percent = (u_int)((double)goodmatch_size / totalmatchsize) * 100;
+		m.percent = 0.f;
+		if(m.total_match_cnt != 0){
+			m.percent = ((float)goodmatch_size / (float)totalmatchsize) * 100;
+			printf("percent %f\n",m.percent);
 		}else{
 			m.percent = 0;
 		}
@@ -273,7 +277,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	goodMatch max;
 	max.index=-1;
 	max.match_cnt=0;
-	max.percent = 0; max.total_match_cnt=0;
+	max.percent = 0.f; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
@@ -282,7 +286,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, matching_count %ld matching_percent %ld\% \n",max.index,max.match_cnt,max.percent);
+	printf("The best picture index %d, matching_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 
 	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))

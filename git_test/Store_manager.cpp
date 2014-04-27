@@ -127,7 +127,7 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	in_search.store.image.len = in_report.store.image.len;
 	in_search.store.latitude = in_report.store.latitude;
 	in_search.store.longitude = in_report.store.longitude;
-	
+	in_search.sort = in_report.sort;
 	
 	//우선 등록된 이미지가 있는지 검색
 	if(!Store_Search(in_search, out_search))

@@ -351,7 +351,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
 	char* sort_no = "good";
-	if(in_more.sort == 1 )
+	if(in_more.sort == 0 )
 		sort_no = "good";
 	else
 		sort_no = "date";

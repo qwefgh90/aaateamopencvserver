@@ -27,5 +27,5 @@ typedef struct _goodMatch
 	int index;
 	u_int total_match_cnt;
 	u_int match_cnt;
-	u_int percent;
+	float percent;
 }goodMatch;

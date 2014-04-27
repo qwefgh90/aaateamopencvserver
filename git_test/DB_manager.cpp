@@ -200,16 +200,18 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 			return false;
 		}
 		*(strrchr(buf,','))=NULL;
-		//for( int i = 0; i < (int)imageVector.size() ; i++)
-		//{
-		//	_itoa_s(imageVector[i].store_code,c,10);
-		//	strcat_s(not, c);
-		//	strcat_s(not, ",");
-		//}
-		//*(strrchr(not,','))=NULL;
+		strcat_s(not, "-1,");
+		for( int i = 0; i < (int)imageVector.size() ; i++)
+		{
+			_itoa_s(imageVector[i].store_code,c,10);
+			strcat_s(not, c);
+			strcat_s(not, ",");
+		}
+		*(strrchr(not,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
-		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
+		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and store_code not in (%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
 			buf,
+			not,
 			in_search.store.longitude - ERRORRANGE, in_search.store.longitude + ERRORRANGE,
 			in_search.store.latitude - ERRORRANGE, in_search.store.latitude + ERRORRANGE);
 

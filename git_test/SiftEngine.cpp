@@ -206,6 +206,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	{
 		Imagelist img = imageList[i];
 		cv::Mat compareM;
+		u_int totalmatchsize=0;
 		if(!loadKey(img.store_path,compareM))
 		{
 			goto END;
@@ -223,6 +224,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 
 	//	printf("img1 feature size : %d\n",kps_db.size());
 	//	printf("img2 feature size : %d\n",kps_db2.size());
+		totalmatchsize = matches.size();
 		printf("Matches size : %d\n",matches.size());
 		for(int i=0; i<matches.size(); i++) {
 			double dist = matches[i].distance;
@@ -238,13 +240,19 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 				good_matches.push_back( matches[i] );
 			}
 		}
-		u_int size= good_matches.size();
-		printf("good matches size : %ld\n",size);
+		u_int goodmatch_size= good_matches.size();
+		printf("good matches size : %ld\n",goodmatch_size);
 
 		//Save count of a matching
 		goodMatch m;
 		m.index=i;				//image index in vector
-		m.match_cnt=size;		//match size
+		m.match_cnt=goodmatch_size;		//match size
+		m.total_match_cnt = totalmatchsize;
+				if(m.total_match_cnt != 0){
+			m.percent = (goodmatch_size / totalmatchsize) * 100;
+		}else{
+			m.percent = 0;
+		}
 		cntSet.push_back(m);	//save matching results to vector
 
 		} catch(cv::Exception& e) {
@@ -256,18 +264,19 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	goodMatch max;
 	max.index=-1;
 	max.match_cnt=0;
-	
+	max.percent = 0; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
-		if(max.match_cnt < cntSet[i].match_cnt)
+		if(max.match_cnt < cntSet[i].percent)
 		{
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, The best matching_count %ld\n",max.index,max.match_cnt);
+	printf("The best picture index %d, matching_count %ld matching_percent %ld\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
-	if ((max.match_cnt > SiftEngine::MIN_MATCH) && (max.index>=0))
+
+	if ((max.percent > SiftEngine::MIN_PERCENT) && (max.index>=0))
 	{
 		result = true;
 		image = imageList[max.index];
@@ -277,7 +286,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		image.store_code=-1;
 	}
 	
-	//return result 
+	//return result
 	END:
 	return result;
 

@@ -124,12 +124,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_USER_SHELLICON:		//윈도우 메세지 발생
 		switch(LOWORD(lParam)) 
 		{   
+		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:	//오른쪽 클릭시 팝업 메뉴 생성
 			UINT uFlag = MF_BYPOSITION|MF_STRING;
 			GetCursorPos(&lpClickPoint);
 			hPopMenu = CreatePopupMenu();
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_START,"Start");
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_STOP,"Stop");
+			//InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_START,"Start");
+			//InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_STOP,"Stop");
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_TERMINATE,"Terminate");
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TRAY_ABOUT,"About");
 			SetForegroundWindow(hWnd);

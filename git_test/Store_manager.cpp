@@ -35,6 +35,14 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	//이미지벡터를 지역변수로 선언
 	vector<Imagelist> Imagevector;
 	
+	ImageCache* Ic = NULL;
+	//이미지 캐시 팩토리에서 캐시 생성
+	string str(in_search.ID);
+	Icf->createImageCache(str);
+	//ID에 대한 이미지 캐시 받아오기
+	Ic = Icf->getImageCache(str);
+	//NULL일 경우 검사 안해야됨
+
 	if(!dbm->Query_images(in_search, Imagevector))
 	{
 		cout<<"이미지 벡터 등록에 실패하였습니다."<<endl;

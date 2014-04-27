@@ -139,6 +139,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 
 //		printf("img1 feature size : %d\n",kps_db.size());
 //		printf("img2 feature size : %d\n",kps_db2.size());
+		totalmatchsize=matches.size();
 		printf("matches size : %d\n",matches.size());
 		for(int i=0; i<matches.size(); i++) {
 			double dist = matches[i].distance;

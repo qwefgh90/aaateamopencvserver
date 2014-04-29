@@ -781,8 +781,8 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 		//현재 위치와 상점 위치간의 거리 비교 후 qsort이용
 			//Compare함수는 stdafx.cpp에있음
 			sort(Ibev.begin(), Ibev.end(), Compare);
-			//캐시에 저장한 사이즈가 11개이상이고 i가 40이하일 때까지 삭제 -> 50개보다 적은게 캐싱될 경우 10개까지만 남기고 삭제, 50개가 모두 캐싱 될경우 40개를 지우기
-			for(int i= 0; ((int)Ibev.size() > 10) && (i < 40); i++)
+			//캐시에 저장한 사이즈가 21개이상이고 i가 30이하일 때까지 삭제 -> 50개보다 적은게 캐싱될 경우 20개까지만 남기고 삭제, 50개가 모두 캐싱 될경우 30개를 지우기
+			for(int i= 0; ((int)Ibev.size() > 20) && (i < 30); i++)
 				Ibev.erase(Ibev.begin()+10);
 
 			/*Release the connection back into the pool*/

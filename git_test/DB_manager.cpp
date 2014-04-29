@@ -359,7 +359,7 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 
 	int i=0;
 	//의견 검색 쿼리
-	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by '%s' desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_more.code, sort_no, in_more.comment_count);
+	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by \"%s\" desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_more.code, sort_no, in_more.comment_count);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{

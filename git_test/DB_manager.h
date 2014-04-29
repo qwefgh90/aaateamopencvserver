@@ -12,7 +12,7 @@ private:
 	
 	SQLSvrPool* sqlsvrpool;
 
-	TCHAR sql[256];
+	TCHAR sql[1000];
 
 	unsigned char shacode[64];
 

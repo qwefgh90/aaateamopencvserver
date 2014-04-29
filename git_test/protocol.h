@@ -11,7 +11,7 @@ typedef enum{NEW_SORT=1,LIKE_SORT=0}SORT;
 #define HAIR 0x08
 #define BAKERY 0x10
 #define ETC 0x20
-#define ERRORRANGE 0.1
+#define ERRORRANGE 0.1f
 const unsigned char filter[filter_no] = { COFFEE, FOOD, RESTAURANT, HAIR, BAKERY, ETC};
 #define IMAGE_DEBUG_MSG 1
 

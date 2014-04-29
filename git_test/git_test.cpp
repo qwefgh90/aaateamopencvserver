@@ -268,7 +268,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			}
 			else if(pIOD->nCurrentBytes == pIOD->nTotalBytes) // 다보냈을시에 초기화
 			{
-				printf("[Write]Send All- total : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+				printf("[Write] Send All- total : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
 				//1)통신 바로 종료
 				pSD->Status = false;
 				pSrv->m_SocketIndexQ.Put( pSD->index );
@@ -304,6 +304,8 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 			//nTotalBytes값이 0이면 처음 데이터를 받는 경우이다. 이때 버퍼를 하나 생성하여 데이터를 담는다.
 			if(pIOD->nTotalBytes==0)
 			{
+				printf("[Read] Start!\n");
+			
 				//binascii.unhexlify('0000000a') in python
 				u_int totalBytes = *((u_int*)pIOD->Buf);
 				pIOD->nTotalBytes = totalBytes;
@@ -327,7 +329,7 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 				}
 			}else if(pIOD->nTotalBytes == pIOD->nCurrentBytes)
 			{
-				printf("[Read]All Received - total : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
+				printf("[Read] All Received - total : %ubytes , csize : %dbytes , dwloSize : %dbytes\n",pIOD->nTotalBytes,pIOD->nCurrentBytes,dwIoSize);
 			
 				memcpy(pBuffer+(pIOD->nCurrentBytes-dwIoSize),pIOD->wsabuf.buf,dwIoSize);	//받은 일부 데이터를 전체 버퍼에 복사
 				//printf("bufdata : %s\n",pBuffer+4);
@@ -393,7 +395,7 @@ DWORD WINAPI ProcessThread(LPVOID recv_buf)
 
 	nRet = WSASend( pSD->Socket, &(pSD->IOData[1].wsabuf), 1, &dwSendNBytes,
 		dwFlags, &(pSD->IOData[1].Overlapped), NULL);
-
+	printf("[Write] Start!\n");
 	//버퍼 초기화
 	if (nRet == SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError()) )
 	{

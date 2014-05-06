@@ -260,7 +260,7 @@ bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 		char num[12]={0,};	//글번호
 		sprintf(num,"%u\r\n",opi->sns_id);
 		num_size[i]=strlen(num);
-
+		
 		char* content=opi->comment;	//글내용 (문자열)
 		content_size[i]=strlen(content)+2;
 
@@ -698,7 +698,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 		char num[12]={0,};	//글번호
 		sprintf(num,"%u\r\n",opi->sns_id);
 		num_size[i]=strlen(num);
-
+		
 		char* content=opi->comment;	//글내용 (문자열)
 		content_size[i]=strlen(content)+2;
 
@@ -759,7 +759,8 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 
 		sprintf(big_buffer,"%s\r\n",(in.opi+i)->nick);
 		memcpy(nic_ptr[i],big_buffer,nic_size[i]);
-
+		
+		printf("comment bigbuffer : %s\n",(in.opi+i)->comment);
 		sprintf(big_buffer,"%s\r\n",(in.opi+i)->comment);
 		memcpy(conten_ptr[i],big_buffer,content_size[i]);
 

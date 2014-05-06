@@ -243,7 +243,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 //이미지 등록 쿼리
 bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_report)
 {
-	char nick[41];
+	char nick[17]={0,};
 	int sns_id;
 	SQLHANDLE* psqlconnectionhandle;
 	SQLHANDLE  sqlstatementhandle;
@@ -314,10 +314,13 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 
 			/*Dispaly the pool information*/
 			out_report.code = store_code;
+
 			memcpy_s(out_report.opi[0].comment,sizeof(out_report.opi[0].comment),in_report.comment,sizeof(in_report.comment));
+			//printf("src: %s dest: %s\n",in_report.comment, out_report.opi[0].comment);
+			
 			out_report.opi[0].dislike_cnt = 0;
 			out_report.opi[0].like_cnt = 0;
-			strcpy_s(out_report.opi[0].nick,40,nick);
+			strcpy_s(out_report.opi[0].nick,16,nick);
 			out_report.opi[0].sns_id = sns_id;
 			out_report.opi[0].dislike_cnt = 0;
 			out_report.opi_cnt = 1;

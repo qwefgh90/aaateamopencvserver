@@ -431,6 +431,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				err_code=out.code=3;	//에러코드 세팅
 				goto ERRORCODE;
 			}
+			
 			//1)쿠키체크/인증과정
 			if(member_manager->cookiechk(in.ID,in.cookie))
 			{
@@ -455,7 +456,8 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				err_code=out.code;	//에러코드 세팅
 				//goto ERRORCODE;	//에러코드가 아닌 정보를 관련 전송해줌
 			}
-
+			
+			printf("comment for packetFromReport : %s\n",out.opi[0].comment);
 			//3)패킷조립
 			packetFromReport(out_memory,out);
 

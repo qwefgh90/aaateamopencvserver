@@ -170,7 +170,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		}else{
 			m.percent = 0.f;
 		}
-		if(m.percent>SiftEngine::MIN_PERCENT && m.match_cnt>=SiftEngine::MIN_MATCH)
+		if(m.percent>=SiftEngine::MIN_PERCENT)
 			cntSet.push_back(m);	//save matching results to vector
 
 
@@ -181,9 +181,8 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	}
 	//Best match image 
 	goodMatch max;
+	memset(&max,0,sizeof(max));
 	max.index=-1;
-	max.match_cnt=0;
-	max.percent = 0.f; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
@@ -192,20 +191,36 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, good_match_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 	
 	//(max.match_cnt > SiftEngine::MIN_MATCH)  &&
-	if (max.index>=0)
+	if (max.index>=0 && max.match_cnt>SiftEngine::MIN_MATCH)
 	{
 		result = true;
 		image = imageList[max.index];
+		printf("The best picture index %d, [good_match_count %ld] matching_percent %f% \n",max.index,max.match_cnt,max.percent);
 	}else
-	{
-		result = false;
-		image.store_code=-1;
-	}
-	
+	{	
+		memset(&max,0,sizeof(max));
+		max.index=-1;
+		for (int i=0; i<cntSet.size() ; i++)
+		{
+			if(max.percent < cntSet[i].percent)
+			{
+				max=cntSet[i];
+			}
+		}
+		if(max.index>=0 && max.percent>SiftEngine::SEARCH_PERCENT)
+		{	
+			printf("The best picture index %d, good_match_count %ld [matching_percent %f%] \n",max.index,max.match_cnt,max.percent);
+			result = true;
+			image = imageList[max.index];		
+		}else{
+			result = false;
+			image.store_code=-1;
+
+		}
+	}	
 	//return result
 	END:
 	return result;
@@ -269,7 +284,7 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			m.percent = 0;
 		}
 		
-		if(m.percent>SiftEngine::MIN_PERCENT && m.match_cnt>=SiftEngine::MIN_MATCH)
+		if(m.percent>=SiftEngine::MIN_PERCENT)
 			cntSet.push_back(m);	//save matching results to vector
 
 		} catch(cv::Exception& e) {
@@ -279,9 +294,8 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	}
 	//Best match image 
 	goodMatch max;
+	memset(&max,0,sizeof(max));
 	max.index=-1;
-	max.match_cnt=0;
-	max.percent = 0.f; max.total_match_cnt=0;
 	//Find the best match image
 	for (int i=0; i<cntSet.size() ; i++)
 	{
@@ -290,19 +304,36 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			max=cntSet[i];
 		}
 	}
-	printf("The best picture index %d, good_match_count %ld matching_percent %f\% \n",max.index,max.match_cnt,max.percent);
 	//if bigger than minimum size
 
 	//(max.match_cnt > SiftEngine::MIN_MATCH)  &&
-	if (max.index>=0)
+	if (max.index>=0 && max.match_cnt>SiftEngine::MIN_MATCH)
 	{
 		result = true;
 		image = imageList[max.index];
+		printf("The best picture index %d, [good_match_count %ld] matching_percent %f% \n",max.index,max.match_cnt,max.percent);
 	}else
-	{
-		result = false;
-		image.store_code=-1;
-	}
+	{	
+		memset(&max,0,sizeof(max));
+		max.index=-1;
+		for (int i=0; i<cntSet.size() ; i++)
+		{
+			if(max.percent < cntSet[i].percent)
+			{
+				max=cntSet[i];
+			}
+		}
+		if(max.index>=0 && max.percent>SiftEngine::SEARCH_PERCENT)
+		{	
+			result = true;
+			image = imageList[max.index];		
+			printf("The best picture index %d, good_match_count %ld [matching_percent %f%] \n",max.index,max.match_cnt,max.percent);
+		}else{
+			result = false;
+			image.store_code=-1;
+
+		}
+	}	
 	
 	//return result
 	END:

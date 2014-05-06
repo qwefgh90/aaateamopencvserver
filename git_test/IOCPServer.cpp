@@ -126,6 +126,7 @@ void CIocpSrv::CloseClient(PSOCKET_DATA pSD)
 		pSD->Socket=NULL;
 	}
 }
+
 void CIocpSrv::ReleaseData(PSOCKET_DATA pSD)
 { 
 	printf("ReleaseData()\n");
@@ -150,5 +151,7 @@ void CIocpSrv::ReleaseData(PSOCKET_DATA pSD)
 		pSD->IOData[1].wsabuf.buf=NULL;
 		pSD->IOData[1].wsabuf.len=0;
 	}
-	
+
+	pSD->Status = false;
+	m_SocketIndexQ.Put(pSD->index);
 }

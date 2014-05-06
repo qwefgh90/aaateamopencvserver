@@ -198,25 +198,30 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 						if(packetFromSearch(out_memory,out))
 						{
 						}else{
+				freeImage(in.store.image);
 							err_code = out.result=3;
 							goto ERRORCODE;
 						}
 					}else{
+					freeImage(in.store.image);
 						printf_s("%s\n","[SEARCH]검색 실패");
 						err_code = out.result;
 						goto ERRORCODE;
 					}
 
 				}else{
+				freeImage(in.store.image);
 					printf_s("%s\n","[SEARCH]Not Authorized");
 					err_code = out.result=5;
 					goto ERRORCODE;
 				}
 			}else{
+				freeImage(in.store.image);
 				printf_s("%s\n","[SEARCH]Parse Fail");
 				err_code = out.result=3;
 				goto ERRORCODE;
 			}
+			freeImage(in.store.image);
 			//2)상점검색
 
 			//3)패킷조립
@@ -426,6 +431,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			
 			if(!packetToReport(in,in_memory))
 			{
+				freeImage(in.store.image);
 				printf_s("%s\n","[REPORT]Parse Fail");
 				//파싱 실패
 				err_code=out.code=3;	//에러코드 세팅
@@ -438,6 +444,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//성공
 			}else
 			{
+				freeImage(in.store.image);
 				printf_s("%s\n","[REPORT]Not Authorized");
 				//인증 실패
 				err_code=out.code=5;	//에러코드 세팅
@@ -451,13 +458,13 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				printf("상점 등록 성공\n");
 			}else
 			{
+				freeImage(in.store.image);
 				//실패
 				printf("상점 등록 실패\n");
 				err_code=out.code;	//에러코드 세팅
 				//goto ERRORCODE;	//에러코드가 아닌 정보를 관련 전송해줌
 			}
 			
-			printf("comment for packetFromReport : %s\n",out.opi[0].comment);
 			//3)패킷조립
 			packetFromReport(out_memory,out);
 
@@ -466,6 +473,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			{
 				printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
 			}
+			freeImage(in.store.image);
 
 			break;
 		}
@@ -577,4 +585,11 @@ bool MenuAnalyzer::split(__in vector<string*>& arr,string str, string sep){
 	}
 	result=true;
 	return result;
+}
+
+void MenuAnalyzer::freeImage(Memory& m){
+	if (m.buf!=NULL){
+		delete[] m.buf;
+		m.len=0;
+	}
 }

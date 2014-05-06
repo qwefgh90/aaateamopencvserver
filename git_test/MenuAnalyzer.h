@@ -14,7 +14,8 @@ public:
 	bool MenuAnalyzer::split(__in vector<string*>& v,string str, string sep);
 	Member_manager* member_manager;
 	Store_manager* store_manager;
-	
+	void freeImage(Memory& m);
+
 private:
 	//packet to structure of login
 	bool packetToLogin(__out IN_Login&,__in Memory& memory);

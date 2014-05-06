@@ -457,7 +457,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 		int i=0;
 		//의견 검색 쿼리
-		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code=%d order by %s desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_write_opi.code, sort_no, in_write_opi.comment_count);
+		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code=%d order by %s desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_write_opi.code, sort_no, 0);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{

@@ -462,7 +462,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				//실패
 				printf("상점 등록 실패\n");
 				err_code=out.code;	//에러코드 세팅
-				//goto ERRORCODE;	//에러코드가 아닌 정보를 관련 전송해줌
+				goto ERRORCODE;	//에러코드가 아닌 정보를 관련 전송해줌
 			}
 			
 			//3)패킷조립
@@ -590,6 +590,7 @@ bool MenuAnalyzer::split(__in vector<string*>& arr,string str, string sep){
 void MenuAnalyzer::freeImage(Memory& m){
 	if (m.buf!=NULL){
 		delete[] m.buf;
+		m.buf=NULL;
 		m.len=0;
 	}
 }

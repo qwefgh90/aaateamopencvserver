@@ -268,7 +268,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			break;
 		}
 			//상점 등록
-	sprintf_s(sql, "insert into STORE(store_key,gps_longitude,gps_latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image.buf, in_report.store.longitude, in_report.store.latitude,in_report.filter);
+	sprintf_s(sql, "insert into STORE(store_key,gps_Longitude,gps_Latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image.buf, in_report.store.longitude, in_report.store.latitude,in_report.filter);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{
@@ -448,8 +448,8 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 	{
 		SQLCloseCursor(sqlstatementhandle);
 
-		char* sort_no = "good";
-		if(in_write_opi.sort == 1 )
+		char* sort_no = "date";
+		if(in_write_opi.sort == 0 )
 			sort_no = "good";
 		else
 			sort_no = "date";
@@ -457,7 +457,7 @@ bool DB_manager::Query_opi_register(IN_Write_comment in_write_opi, OUT_Write_com
 
 		int i=0;
 		//의견 검색 쿼리
-		sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code=%d order by %s desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_write_opi.code, sort_no, 0);
+		sprintf_s(sql, "select TOP 10 sns_id, nick, sns_con, good, bed from SNS where store_code=%d order by %s desc;", in_write_opi.code, sort_no);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{

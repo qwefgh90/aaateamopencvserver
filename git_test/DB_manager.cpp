@@ -759,9 +759,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 
 	//캐시 구조체 선언
 	ImageBufferElement Ibe;
-	//위도,경도 거리 임시저장할 변수 선언
-	float t_long;
-	float t_lati;
+
 	if(Sql_run(sql, sqlstatementhandle))
 	{
 		//검색된거 일단 저장
@@ -773,12 +771,8 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Ibe.store_path, 256, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_FLOAT, &Ibe.latitude, 4, NULL);
 				SQLGetData(sqlstatementhandle, 4, SQL_C_FLOAT, &Ibe.longitude, 4, NULL);
-				//받아온 위도,경도를 현재 위치와 빼서 거리를 저장
-				t_long =  abs(longitude - Ibe.longitude);
-				t_lati =  abs(latitude - Ibe.latitude);
-				Ibe.longitude = t_long*40000/360*cos(Ibe.latitude);
-				Ibe.latitude = t_lati*40000/360;
-				Ibe.distance = sqrt(pow(Ibe.longitude,2) + pow(Ibe.latitude,2));
+				//거리 구하는 함수 사용
+				Ibe.distance = distance(Ibe.latitude, Ibe.longitude, latitude, longitude);
 				Ibev.push_back(Ibe);
 			}
 		//현재 위치와 상점 위치간의 거리 비교 후 qsort이용
@@ -800,5 +794,79 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 }
 //경도 위도를 km로 환산 하여 구해야함
 
-//db에서 받아온 좌표를 벡터에 임시 저장하고 현재 좌표 - db에서 받아온 좌표를 절대값으로 설정한 후
-//벡터를 sort해서 오름차순으로 정렬한다. 그 후 최대 10개를 이미지 벡터에 저장
+//두 좌표간 거리 구하기
+float DB_manager::distance(float P1_latitude, float P1_longitude, float P2_latitude, float P2_longitude)
+{
+	if ((P1_latitude == P2_latitude) && (P1_longitude == P2_longitude)) {
+		return 0;
+	}
+	float e10 = P1_latitude * M_PI / 180;
+	float e11 = P1_longitude * M_PI / 180;
+	float e12 = P2_latitude * M_PI / 180;
+	float e13 = P2_longitude * M_PI / 180;
+	/* 타원체 GRS80 */
+	float c16 = 6356752.314140910;
+	float c15 = 6378137.000000000;
+	float c17 = 0.0033528107;
+	float f15 = c17 + c17 * c17;
+	float f16 = f15 / 2;
+	float f17 = c17 * c17 / 2;
+	float f18 = c17 * c17 / 8;
+	float f19 = c17 * c17 / 16;
+	float c18 = e13 - e11;
+	float c20 = (1 - c17) * tan(e10);
+	float c21 = atan(c20);
+	float c22 = sin(c21);
+	float c23 = cos(c21);
+	float c24 = (1 - c17) * tan(e12);
+	float c25 = atan(c24);
+	float c26 = sin(c25);
+	float c27 = cos(c25);
+	float c29 = c18;
+	float c31 = (c27 * sin(c29) * c27 * sin(c29))
+		+ (c23 * c26 - c22 * c27 * cos(c29))
+		* (c23 * c26 - c22 * c27 * cos(c29));
+	float c33 = (c22 * c26) + (c23 * c27 * cos(c29));
+	float c35 = sqrt(c31) / c33;
+	float c36 = atan(c35);
+	float c38 = 0;
+	if (c31 == 0) {
+		c38 = 0;
+	} else {
+		c38 = c23 * c27 * sin(c29) / sqrt(c31);
+	}
+	float c40 = 0;
+	if ((cos(asin(c38)) * cos(asin(c38))) == 0) {
+		c40 = 0;
+	} else {
+		c40 = c33 - 2 * c22 * c26
+			/ (cos(asin(c38)) * cos(asin(c38)));
+	}
+	float c41 = cos(asin(c38)) * cos(asin(c38))
+		* (c15 * c15 - c16 * c16) / (c16 * c16);
+	float c43 = 1 + c41 / 16384
+		* (4096 + c41 * (-768 + c41 * (320 - 175 * c41)));
+	float c45 = c41 / 1024 * (256 + c41 * (-128 + c41 * (74 - 47 * c41)));
+	float c47 = c45
+		* sqrt(c31)
+		* (c40 + c45
+		/ 4
+		* (c33 * (-1 + 2 * c40 * c40) - c45 / 6 * c40
+		* (-3 + 4 * c31) * (-3 + 4 * c40 * c40)));
+	float c50 = c17
+		/ 16
+		* cos(asin(c38))
+		* cos(asin(c38))
+		* (4 + c17
+		* (4 - 3 * cos(asin(c38))
+		* cos(asin(c38))));
+	float c52 = c18
+		+ (1 - c50)
+		* c17
+		* c38
+		* (acos(c33) + c50 * sin(acos(c33))
+		* (c40 + c50 * c33 * (-1 + 2 * c40 * c40)));
+	float c54 = c16 * c43 * (atan(c35) - c47);
+	// return distance in meter
+	return c54;
+}

@@ -53,7 +53,7 @@ bool CIocpSrv::CreateLitenSocket()
 	if (retval ==  SOCKET_ERROR)
 		return false;
 	
-	retval = listen( m_ListenSock, 15);
+	retval = listen( m_ListenSock, 1024);
 	if (retval == SOCKET_ERROR)
 		return false;
 
@@ -70,6 +70,7 @@ PSOCKET_DATA CIocpSrv::UpdataCompletionPort(SOCKET sdAccept,char* pClientAddr)
 
 	if ( !m_SocketIndexQ.Get(&index) )	//큐에있는 여러개의 인덱스중 하나를 얻어온다.(총커넥션수 < 현재 커넥션수 False)
 	{	//큐가 비었을 경우
+		printf("Queue is Empty!\n");
 		closesocket(sdAccept);
 		return 0;
 	}

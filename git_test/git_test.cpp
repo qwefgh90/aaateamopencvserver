@@ -68,7 +68,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	
 	initManager();//Initialize Managers
-	g_pSrv = CIocpSrv::CreateInstance(PORT,5);
+	g_pSrv = CIocpSrv::CreateInstance(PORT,20);
 	if ( !g_pSrv->CreateLitenSocket() )			//Win소켓 -> bind() listen() 초기화
 		printf("bind(), listen()실패\n");
 	g_pSrv->StartThreadRoutine(WorkerThread,1);	//작업 처리 스레드
@@ -462,6 +462,7 @@ DWORD WINAPI AcceptThread( LPVOID DbGatewayThreadContext )
 		printf("\n\n\n");
 		if (nRet == SOCKET_ERROR && (ERROR_IO_PENDING != WSAGetLastError())) {
 			pSrv->CloseClient(pSD);
+			pSrv->ReleaseData(pSD);
 			printf("WSARecv ERROR\n");
 		}
 		Sleep(0);

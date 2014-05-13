@@ -6,7 +6,7 @@ class SiftEngine
 public:
 	static SiftEngine* getSiftEngine();
 
-	static const u_int MIN_MATCH = 30; //deprecated
+	static const u_int MIN_MATCH = 29; //deprecated
 	static const u_int MIN_PERCENT = 5;
 	static const u_int SEARCH_PERCENT = 15;
 

@@ -210,11 +210,8 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 		}
 		*(strrchr(not,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
-		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and store_code not in (%s) and gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
-			buf,
-			not,
-			in_search.store.longitude - ERRORRANGE, in_search.store.longitude + ERRORRANGE,
-			in_search.store.latitude - ERRORRANGE, in_search.store.latitude + ERRORRANGE);
+		sprintf_s(sql, "select store_code, store_key from STORE where store_filter in(%s) and store_code not in (%s) and 500 < dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')",
+			buf, not, in_search.store.latitude, in_search.store.longitude);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
@@ -753,9 +750,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
 
-	sprintf_s(sql, "select store_code,store_key,gps_Latitude,gps_Longitude from STORE where gps_Longitude between '%f' and '%f' and gps_Latitude between '%f' and '%f'",
-		longitude - ERRORRANGE, longitude + ERRORRANGE,
-		latitude - ERRORRANGE, latitude + ERRORRANGE);
+	sprintf_s(sql, "select store_code,store_key,gps_Latitude,gps_Longitude from STORE where 100 < dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')", latitude, longitude);
 
 	//캐시 구조체 선언
 	ImageBufferElement Ibe;

@@ -224,6 +224,9 @@ bool Store_manager::Create_cache(IN_Cache in_cache)
 	dbm->Query_Image_cache(in_cache.longitude, in_cache.latitude, Ic->imageVector);
 	printf ("imageCacheVector size : %d\n",Ic->imageVector.size());
 
+	for(int i=0; Ic->imageVector.size()>i;i++)
+		printf ("%d in CACHE\n",Ic->imageVector[i].store_code);
+
 	//캐시 구조체 벡터 선언
 	//받아온 캐시 구조체 벡터 안에 있는 상점 경로를 이용해 xml파일을 불러오기
 	for(int i = 0; i<(int)Ic->imageVector.size(); i++)

@@ -106,7 +106,7 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 		//SELECT한 DATA의 아이디와 비밀번호, 닉네임을 반환
 		SQLFetch(sqlstatementhandle);
 		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, db_login.ID, 30, NULL);
-		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 64, NULL);
+		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 65, NULL);
 		SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, nick, 16, NULL);
 		
 		SQLCloseCursor(sqlstatementhandle);

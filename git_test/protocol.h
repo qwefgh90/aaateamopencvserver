@@ -59,12 +59,12 @@ typedef struct _MemberSession{
 
 typedef struct _IN_Login{
 	char ID[30+1];
-	char pass[64];
+	char pass[65];
 }IN_Login;
 
 typedef struct _IN_Signup{
 	char ID[30+1];
-	char pass[64];
+	char pass[65];
 	char nick[16+1];
 }IN_Signup;
 

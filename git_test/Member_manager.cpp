@@ -31,7 +31,7 @@ Member_manager::~Member_manager(void)
 bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 {
 	//ID와 PASS를 함께 저장하여 해쉬 구조체 만들 배열
-	char to_hash[64];
+	char to_hash[100];
 
 	//DB에서 받아올 구조체
 	IN_Login db_login;
@@ -103,7 +103,7 @@ bool Member_manager::Signup(IN_Signup& in_signup, OUT_Signup &out_signup)
 	sha512((unsigned char*)in_signup.pass,strlen(in_signup.pass),(unsigned char*)in_signup.pass,0);
 	if(dbm->Query_signup(in_signup))
 	{
-		cout<<in_signup.ID<<" "<<in_signup.pass<<" "<<in_signup.nick<<endl;
+		//cout<<in_signup.ID<<" "<<in_signup.pass<<" "<<in_signup.nick<<endl;
 		cout<<"가입완료"<<endl;
 
 		out_signup.result = 1;

@@ -157,6 +157,41 @@ bool DB_manager::Query_leave(char* ID)
 		return false;
 	}
 }
+bool Query_changepw(IN_Chpw)
+{
+	SQLHANDLE* psqlconnectionhandle;
+	SQLHANDLE  sqlstatementhandle;
+
+	/*Get a connection from the pool*/
+	if((psqlconnectionhandle=sqlsvrpool->GetConnectionFromPool())==0){
+		cout<<"You have reached the maximum amout allowed - 5 in this example\n";
+	}
+
+	/*Get a statement handle from the connection*/
+	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
+		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
+	}
+
+	//이미 로그인중이기 때문에 ID만 받아와서 DB TABLE에 있는 ID가 일치하는 DATA 행을 삭제
+	sprintf_s(sql, "update member set pass=HASHBYTES('sha2_512','%s') where ID='%s'", IN_Chpw.pass, IN_Chpw.ID);
+	if(Sql_run(sql, sqlstatementhandle))
+	{	
+		
+		SQLCloseCursor(sqlstatementhandle);
+
+
+		/*Release the connection back into the pool*/
+		sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
+
+		/*Dispaly the pool information*/
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
 
 //이미지 검색 쿼리
 bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevector, vector<ImageBufferElement> &imageVector)

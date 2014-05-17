@@ -75,6 +75,14 @@ typedef struct _IN_Logout{
 	};
 }IN_Logout;
 
+typedef struct _IN_Chpw{
+	union{
+		char ID[30+1];
+		unsigned char cookie[64];
+	};
+	char pass[65];
+}IN_Chpw;
+
 typedef struct _IN_Leave{
 	union{
 		char ID[30+1];
@@ -196,6 +204,9 @@ typedef struct _OUT_Logout{
 	unsigned char result;
 }OUT_Logout;
 
+typedef struct _OUT_Chpw{
+	unsigned char result;
+}OUT_Chpw;
 typedef struct _OUT_Leave{
 	unsigned char result;
 }OUT_Leave;

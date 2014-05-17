@@ -34,6 +34,7 @@ public:
 	bool Login(IN_Login& in_login, OUT_Login &out_login);
 	bool Logout(IN_Logout& in_logout, OUT_Logout &out_logout);
 	bool Signup(IN_Signup& in_signup, OUT_Signup &out_signup);
+	bool Changepw(IN_Chpw& in_chpw, OUT_Chpw &out_chpw);
 	bool Leave(IN_Leave& in_leave, OUT_Leave &out_leave);
 	//char* Check_Member(unsigned char* cookie);
 	bool cookiechk(char* ID, u_char* in_cookie);

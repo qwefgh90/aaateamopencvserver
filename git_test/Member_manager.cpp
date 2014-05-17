@@ -118,6 +118,21 @@ bool Member_manager::Signup(IN_Signup& in_signup, OUT_Signup &out_signup)
 	}
 }
 
+bool Member_manager::Changepw(IN_Chpw& in_chpw, OUT_Chpw &out_chpw)
+{
+	if(dbm->Query_changepw(in_chpw))
+	{
+		cout<<"비밀번호 변경이 완료되었습니다."<<endl;
+
+		out_chpw.result = 1;
+		return true;
+	}
+	cout<<"비밀변호 변경이 실패하였습니다."<<endl;
+
+	out_chpw.result = 0;
+	return false;
+}
+
 bool Member_manager::Leave(IN_Leave& in_leave, OUT_Leave &out_leave)
 {
 	for(int i = 0; i<(int)hash.size(); i++)

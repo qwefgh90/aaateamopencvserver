@@ -106,7 +106,7 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 		//SELECT한 DATA의 아이디와 비밀번호, 닉네임을 반환
 		SQLFetch(sqlstatementhandle);
 		SQLGetData(sqlstatementhandle, 1, SQL_C_CHAR, db_login.ID, 30, NULL);
-		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 20, NULL);
+		SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, db_login.pass, 64, NULL);
 		SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, nick, 16, NULL);
 		
 		SQLCloseCursor(sqlstatementhandle);
@@ -768,6 +768,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 				SQLGetData(sqlstatementhandle, 4, SQL_C_FLOAT, &Ibe.longitude, 4, NULL);
 				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &filter, 4, NULL);
 				Ibe.filter = (u_char)filter;
+				printf("cache filter ; %d\n",Ibe.filter);
 				//거리 구하는 함수 사용
 				
 				Ibe.distance = distance(Ibe.latitude, Ibe.longitude, latitude, longitude);
@@ -779,8 +780,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 			//캐시에 저장한 사이즈가 21개이상이고 i가 30이하일 때까지 삭제 -> 50개보다 적은게 캐싱될 경우 20개까지만 남기고 삭제, 50개가 모두 캐싱 될경우 30개를 지우기
 			for(int i= 0; ((int)Ibev.size() > 20) && (i < 30); i++)
 				Ibev.erase(Ibev.begin()+10);
-			for(int i= 0; (int)Ibev.size() > i; i++)
-				printf("[CACHE] : %d is in cache\n",Ibev[i].store_code);
+
 			/*Release the connection back into the pool*/
 			sqlsvrpool->ReleaseConnectionToPool(psqlconnectionhandle);
 
@@ -867,5 +867,5 @@ float DB_manager::distance(float P1_latitude, float P1_longitude, float P2_latit
 		* (c40 + c50 * c33 * (-1 + 2 * c40 * c40)));
 	float c54 = c16 * c43 * (atan(c35) - c47);
 	// return distance in meter
-	return abs(c54);
+	return c54;
 }

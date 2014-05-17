@@ -62,7 +62,7 @@ bool DB_manager::Query_signup(IN_Signup in_signup)
 	}
 
 	//아이디, 비번, 닉네임을 DB테이블에 삽입
-	sprintf_s(sql, "insert into member values ('%s','%s','%s')", in_signup.ID, in_signup.pass, in_signup.nick);
+	sprintf_s(sql, "insert into member values ('%s',HASHBYTES('sha2_512','%s'),'%s')", in_signup.ID, in_signup.pass, in_signup.nick);
 	
 	if(Sql_run(sql, sqlstatementhandle))
 	{
@@ -98,7 +98,7 @@ bool DB_manager::Query_login(IN_Login in_login, IN_Login &db_login,char* nick)
 	}
 
 	//아이디, 비번을 이용해 TABLE에있는 DATA SELECT
-	sprintf_s(sql, "select * from member where ID='%s' and pass='%s'", in_login.ID, in_login.pass);
+	sprintf_s(sql, "select * from member where ID='%s' and pass=HASHBYTES('sha2_512','%s')", in_login.ID, in_login.pass);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{

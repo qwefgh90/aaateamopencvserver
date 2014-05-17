@@ -157,7 +157,7 @@ bool DB_manager::Query_leave(char* ID)
 		return false;
 	}
 }
-bool Query_changepw(IN_Chpw)
+bool DB_manager::Query_changepw(IN_Chpw in_chpw)
 {
 	SQLHANDLE* psqlconnectionhandle;
 	SQLHANDLE  sqlstatementhandle;
@@ -173,7 +173,7 @@ bool Query_changepw(IN_Chpw)
 	}
 
 	//이미 로그인중이기 때문에 ID만 받아와서 DB TABLE에 있는 ID가 일치하는 DATA 행을 삭제
-	sprintf_s(sql, "update member set pass=HASHBYTES('sha2_512','%s') where ID='%s'", IN_Chpw.pass, IN_Chpw.ID);
+	sprintf_s(sql, "update member set pass=HASHBYTES('sha2_512','%s') where ID='%s'", in_chpw.newPass, in_chpw.ID);
 	if(Sql_run(sql, sqlstatementhandle))
 	{	
 		

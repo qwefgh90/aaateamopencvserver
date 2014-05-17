@@ -38,6 +38,8 @@ bool Member_manager::Login(IN_Login &in_login, OUT_Login &out_login)
 	char nick[40];
 	//멤버세션에 저장할 구조체
 	MemberSession mem;
+	//비밀번호를 해시로 변경후 로그인 실행
+	sha512((unsigned char*)in_login.pass,strlen(in_login.pass),(unsigned char*)in_login.pass,0);
 	//로그인 쿼리 실행
 	if(dbm->Query_login(in_login, db_login,nick))
 	{
@@ -97,6 +99,8 @@ bool Member_manager::Logout(IN_Logout& in_logout, OUT_Logout &out_logout)
 
 bool Member_manager::Signup(IN_Signup& in_signup, OUT_Signup &out_signup)
 {
+	//비밀번호를 해시로 변경후 디비에 등록
+	sha512((unsigned char*)in_signup.pass,strlen(in_signup.pass),(unsigned char*)in_signup.pass,0);
 	if(dbm->Query_signup(in_signup))
 	{
 		cout<<in_signup.ID<<" "<<in_signup.pass<<" "<<in_signup.nick<<endl;

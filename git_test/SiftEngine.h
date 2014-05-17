@@ -6,9 +6,9 @@ class SiftEngine
 public:
 	static SiftEngine* getSiftEngine();
 
-	static const u_int MIN_MATCH = 29; //deprecated
+	static const u_int MIN_MATCH = 20; //deprecated
 	static const u_int MIN_PERCENT = 5;
-	static const u_int SEARCH_PERCENT = 15;
+	static const u_int SEARCH_PERCENT = 12;//5
 
 	//return Matrix
 	bool createKey(__in Memory& memory,cv::Mat& m);	//Create a key for a Image
@@ -16,7 +16,7 @@ public:
 	bool loadKey(char* store_path,cv::Mat& mat);	//Create matrix from a file
 	//return success code
 	bool matchingImageWithVector(__out Imagelist& image ,cv::Mat mat, __in vector<Imagelist>& imageList);			//Match Image and vector
-	bool matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList);			//Match Image and vector
+	bool matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList,u_char filter);			//Match Image and vector
 	//바디 추가하면 끝
 private:
 	static SiftEngine* singleton;

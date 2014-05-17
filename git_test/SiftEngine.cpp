@@ -120,13 +120,19 @@ bool SiftEngine::loadKey(__in char* store_path,__out cv::Mat& mat)
 	return result;
 }
 //return success code
-bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList)
+bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList,u_char clientfilter)
 {//Match Image and vector
 	printf("SiftEngine-> vector size%d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
 	bool result = false;
 	for ( int i = 0 ; i < (int)imageList.size(); i++)
 	{
+		printf("[FILTER]client.filter : %d ,imageList[i].filter %d\n",clientfilter,imageList[i].filter);
+		if((clientfilter&imageList[i].filter)!=imageList[i].filter){
+			printf("[FILTER]filter is not matched\n");
+			continue;
+			
+		}
 		ImageBufferElement img = imageList[i];
 		cv::FlannBasedMatcher matcher;          
 		u_int totalmatchsize=0;
@@ -166,7 +172,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		m.total_match_cnt = totalmatchsize;
 		if(m.total_match_cnt != 0){
 			m.percent = ((float)goodmatch_size / (float)totalmatchsize) * 100;
-			//printf("percent : %f\n",m.percent);
+			printf("percent : %f\n",m.percent);
 		}else{
 			m.percent = 0.f;
 		}
@@ -273,13 +279,14 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 
 		//Save count of a matching
 		goodMatch m;
+		memset(&m,0,sizeof(goodMatch));
 		m.index=i;				//image index in vector
 		m.match_cnt=goodmatch_size;		//match size
 		m.total_match_cnt = totalmatchsize;
 		m.percent = 0.f;
 		if(m.total_match_cnt != 0){
 			m.percent = ((float)goodmatch_size / (float)totalmatchsize) * 100;
-			//printf("percent : %f\n",m.percent);
+			printf("percent : %f\n",m.percent);
 		}else{
 			m.percent = 0;
 		}

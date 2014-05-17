@@ -34,7 +34,7 @@ bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __i
 	return result;
 }
 //1)비교후 선택된 이미지 2)받은 이미지 3)이미지 리스트
-bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList)
+bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList,  u_char filter)
 {
 	bool result = false;
 	
@@ -45,7 +45,7 @@ bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in M
 		goto END;
 	}
 	//compare target with a compared list
-	if(!sift->matchingImageWithCache(image,target,imageList))
+	if(!sift->matchingImageWithCache(image,target,imageList,filter))
 	{
 		goto END;
 	}

@@ -36,6 +36,7 @@ typedef struct _ImageBufferElement{
 	float latitude;	//위도
 	float longitude;//경도
 	float distance;//거리
+	u_char filter;	//필터
 	//매트릭스 객체 추가
 }ImageBufferElement;
 
@@ -45,6 +46,7 @@ typedef struct _Store{
 	float latitude;	//위도
 	float longitude;//경도
 	Memory image;	//image
+
 }Store;
 
 

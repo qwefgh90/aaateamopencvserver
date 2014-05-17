@@ -45,8 +45,8 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	Ic = Icf->getImageCache(str);
 	//NULL일 경우 검사 안해야됨
 	//캐시를 우선으로 검색
-	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector))
-	{
+	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector,in_search.filter))
+	{in_search.filter;
 		out_search.code = matchcache.store_code;
 		
 		//검색된 상점에 대한 의견검색을 위해 선언

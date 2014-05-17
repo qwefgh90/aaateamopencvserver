@@ -80,7 +80,9 @@ typedef struct _IN_Chpw{
 		char ID[30+1];
 		unsigned char cookie[64];
 	};
-	char pass[65];
+	
+	char prePass[21];
+	char newPass[21];
 }IN_Chpw;
 
 typedef struct _IN_Leave{

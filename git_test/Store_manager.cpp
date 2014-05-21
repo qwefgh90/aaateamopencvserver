@@ -101,7 +101,12 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	//매칭된 이미지가 없을 경우 검색시 나타났던 상점들을 클라이언트에게 보내야 한다.
 	else
 	{
-
+		sort(out_search.out_list.begin(),out_search.out_list.end(),Compare_m);
+		//캐시에 저장한 사이즈가 21개이상이고 i가 30이하일 때까지 삭제 -> 50개보다 적은게 캐싱될 경우 20개까지만 남기고 삭제, 50개가 모두 캐싱 될경우 30개를 지우기
+		for(int i= 0; (int)out_search.out_list.size() > 5; i++)
+			out_search.out_list.erase(out_search.out_list.begin()+5);
+		out_search.result = 8;
+		return true;
 	}
 	out_search.result = 2;
 	return false;

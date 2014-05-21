@@ -22,3 +22,8 @@ bool Compare( ImageBufferElement &arg1, ImageBufferElement &arg2 )
 {
 	return arg1.distance < arg2.distance;
 }
+
+bool Compare_m( OUT_List &arg1, OUT_List &arg2 )
+{
+	return arg1.matching < arg2.matching;
+}

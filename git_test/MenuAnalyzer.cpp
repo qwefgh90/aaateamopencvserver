@@ -485,6 +485,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			if(store_manager->Store_report(in,out))
 			{
 				//성공
+				printf_s("[REPORT]상호명 : %s\n",out.name);
 				printf("상점 등록 성공\n");
 			}else
 			{

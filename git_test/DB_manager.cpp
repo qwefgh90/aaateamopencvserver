@@ -300,7 +300,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			break;
 		}
 			//상점 등록
-	sprintf_s(sql, "insert into STORE(store_key,gps_Longitude,gps_Latitude,store_filter) values (%s,%f,%f,%d)", in_report.store.image.buf, in_report.store.longitude, in_report.store.latitude,in_report.filter);
+		sprintf_s(sql, "insert into STORE(store_key,gps_Longitude,gps_Latitude,store_filter,store_name) values (%s,%f,%f,%d,%s)", in_report.store.image.buf, in_report.store.longitude, in_report.store.latitude,in_report.filter,in_report.store_name);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{

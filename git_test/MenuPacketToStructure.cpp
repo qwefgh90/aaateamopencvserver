@@ -340,6 +340,11 @@ bool MenuAnalyzer::packetToCache(__out IN_Cache& out, __in Memory& memory){
 	out.longitude = * longitude;
 
 	result = true;
-	END:
+END:
+	return result;
+}
+bool MenuAnalyzer::packetToChangePass(__out IN_Chpw&, __in Memory& memory)
+{
+		bool result = false;
 	return result;
 }

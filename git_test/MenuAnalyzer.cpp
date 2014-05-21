@@ -137,6 +137,36 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 			}
 			break;
 		}
+	case CHANGEPASS:
+		{
+			IN_Chpw in;
+			OUT_Chpw out;
+			memset(&in,0,sizeof(in));
+			memset(&out,0,sizeof(out));
+			if(packetToChangePass(in,in_memory))
+			{
+				if(member_manager->Changepw(in,out))
+				{
+						if(this->packetFromChangePass(out_memory,out))
+						{
+
+						}else{
+							err_code = out.result=3;
+							goto ERRORCODE;
+						}
+				}else{
+					printf_s("%s\n","[CHANGEPASS]CHANGEPASS Fail");
+					err_code = out.result;
+					goto ERRORCODE;
+				}
+			}else{
+				printf_s("%s\n","[CHANGEPASS]Parse Fail");
+				err_code = out.result=3;
+				goto ERRORCODE;
+			}
+
+			break;
+		}
 	case LEAVE://회원탈퇴
 		{
 			IN_Leave in;	//로그인 요청 구조체

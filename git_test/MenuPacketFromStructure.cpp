@@ -132,7 +132,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	bool result = false;
 
 	char big_buffer[1000]={0,};							//temp buffer
-	
+
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size
 
@@ -185,7 +185,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	*result_login_ptr = in.result;
 	*code_ptr = in.code;
 	*avg_score_ptr = in.score;
-	
+
 	//opinion pointer array variables 
 	char* num_ptr[10]={0,};
 	char* nic_ptr[10]={0,};
@@ -260,7 +260,7 @@ bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)
 		char num[12]={0,};	//글번호
 		sprintf(num,"%u\r\n",opi->sns_id);
 		num_size[i]=strlen(num);
-		
+
 		char* content=opi->comment;	//글내용 (문자열)
 		content_size[i]=strlen(content)+2;
 
@@ -666,7 +666,7 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 	u_int* size = (u_int*)(out.buf);
 	*size = LIKE_PACKET_SIZE;		//2)패킷길이
 	*((u_char*)size+4) = in.result;//3)결과복사
-	
+
 	char* end_sp = (char*)(out.buf+5);
 	memcpy_s(end_sp,4,spliter_end.c_str(),4);	//마지막 구분자
 
@@ -698,7 +698,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 		char num[12]={0,};	//글번호
 		sprintf(num,"%u\r\n",opi->sns_id);
 		num_size[i]=strlen(num);
-		
+
 		char* content=opi->comment;	//글내용 (문자열)
 		content_size[i]=strlen(content)+2;
 
@@ -759,7 +759,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 
 		sprintf(big_buffer,"%s\r\n",(in.opi+i)->nick);
 		memcpy(nic_ptr[i],big_buffer,nic_size[i]);
-		
+
 		sprintf(big_buffer,"%s\r\n",(in.opi+i)->comment);
 		memcpy(conten_ptr[i],big_buffer,content_size[i]);
 
@@ -799,7 +799,7 @@ bool MenuAnalyzer::packetFromError(__out Memory& out,__in u_char err_code)
 	result = true;
 	return result;
 }
- 
+
 bool MenuAnalyzer::packetFromCache(__out Memory& out,__in OUT_Cache& in)
 {
 	bool result = false;
@@ -812,5 +812,10 @@ bool MenuAnalyzer::packetFromCache(__out Memory& out,__in OUT_Cache& in)
 	char* end_sp = (char*)(out.buf+5);
 	memcpy_s(end_sp,4,spliter_end.c_str(),4);//마지막 구분자
 	result = true;
+	return result;
+}
+
+bool MenuAnalyzer::packetFromChangePass(__out Memory& out,__in OUT_Chpw& in){
+	bool result = false;
 	return result;
 }

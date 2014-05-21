@@ -30,6 +30,7 @@ private:
 	bool packetToLike(__out IN_Like&, __in Memory& memory);
 	bool packetToReport(__out IN_Report&, __in Memory& memory);
 	bool packetToCache(__out IN_Cache&, __in Memory& memory);
+	bool packetToChangePass(__out IN_Chpw&, __in Memory& memory);
 
 	//structure of login to packet structure
 	bool packetFromLogin(__out Memory&, __in OUT_Login&);
@@ -45,4 +46,5 @@ private:
 	bool packetFromReport(__out Memory& out, __in _OUT_Report& in);
 	bool packetFromError(__out Memory& out,__in u_char err_code);
 	bool packetFromCache(__out Memory& out,__in OUT_Cache& in);
+	bool packetFromChangePass(__out Memory& out,__in OUT_Chpw& in);
 };

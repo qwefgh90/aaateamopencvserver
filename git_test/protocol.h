@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <time.h>
+
 #define filter_no 6
 typedef enum{LOGIN=1,SIGNUP=2,LOGOUT=3,LEAVE=4,SEARCH=5,MORE=6,
 	WRITE_COMMENT=7,MODIFY_COMMENT=8,DELETE_COMMENT=9,LIKE=10,REPORT=11,CACHE=12,CHANGEPASS=13}PROTO_TYPE;
@@ -216,10 +217,17 @@ typedef struct _OUT_Leave{
 	unsigned char result;
 }OUT_Leave;
 
+//상점 리스트 구조체 추가
+typedef struct _OUT_List{
+	u_int code;
+	char name[256];
+	u_int matching;
+}OUT_List;
+
 typedef struct _OUT_Search{
 	unsigned char result;
 	//상점 갯수
-	vector<OUT_List>out_list;
+	std::vector<OUT_List> out_list;
 	u_int code;
 	float score;
 	//상호명 추가
@@ -227,13 +235,6 @@ typedef struct _OUT_Search{
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Search;
-
-//상점 리스트 구조체 추가
-typedef struct _OUT_List{
-	u_int code;
-	char name[256];
-	u_int matching;
-}OUT_List;
 
 typedef struct _OUT_More{
 	unsigned char result;
@@ -271,7 +272,7 @@ typedef struct _OUT_Report{
 	unsigned char result;
 	u_int code;
 	float score;
-	char store_name[256];
+	char name[256];
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Report;

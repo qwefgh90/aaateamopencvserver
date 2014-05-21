@@ -256,8 +256,8 @@ bool MenuAnalyzer::packetToLike(__out IN_Like& out, __in Memory& memory )
 	result = true;
 	return result;
 }
-const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4)+ (1) + (64)+(1)+(4)+(4) +(1) +4 +2;
-//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 의견점수 + 마지막 구분자 + (의견/이미지 제외)
+const u_int SEARCH_SIZE_BUTIMAGE_OPINION = (4)+ (1) + (64)+(1)+(4)+(4) +(1) +4 +2 +2;
+//데이터길이 + 타입 + 쿠키 + 필터 + 위도 + 경도 + 의견점수 + 상점명 구분자  + 마지막 구분자 + (의견/이미지 제외)
 bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 {
 	bool result = false;
@@ -270,7 +270,13 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	float*	longitude= (float*)(((u_char*)latitude)+4 );
 	printf("[REPORT]GPS Latitude : %f, Longitude : %f\n",*latitude,*longitude);
 
-	u_char* opinion_score = ((u_char*)longitude)+4;
+	char* storename = ((char*)longitude)+4;	//storename
+	char* storename_splitor= strcat(storename,spliter.c_str());
+	printf("storename length : %d",(int)(storename_splitor-storename));
+	int storename_length = (int)(storename_splitor - storename);	//storename
+
+
+	u_char* opinion_score = ((u_char*)storename)+storename_length+2;	//storename
 	u_char* opinion = opinion_score+1 +2;//구분자 \r\n 포함
 	
 	//유효성 체크 : 의견필드
@@ -290,6 +296,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	out.sort = *sort;							//정렬값
 	memcpy(&(out.store.latitude),latitude,4);			//위도
 	memcpy(&(out.store.longitude),longitude,4);		//경도
+	memcpy_s(out.store_name,storename_length,storename,storename_length);	//storename
 
 	char* end_ptr =NULL;
 	end_ptr = strstr((char*)opinion,spliter_end.c_str());	//\r\n포인터
@@ -304,7 +311,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 		printf("Opinion length : %ld\n",opinion_size);
 		image = ((u_char*)(end_ptr+4));				//이미지 포인터
 		//데이터의 길이는 little endian 으로 저장되어 있어야함.
-		image_size = *((u_int*)memory.buf) - (SEARCH_SIZE_BUTIMAGE_OPINION + (opinion_size));//의견+점수 포함
+		image_size = *((u_int*)memory.buf) - (SEARCH_SIZE_BUTIMAGE_OPINION + (opinion_size) + storename_length);//의견+점수 포함//storename
 		printf("Image length : %ld\n",image_size);
 	}else
 	{

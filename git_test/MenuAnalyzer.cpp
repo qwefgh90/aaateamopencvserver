@@ -228,12 +228,12 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 						if(packetFromSearch(out_memory,out))
 						{
 						}else{
-				freeImage(in.store.image);
+							freeImage(in.store.image);
 							err_code = out.result=3;
 							goto ERRORCODE;
 						}
 					}else{
-					freeImage(in.store.image);
+						freeImage(in.store.image);
 						printf_s("%s\n","[SEARCH]검색 실패");
 						err_code = out.result;
 						goto ERRORCODE;

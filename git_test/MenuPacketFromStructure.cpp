@@ -125,7 +125,7 @@ bool MenuAnalyzer::packetFromLeave(__out Memory& out, __in OUT_Leave& in)
 	result = true;
 	return result;
 }
-const u_int SEARCH_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+(4)+2;
+const u_int SEARCH_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+(4)+2 ;
 //마지막 \r\n하나빼고..
 bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 {
@@ -136,6 +136,12 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	u_int content_cnt = in.opi_cnt;						//contents count
 	u_int bytelen = SEARCH_PACKET_SIZE_BUT_CONTENT ;	//init byte size
 
+	//storename + seperator
+	u_int store_size=0;
+	//calculate content byte length
+	store_size=strlen(in.name)+2;
+	bytelen += store_size;
+
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
 	u_int content_size[10]={0,};
@@ -143,7 +149,6 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	u_int like_cnt_size[10]={0,};
 	u_int dislike_cnt_size[10]={0,};
 
-	//calculate content byte length
 	int i = 0;
 	for(i=0 ; i<content_cnt ; i++){
 		OUT_Opinion* opi = in.opi+i;
@@ -180,11 +185,16 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	u_char* result_login_ptr = (uchar*)bytelen_ptr+4;
 	u_int* code_ptr = (u_int*)(result_login_ptr+1);
 	float* avg_score_ptr = (float*)((u_char*)code_ptr+4);
+	char* store_name_ptr = ((char*)avg_score_ptr)+4;//storename
+
 	//2)copy to packet buffer
 	*bytelen_ptr = bytelen;
 	*result_login_ptr = in.result;
 	*code_ptr = in.code;
 	*avg_score_ptr = in.score;
+	
+	sprintf(big_buffer,"%s\r\n",in.name);//storename  
+	memcpy(store_name_ptr,big_buffer,store_size);	//storename
 
 	//opinion pointer array variables 
 	char* num_ptr[10]={0,};
@@ -198,7 +208,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
-			num_ptr[i]=((char*)avg_score_ptr)+4;
+			num_ptr[i]=((char*)store_name_ptr)+store_size;	//seperator//storename
 		else // not zero
 			num_ptr[i]=((char*)dislike_ptr[i-1])+dislike_cnt_size[i-1];
 

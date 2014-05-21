@@ -271,7 +271,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	printf("[REPORT]GPS Latitude : %f, Longitude : %f\n",*latitude,*longitude);
 
 	char* storename = ((char*)longitude)+4;	//storename
-	char* storename_splitor= strcat(storename,spliter.c_str());
+	char* storename_splitor= strstr(storename,spliter.c_str());
 	printf("storename length : %d",(int)(storename_splitor-storename));
 	int storename_length = (int)(storename_splitor - storename);	//storename
 

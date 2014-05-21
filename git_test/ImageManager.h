@@ -9,8 +9,8 @@ private:
 	ImageManager();
 public:
 	static ImageManager* getImageManager();
-	bool matchingImage(__out Imagelist& image,__in Memory& memory, __in vector<Imagelist>& imageList);
-	bool matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList, u_char filter);
+	bool matchingImage(__out Imagelist& image,__in Memory& memory, __in vector<Imagelist>& imageList,std::vector<OUT_List>& out_list);
+	bool matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList, u_char filter,std::vector<OUT_List>& out_list);
 	bool storeKey(__in Memory& memory,__in char* store_path);
 	//DWORD 
 	//DWORD createKeyFile();

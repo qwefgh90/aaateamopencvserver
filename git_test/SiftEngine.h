@@ -15,8 +15,8 @@ public:
 	bool storeKey(__in Memory& memory,__in char* fname);	//Store a key in a file
 	bool loadKey(char* store_path,cv::Mat& mat);	//Create matrix from a file
 	//return success code
-	bool matchingImageWithVector(__out Imagelist& image ,cv::Mat mat, __in vector<Imagelist>& imageList);			//Match Image and vector
-	bool matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList,u_char filter);			//Match Image and vector
+	bool matchingImageWithVector(__out Imagelist& image ,cv::Mat mat, __in vector<Imagelist>& imageList,std::vector<OUT_List>& out_list);			//Match Image and vector
+	bool matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList,u_char filter,std::vector<OUT_List>& out_list);			//Match Image and vector
 	//바디 추가하면 끝
 private:
 	static SiftEngine* singleton;

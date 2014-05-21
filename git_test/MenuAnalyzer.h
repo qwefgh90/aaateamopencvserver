@@ -38,6 +38,7 @@ private:
 	bool packetFromLogout(__out Memory&, __in OUT_Logout&);
 	bool packetFromLeave(__out Memory&, __in OUT_Leave&);
 	bool packetFromSearch(__out Memory&, __in OUT_Search&);
+	bool packetFromSearchList(__out Memory&, __in OUT_Search&);
 	bool packetFromMore(__out Memory&, __in OUT_More&);
 	bool packetFromWriteComment(__out Memory& out, __in OUT_Write_comment& in);
 	bool packetFromModifyComment(__out Memory& out, __in OUT_Modify_comment& in);

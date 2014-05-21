@@ -120,7 +120,7 @@ bool SiftEngine::loadKey(__in char* store_path,__out cv::Mat& mat)
 	return result;
 }
 //return success code
-bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList,u_char clientfilter)
+bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat mat, __in vector<ImageBufferElement>& imageList,u_char clientfilter,std::vector<OUT_List>& out_list )
 {//Match Image and vector
 	printf("SiftEngine-> vector size%d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
@@ -179,6 +179,12 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		if(m.percent>=SiftEngine::MIN_PERCENT)
 			cntSet.push_back(m);	//save matching results to vector
 
+		OUT_List store_element;
+		store_element.code=img.store_code;
+		store_element.matching=(int)m.percent;
+		strncpy(store_element.name,img.store_name,strlen(img.store_name));
+		out_list.push_back(store_element);
+
 
 		} catch(cv::Exception& e) {
 			printf("Exception occurred. Match images... ");
@@ -231,7 +237,7 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	END:
 	return result;
 }
-bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat mat, __in vector<Imagelist>& imageList)
+bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat mat, __in vector<Imagelist>& imageList,std::vector<OUT_List>& out_list)
 {
 	printf("[SiftEngine] Vector Size : %d\n",imageList.size());
 	std::vector<goodMatch> cntSet;	//store matching results into vector
@@ -293,6 +299,12 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		
 		if(m.percent>=SiftEngine::MIN_PERCENT)
 			cntSet.push_back(m);	//save matching results to vector
+
+		OUT_List store_element;
+		store_element.code=img.store_code;
+		store_element.matching=(int)m.percent;
+		strncpy(store_element.name,img.store_name,strlen(img.store_name));
+		out_list.push_back(store_element);
 
 		} catch(cv::Exception& e) {
 			printf("Exception occurred. Match images... ");

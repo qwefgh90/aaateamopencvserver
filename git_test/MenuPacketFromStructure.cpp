@@ -244,6 +244,49 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	result = true;
 	return result;
 }
+
+const u_int SEARCH_LIST_SIZE_BUT_LIST = (4)+(1)+(4)+2;
+//마지막 \r\n하나빼고..
+bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
+	bool result=false;
+	u_int bytelen=0;
+	char big_buffer[1000]={0,};							//temp buffer
+	
+	bytelen+=SEARCH_LIST_SIZE_BUT_LIST;
+
+	for (std::vector<OUT_List>::iterator i = in.out_list.begin(); i<in.out_list.end(); i++){
+		
+		int name_length = strlen(i->name);
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%u\r\n",i->code,i->name,i->matching);
+		bytelen += strlen(big_buffer);
+	}
+	out.len = bytelen;
+	out.buf = new u_char[bytelen];
+	
+	u_int* data_len_ptr=(u_int*)out.buf;
+	u_char* result_ptr=((u_char*)data_len_ptr)+4;
+	u_int* store_cnt_ptr=(u_int*)(result_ptr+1);
+	u_char* list_ptr = ((u_char*)store_cnt_ptr)+4;
+
+	*data_len_ptr=bytelen;
+	*result_ptr=in.result;
+	*store_cnt_ptr=in.out_list.size();
+	int i =0;
+	for (std::vector<OUT_List>::iterator i = in.out_list.begin(); i<in.out_list.end(); i++){
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%u\r\n",i->code,i->name,i->matching);
+		printf("list[%d] : %s",i,big_buffer);
+		int list_len = strlen(big_buffer);
+		strncpy((char*)list_ptr,big_buffer,list_len);
+		list_ptr+=list_len;
+		i++;
+	}
+	strncpy((char*)list_ptr+2,spliter.c_str(),2);
+
+	result=true;
+
+	return result;
+}
+
 const u_int MORE_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+2;
 //마지막 \r\n하나빼고..
 bool MenuAnalyzer::packetFromMore(__out Memory& out, __in OUT_More& in)

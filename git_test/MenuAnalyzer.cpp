@@ -219,17 +219,32 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 					printf("쿠키성공\n");
 					if(store_manager->Store_Search(in,out))
 					{
-						printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
-						for (int i = 0 ; i < out.opi_cnt ; i++)
-						{
-							printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
-						}
-						printf("검색성공\n");
-						if(packetFromSearch(out_memory,out))
-						{
+						if(out.code==1){
+							printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
+							for (int i = 0 ; i < out.opi_cnt ; i++)
+							{
+								printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
+							}
+							printf("검색성공\n");
+							if(packetFromSearch(out_memory,out))
+							{
+							}else{
+								freeImage(in.store.image);
+								err_code = out.result=3;
+								goto ERRORCODE;
+							}
+						}else if(out.code==8){
+							if(packetFromSearchList(out_memory,out))
+							{
+							}else{
+								freeImage(in.store.image);
+								err_code = out.result=3;
+								goto ERRORCODE;
+							}
 						}else{
 							freeImage(in.store.image);
-							err_code = out.result=3;
+							printf_s("%s\n","[SEARCH]Store Manager에서 옳지 않은 검색코드 반환");
+							err_code = out.result;
 							goto ERRORCODE;
 						}
 					}else{

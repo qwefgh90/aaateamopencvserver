@@ -14,7 +14,7 @@ ImageManager* ImageManager::getImageManager()
 	return ImageManager::singleton;
 }
 //1)비교후 선택된 이미지 2)받은 이미지 3)이미지 리스트
-bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __in vector<Imagelist>& imageList)
+bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __in vector<Imagelist>& imageList,std::vector<OUT_List>& out_list)
 {
 	bool result = false;
 	
@@ -25,7 +25,7 @@ bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __i
 		goto END;
 	}
 	//compare target with a compared list
-	if(!sift->matchingImageWithVector(image,target,imageList))
+	if(!sift->matchingImageWithVector(image,target,imageList,out_list))
 	{
 		goto END;
 	}
@@ -34,7 +34,7 @@ bool ImageManager::matchingImage(__out Imagelist& image,__in Memory& memory, __i
 	return result;
 }
 //1)비교후 선택된 이미지 2)받은 이미지 3)이미지 리스트
-bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList,  u_char filter)
+bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in Memory& memory, __in vector<ImageBufferElement>& imageList,  u_char filter,std::vector<OUT_List>& out_list)
 {
 	bool result = false;
 	
@@ -45,7 +45,7 @@ bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in M
 		goto END;
 	}
 	//compare target with a compared list
-	if(!sift->matchingImageWithCache(image,target,imageList,filter))
+	if(!sift->matchingImageWithCache(image,target,imageList,filter,out_list))
 	{
 		goto END;
 	}

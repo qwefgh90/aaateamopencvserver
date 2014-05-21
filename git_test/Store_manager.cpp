@@ -45,7 +45,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	Ic = Icf->getImageCache(str);
 	//NULL일 경우 검사 안해야됨
 	//캐시를 우선으로 검색
-	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector,in_search.filter))
+	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector,in_search.filter,out_search.out_list))
 	{in_search.filter;
 		out_search.code = matchcache.store_code;
 		
@@ -75,7 +75,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	}
 	//이미지 벡터에 담긴 이미지 경로를 Fetch하여 읽은 매트릭스값을 새로 만든 매트릭스 벡터에 저장
 	//이미지 벡터, 이미지 리스트, 검색 구조제를 이미지매니저로 전달
-	if(im->matchingImage(imagelist, in_search.store.image, Imagevector))
+	if(im->matchingImage(imagelist, in_search.store.image, Imagevector,out_search.out_list))
 	{
 		//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
 		out_search.code = imagelist.store_code;
@@ -105,6 +105,10 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		//캐시에 저장한 사이즈가 21개이상이고 i가 30이하일 때까지 삭제 -> 50개보다 적은게 캐싱될 경우 20개까지만 남기고 삭제, 50개가 모두 캐싱 될경우 30개를 지우기
 		for(int i= 0; (int)out_search.out_list.size() > 5; i++)
 			out_search.out_list.erase(out_search.out_list.begin()+5);
+		for(int i= 0; (int)out_search.out_list.size() > 5; i++){
+			OUT_List ele = out_search.out_list[i];
+			printf("list[%d].matching : %u\n",i,ele.matching);
+		}
 		out_search.result = 8;
 		return true;
 	}

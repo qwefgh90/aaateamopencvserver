@@ -23,6 +23,7 @@ typedef struct _Memory{
 //DB->이미지모듈로 넘겨주는 구조체(상점 코드, 상점 키값)
 typedef struct _Imagelist{
 	u_int store_code;
+	char store_name[256];
 	char store_path[256];
 
 	//매트릭스 객체 추가
@@ -31,6 +32,7 @@ typedef struct _Imagelist{
 //캐시->이미지모듈로 넘겨주는 구조체(상점코드,상점xml경로,xml버퍼) 
 typedef struct _ImageBufferElement{
 	u_int store_code;
+	char store_name[256];
 	char store_path[256];
 	cv::Mat key_xml;
 	float latitude;	//위도
@@ -167,6 +169,7 @@ typedef struct _IN_Report{
 	};
 	u_char sort;
 	u_char filter;
+	char store_name[256];
 	Store store;		//상점 구조체
 	//float latitude;	//위도
 	//float longitude;//경도

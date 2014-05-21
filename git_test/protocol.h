@@ -271,6 +271,7 @@ typedef struct _OUT_Report{
 	unsigned char result;
 	u_int code;
 	float score;
+	char store_name[256];
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Report;

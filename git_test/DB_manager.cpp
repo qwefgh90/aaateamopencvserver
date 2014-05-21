@@ -306,12 +306,13 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 	{
 		//핸들을 닫은 후에 상점 키값을 이용해 상점 코드값을 알아내기
 		SQLCloseCursor(sqlstatementhandle);
-		sprintf_s(sql, "select store_code from STORE where store_key='%s'", in_report.store.image.buf);
+		sprintf_s(sql, "select store_code,store_name from STORE where store_key='%s'", in_report.store.image.buf);
 
 		if(Sql_run(sql, sqlstatementhandle))
 		{
 			SQLFetch(sqlstatementhandle);
 			SQLGetData(sqlstatementhandle, 1, SQL_INTEGER, &store_code, 4, NULL);
+			SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, in_report.store_name, 256, NULL);
 			SQLCloseCursor(sqlstatementhandle);
 		}
 		//핸들을 닫은 후에 아이디를 이용해 닉네임 얻어오기

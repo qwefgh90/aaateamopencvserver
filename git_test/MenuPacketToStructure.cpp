@@ -297,6 +297,7 @@ bool MenuAnalyzer::packetToReport(__out IN_Report& out, __in Memory& memory )
 	memcpy(&(out.store.latitude),latitude,4);			//위도
 	memcpy(&(out.store.longitude),longitude,4);		//경도
 	memcpy_s(out.store_name,storename_length,storename,storename_length);	//storename
+	printf("storename : %s",(int)(out.store_name));
 
 	char* end_ptr =NULL;
 	end_ptr = strstr((char*)opinion,spliter_end.c_str());	//\r\n포인터

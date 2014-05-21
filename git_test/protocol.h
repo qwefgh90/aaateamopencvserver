@@ -215,11 +215,22 @@ typedef struct _OUT_Leave{
 
 typedef struct _OUT_Search{
 	unsigned char result;
+	//상점 갯수
+	vector<OUT_List>out_list;
 	u_int code;
 	float score;
+	//상호명 추가
+	char name[256];
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Search;
+
+//상점 리스트 구조체 추가
+typedef struct _OUT_List{
+	u_int code;
+	char name[256];
+	u_int matching;
+}OUT_List
 
 typedef struct _OUT_More{
 	unsigned char result;

@@ -98,6 +98,11 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		//결과값을 분석기에 반환
 		return true;
 	}
+	//매칭된 이미지가 없을 경우 검색시 나타났던 상점들을 클라이언트에게 보내야 한다.
+	else
+	{
+
+	}
 	out_search.result = 2;
 	return false;
 }

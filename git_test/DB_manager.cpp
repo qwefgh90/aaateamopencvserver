@@ -732,7 +732,7 @@ bool DB_manager::Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi)
 				return true;
 			}
 		}
-		else if(in_like_opi.like == -1)
+		else if(in_like_opi.like == 2)
 		{
 			sprintf_s(sql, "UPDATE SNS SET bed = bed + 1 WHERE sns_id = %d;", in_like_opi.num);
 

@@ -230,7 +230,7 @@ typedef struct _OUT_List{
 	u_int code;
 	char name[256];
 	u_int matching;
-}OUT_List
+}OUT_List;
 
 typedef struct _OUT_More{
 	unsigned char result;

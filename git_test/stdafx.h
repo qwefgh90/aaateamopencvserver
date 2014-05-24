@@ -40,7 +40,6 @@
 //Function
 void dumpbyte(u_char* buf,u_int len);
 bool Compare( ImageBufferElement &arg1, ImageBufferElement &arg2 );
-bool Compare_m( OUT_List &arg1, OUT_List &arg2 );
 
 using namespace std;
 using namespace stdext;

@@ -221,7 +221,7 @@ typedef struct _OUT_Leave{
 typedef struct _OUT_List{
 	u_int code;
 	char name[256];
-	u_int matching;
+	float matching;
 }OUT_List;
 
 typedef struct _OUT_Search{

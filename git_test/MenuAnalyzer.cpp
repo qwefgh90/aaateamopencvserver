@@ -219,7 +219,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 					printf("쿠키성공\n");
 					if(store_manager->Store_Search(in,out))
 					{
-						if(out.code==1){
+						if(out.result==1){
 							printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
 							for (int i = 0 ; i < out.opi_cnt ; i++)
 							{
@@ -233,7 +233,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 								err_code = out.result=3;
 								goto ERRORCODE;
 							}
-						}else if(out.code==8){
+						}else if(out.result==8){
 							if(packetFromSearchList(out_memory,out))
 							{
 							}else{
@@ -243,15 +243,10 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							}
 						}else{
 							freeImage(in.store.image);
-							printf_s("%s\n","[SEARCH]Store Manager에서 옳지 않은 검색코드 반환");
+							printf_s("%s\n","[SEARCH]검색 실패\n");
 							err_code = out.result;
 							goto ERRORCODE;
 						}
-					}else{
-						freeImage(in.store.image);
-						printf_s("%s\n","[SEARCH]검색 실패");
-						err_code = out.result;
-						goto ERRORCODE;
 					}
 
 				}else{

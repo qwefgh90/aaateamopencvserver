@@ -42,7 +42,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />  </ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
@@ -156,9 +157,6 @@
     </ClCompile>
     <ClCompile Include="DB_manager.cpp">
       <Filter>Source Files\DataBase</Filter>
-    </ClCompile>
-    <ClCompile Include="testcase.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

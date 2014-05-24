@@ -130,7 +130,6 @@ const u_int SEARCH_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+(4)+2 ;
 bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 {
 	bool result = false;
-
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
@@ -140,6 +139,8 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	u_int store_size=0;
 	//tel + seperator
 	u_int tel_size=0;
+	u_int lat_size=0;
+	u_int long_size=0;
 
 	//calculate store content byte length
 	store_size=strlen(in.name)+2;
@@ -148,6 +149,16 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	//calculate tel content byte length
 	tel_size=strlen(in.store_tel)+2;
 	bytelen += tel_size;
+
+	//calculate latitude content byte length
+	sprintf(big_buffer,"%f\r\n",in.latitude);
+	lat_size=strlen(big_buffer);
+	bytelen += lat_size;
+
+	//calculate longitude content byte length
+	sprintf(big_buffer,"%f\r\n",in.longitude);
+	long_size=strlen(big_buffer);
+	bytelen += long_size;
 
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
@@ -194,7 +205,6 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	float* avg_score_ptr = (float*)((u_char*)code_ptr+4);
 	char* store_name_ptr = ((char*)avg_score_ptr)+4;//storename
 
-
 	//2)copy to packet buffer
 	*bytelen_ptr = bytelen;
 	*result_login_ptr = in.result;
@@ -213,7 +223,15 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 		tel_size=strlen(big_buffer);
 	}
 	memcpy(tel_ptr,big_buffer,tel_size);	//store_Tel
-	
+
+	char* lat_ptr=((char*)tel_ptr)+tel_size;
+	sprintf(big_buffer,"%f\r\n",in.latitude);
+	memcpy(lat_ptr,big_buffer,lat_size);	//store_Tel
+
+	char* long_ptr=lat_ptr+lat_size;
+	sprintf(big_buffer,"%f\r\n",in.longitude);
+	memcpy(long_ptr,big_buffer,long_size);	//store_Tel
+
 	//opinion pointer array variables 
 	char* num_ptr[10]={0,};
 	char* nic_ptr[10]={0,};
@@ -226,7 +244,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
-			num_ptr[i]=((char*)tel_ptr)+tel_size;	//seperator//storename
+			num_ptr[i]=((char*)long_ptr)+long_size;	//seperator//storename
 		else // not zero
 			num_ptr[i]=((char*)dislike_ptr[i-1])+dislike_cnt_size[i-1];
 
@@ -261,6 +279,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 
 	result = true;
 	return result;
+}
 }
 
 const u_int SEARCH_LIST_SIZE_BUT_LIST = (4)+(1)+(4)+2;
@@ -767,7 +786,6 @@ bool MenuAnalyzer::packetFromLike(__out Memory& out, __in OUT_Like& in)
 bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 {
 	bool result = false;
-
 	char big_buffer[1000]={0,};							//temp buffer
 
 	u_int content_cnt = in.opi_cnt;						//contents count
@@ -777,6 +795,8 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	u_int store_size=0;
 	//tel + seperator
 	u_int tel_size=0;
+	u_int lat_size=0;
+	u_int long_size=0;
 
 	//calculate store content byte length
 	store_size=strlen(in.name)+2;
@@ -785,6 +805,16 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	//calculate tel content byte length
 	tel_size=strlen(in.store_tel)+2;
 	bytelen += tel_size;
+
+	//calculate latitude content byte length
+	sprintf(big_buffer,"%f\r\n",in.latitude);
+	lat_size=strlen(big_buffer);
+	bytelen += lat_size;
+
+	//calculate longitude content byte length
+	sprintf(big_buffer,"%f\r\n",in.longitude);
+	long_size=strlen(big_buffer);
+	bytelen += long_size;
 
 	//content structure size values (contain "\r\n") 
 	u_int num_size[10]={0,};
@@ -831,7 +861,6 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	float* avg_score_ptr = (float*)((u_char*)code_ptr+4);
 	char* store_name_ptr = ((char*)avg_score_ptr)+4;//storename
 
-
 	//2)copy to packet buffer
 	*bytelen_ptr = bytelen;
 	*result_login_ptr = in.result;
@@ -850,7 +879,15 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 		tel_size=strlen(big_buffer);
 	}
 	memcpy(tel_ptr,big_buffer,tel_size);	//store_Tel
-	
+
+	char* lat_ptr=((char*)tel_ptr)+tel_size;
+	sprintf(big_buffer,"%f\r\n",in.latitude);
+	memcpy(lat_ptr,big_buffer,lat_size);	//store_Tel
+
+	char* long_ptr=lat_ptr+lat_size;
+	sprintf(big_buffer,"%f\r\n",in.longitude);
+	memcpy(long_ptr,big_buffer,long_size);	//store_Tel
+
 	//opinion pointer array variables 
 	char* num_ptr[10]={0,};
 	char* nic_ptr[10]={0,};
@@ -863,7 +900,7 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	for(i=0 ; i<content_cnt ; i++){
 		//char buffers...
 		if(i==0)
-			num_ptr[i]=((char*)tel_ptr)+tel_size;	//seperator//storename
+			num_ptr[i]=((char*)long_ptr)+long_size;	//seperator//storename
 		else // not zero
 			num_ptr[i]=((char*)dislike_ptr[i-1])+dislike_cnt_size[i-1];
 

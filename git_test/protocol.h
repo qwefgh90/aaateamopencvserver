@@ -27,6 +27,8 @@ typedef struct _Imagelist{
 	char store_name[256];
 	char store_tel[20];
 	char store_path[256];
+	float latitude;	//위도
+	float longitude;//경도
 
 	//매트릭스 객체 추가
 }Imagelist;
@@ -224,6 +226,8 @@ typedef struct _OUT_List{
 	u_int code;
 	char name[256];
 	char store_tel[20];
+	float latitude;	//위도
+	float longitude;//경도
 	float matching;
 }OUT_List;
 
@@ -236,6 +240,8 @@ typedef struct _OUT_Search{
 	//상호명 추가
 	char name[256];
 	char store_tel[20];
+	float latitude;	//위도
+	float longitude;//경도
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Search;
@@ -278,6 +284,8 @@ typedef struct _OUT_Report{
 	float score;
 	char name[256];
 	char store_tel[20];
+	float latitude;	//위도
+	float longitude;//경도
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Report;

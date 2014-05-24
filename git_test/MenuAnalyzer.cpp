@@ -220,7 +220,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 					if(store_manager->Store_Search(in,out))
 					{
 						if(out.result==1){
-							printf("result: %d @@@\ncode : %u\nscore%f\nopi_cnt : %u\n",out.result,out.code,out.score,out.opi_cnt);
+							printf("result: %d @@@\ncode : %u\nscore : %f\nname : %s\ntel : %s\nopi_cnt : %u\n",out.result,out.code,out.score,out.name, out.store_tel, out.opi_cnt);
 							for (int i = 0 ; i < out.opi_cnt ; i++)
 							{
 								printf("%u : %s,%s,%u,%u,%u\n",i,out.opi[i].comment,out.opi[i].nick,out.opi[i].dislike_cnt,out.opi[i].like_cnt,out.opi[i].sns_id);
@@ -236,6 +236,8 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 						}else if(out.result==8){
 							if(packetFromSearchList(out_memory,out))
 							{
+								for( int i = 0;out.out_list.size() < i ; i++)
+									printf("[%d]code : %u score : %f name : %s tel : %s matching : %f\n",i,out.out_list[i].code,out.out_list[i].name,out.out_list[i].store_tel,out.out_list[i].matching);
 							}else{
 								freeImage(in.store.image);
 								err_code = out.result=3;

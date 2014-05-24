@@ -49,7 +49,8 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	{
 		in_search.filter;
 		out_search.code = matchcache.store_code;
-		
+		memcpy_s(out_search.store_tel,20,matchcache.store_tel,20);
+		memcpy_s(out_search.name,256,matchcache.store_name,256);
 		//검색된 상점에 대한 의견검색을 위해 선언
 		IN_More in_more;
 		OUT_More out_more;
@@ -80,6 +81,8 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	{
 		//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
 		out_search.code = imagelist.store_code;
+		memcpy(out_search.store_tel,imagelist.store_tel,20);
+		memcpy_s(out_search.name,256,imagelist.store_name,256);
 		//검색된 상점에 대한 의견검색을 위해 선언
 		IN_More in_more;
 		OUT_More out_more;

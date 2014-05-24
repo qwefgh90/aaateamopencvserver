@@ -243,10 +243,15 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							}
 						}else{
 							freeImage(in.store.image);
-							printf_s("%s\n","[SEARCH]검색 실패\n");
+							printf_s("%s\n","[SEARCH]잘못된 반환 by MenuAnalyzer\n");
 							err_code = out.result;
 							goto ERRORCODE;
 						}
+					}else{
+						freeImage(in.store.image);
+							printf_s("%s\n","[SEARCH]검색 실패\n");
+						err_code = out.result;
+						goto ERRORCODE;
 					}
 
 				}else{

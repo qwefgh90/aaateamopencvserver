@@ -280,7 +280,7 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	result = true;
 	return result;
 }
-}
+
 
 const u_int SEARCH_LIST_SIZE_BUT_LIST = (4)+(1)+(4)+2;
 //마지막 \r\n하나빼고..

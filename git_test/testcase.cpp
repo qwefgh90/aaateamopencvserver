@@ -144,13 +144,13 @@ void chang_test(){
 	}else
 		printf("매트릭스 생성 실패\n");
 //	if(sift->matchingImageWithVector(list,mat,v))
-	if(imanager->matchingImage(list,m,v))
+	/*if(imanager->matchingImage(list,m,v))
 	{
 		printf("매칭 성공\n");
 	}else
 		printf("매칭 실패\n");
 	
-
+	*/
 	printf("프로세스 종료\n");
 	TerminateProcess(GetCurrentProcess(),0);
 }

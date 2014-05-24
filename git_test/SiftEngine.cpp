@@ -180,8 +180,9 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 			cntSet.push_back(m);	//save matching results to vector
 
 		OUT_List store_element;
+		memset(&store_element,0,sizeof(store_element));
 		store_element.code=img.store_code;
-		store_element.matching=(int)m.percent;
+		store_element.matching=m.percent;
 		strncpy(store_element.name,img.store_name,strlen(img.store_name));
 		out_list.push_back(store_element);
 
@@ -301,8 +302,9 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 			cntSet.push_back(m);	//save matching results to vector
 
 		OUT_List store_element;
+		memset(&store_element,0,sizeof(store_element));
 		store_element.code=img.store_code;
-		store_element.matching=(int)m.percent;
+		store_element.matching=m.percent;
 		strncpy(store_element.name,img.store_name,strlen(img.store_name));
 		out_list.push_back(store_element);
 

@@ -5,6 +5,9 @@
 #include"sha512.h"
 #include "SQLSvrPool.h"
 
+#define TRUE 1
+#define FALSE 0
+ 
 
 class DB_manager
 {
@@ -37,6 +40,5 @@ public:
 	bool Query_opi_delete(IN_Delete_comment in_del_opi, OUT_Delete_comment &out_del_opi);
 	bool Query_opi_like(IN_Like in_like_opi, OUT_Like &out_like_opi);
 	bool Query_Image_cache(float 경도, float 위도, vector<ImageBufferElement>& Ibev);
-	
 	float distance(float P1_latitude, float P1_longitude, float P2_latitude, float P2_longitude);
 };

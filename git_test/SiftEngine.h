@@ -6,9 +6,9 @@ class SiftEngine
 public:
 	static SiftEngine* getSiftEngine();
 
-	static const u_int MIN_MATCH = 20; //deprecated
+	static const u_int MIN_MATCH = 30; //deprecated
 	static const u_int MIN_PERCENT = 5;
-	static const u_int SEARCH_PERCENT = 12;//5
+	static const u_int SEARCH_PERCENT = 15;//5
 
 	//return Matrix
 	bool createKey(__in Memory& memory,cv::Mat& m);	//Create a key for a Image

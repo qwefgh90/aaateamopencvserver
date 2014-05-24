@@ -32,6 +32,29 @@ public:
 	bool Store_opi_delete(IN_Delete_comment &in_delete, OUT_Delete_comment &out_delete);
 	bool Store_opi_modify(IN_Modify_comment &in_modify, OUT_Modify_comment &out_modify);
 	bool Store_like(IN_Like &in_like, OUT_Like &out_like);
+	void swap(float* a, float* b){
+		u_int tmp=*a;
+		*a=*b;
+		*b=tmp;
+	}
+
+	void bubble_sort( vector<OUT_List> &list){
+		int i,j;
+		int isSwaped;
+
+		for(i=0; i<list.size()-1; i++){
+			isSwaped=FALSE;
+			for(j=0; j<list.size()-1-i; j++){
+				if(list[j].matching<list[j+1].matching){
+					swap(&list[j].matching,&list[j+1].matching);
+					isSwaped=TRUE;
+				}
+			}
+			if(isSwaped==FALSE) {
+				break;
+			}
+		}
+	}
 	//위도 경도 쿠키
 	bool Create_cache(IN_Cache in_cache);
 

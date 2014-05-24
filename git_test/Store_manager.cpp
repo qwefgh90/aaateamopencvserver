@@ -45,8 +45,9 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	Ic = Icf->getImageCache(str);
 	//NULL일 경우 검사 안해야됨
 	//캐시를 우선으로 검색
-	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector,in_search.filter,out_search.out_list))
-	{in_search.filter;
+	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector,in_search.filter, out_search.out_list))
+	{
+		in_search.filter;
 		out_search.code = matchcache.store_code;
 		
 		//검색된 상점에 대한 의견검색을 위해 선언
@@ -101,16 +102,36 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 	//매칭된 이미지가 없을 경우 검색시 나타났던 상점들을 클라이언트에게 보내야 한다.
 	else
 	{
-		sort(out_search.out_list.begin(),out_search.out_list.end(),Compare_m);
-		//캐시에 저장한 사이즈가 21개이상이고 i가 30이하일 때까지 삭제 -> 50개보다 적은게 캐싱될 경우 20개까지만 남기고 삭제, 50개가 모두 캐싱 될경우 30개를 지우기
-		for(int i= 0; (int)out_search.out_list.size() > 5; i++)
-			out_search.out_list.erase(out_search.out_list.begin()+5);
-		for(int i= 0; (int)out_search.out_list.size() > 5; i++){
-			OUT_List ele = out_search.out_list[i];
-			printf("list[%d].matching : %u\n",i,ele.matching);
+		if(out_search.out_list.size() == 0)
+		{
+			out_search.result = 2;
+			return false;
 		}
-		out_search.result = 8;
-		return true;
+		else
+		{
+			if(out_search.out_list.size() > 1)
+			{
+				vector<OUT_List> temp;
+				for(int i=0;out_search.out_list.size() > i ; i++)
+				{
+					if(out_search.out_list[i].matching > SiftEngine::MIN_PERCENT)
+					{
+						out_search.out_list[i].matching = (out_search.out_list[i].matching/SiftEngine::SEARCH_PERCENT)*100;//12%를 100%로 환산
+						temp.push_back(out_search.out_list[i]);
+					}
+				}
+				bubble_sort(temp);
+				for(int i= 0; (int)temp.size() > 5; i++)
+					temp.erase(temp.begin()+5);
+				out_search.out_list = temp;
+				for(int i= 0; (int)out_search.out_list.size() > i; i++){
+					OUT_List ele = out_search.out_list[i];
+					printf("list[%d].matching : %f\n",i,ele.matching);
+				}
+			}
+			out_search.result = 8;
+			return true;
+		}
 	}
 	out_search.result = 2;
 	return false;

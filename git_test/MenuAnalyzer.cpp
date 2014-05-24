@@ -237,7 +237,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 							if(packetFromSearchList(out_memory,out))
 							{
 								for( int i = 0;out.out_list.size() < i ; i++)
-									printf("[%d]code : %u score : %f name : %s tel : %s matching : %f\n",i,out.out_list[i].code,out.out_list[i].name,out.out_list[i].store_tel,out.out_list[i].matching);
+									printf("[%d]code : %u score : %f name : %s tel : %s matching : %f\n",i,out.out_list[i].code,out.score ,out.out_list[i].name,out.out_list[i].store_tel,out.out_list[i].matching);
 							}else{
 								freeImage(in.store.image);
 								err_code = out.result=3;

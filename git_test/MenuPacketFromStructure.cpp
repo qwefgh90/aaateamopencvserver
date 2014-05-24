@@ -263,7 +263,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 	for (int i =0; i<in.out_list.size();i++){
 		in.out_list[i].code;
 		int name_length = strlen(in.out_list[i].name);
-		sprintf_s(big_buffer,"%u\r\n%s\r\n%u\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
 		bytelen += strlen(big_buffer);
 	}
 	out.len = bytelen;
@@ -282,7 +282,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 	
 	for (int i =0; i<in.out_list.size();i++){
 		sprintf_s(big_buffer,"%u\r\n%s\r\n%u\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
-		printf("list[%d] : %u,%s,%f",i,in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
+		printf("list[%d] : %u,%s,%f\n",i,in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
 		int list_len = strlen(big_buffer);
 		strncpy((char*)list_ptr,big_buffer,list_len);
 		list_ptr+=list_len;

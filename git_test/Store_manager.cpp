@@ -133,6 +133,12 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 				}
 			}else
 			{
+				//if(out_search.out_list[0].matching <= SiftEngine::MIN_PERCENT)
+				// {
+				//	out_search.result = 2;
+				//	return false;
+				
+
 				out_search.out_list[0].matching = (out_search.out_list[0].matching/SiftEngine::SEARCH_PERCENT)*100;//12%를 100%로 환산
 			}
 			out_search.result = 8;

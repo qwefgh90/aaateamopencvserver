@@ -128,6 +128,9 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 					OUT_List ele = out_search.out_list[i];
 					printf("list[%d].matching : %f\n",i,ele.matching);
 				}
+			}else
+			{
+				out_search.out_list[0].matching = (out_search.out_list[0].matching/SiftEngine::SEARCH_PERCENT)*100;//12%를 100%로 환산
 			}
 			out_search.result = 8;
 			return true;

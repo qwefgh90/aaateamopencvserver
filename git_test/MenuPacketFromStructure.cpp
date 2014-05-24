@@ -317,7 +317,6 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 	*store_cnt_ptr=in.out_list.size();
 	int i =0;
 
-	
 	for (int i =0; i<in.out_list.size();i++){
 		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n%s\r\n%f\r\n%f\r\n\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
 		printf("list[%d] : %u,%s,%f,%s,%f,%f\n",i,in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);

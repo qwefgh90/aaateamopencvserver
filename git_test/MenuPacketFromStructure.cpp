@@ -215,13 +215,10 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	memcpy(store_name_ptr,big_buffer,store_size);	//storename
 
 	char* tel_ptr = store_name_ptr+store_size;
-	if(tel_size>2){
-		sprintf(big_buffer,"%s\r\n",in.store_tel);//store_tel is not NULL
-		tel_size=strlen(big_buffer);
-	}else if(tel_size==2){
-		sprintf(big_buffer,"0\r\n",in.store_tel);//store_tel is NULL
-		tel_size=strlen(big_buffer);
-	}
+
+	sprintf(big_buffer,"%s\r\n",in.store_tel);//store_tel is not NULL
+	tel_size=strlen(big_buffer);
+
 	memcpy(tel_ptr,big_buffer,tel_size);	//store_Tel
 
 	char* lat_ptr=((char*)tel_ptr)+tel_size;
@@ -873,10 +870,13 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	memcpy(store_name_ptr,big_buffer,store_size);	//storename
 
 	char* tel_ptr = store_name_ptr+store_size;
-
-	sprintf(big_buffer,"%s\r\n",in.store_tel);//store_tel is not NULL
-	tel_size=strlen(big_buffer);
-
+	if(tel_size>2){
+		sprintf(big_buffer,"%s\r\n",in.store_tel);//store_tel is not NULL
+		tel_size=strlen(big_buffer);
+	}else if(tel_size==2){
+		sprintf(big_buffer,"0\r\n",in.store_tel);//store_tel is NULL
+		tel_size=strlen(big_buffer);
+	}
 	memcpy(tel_ptr,big_buffer,tel_size);	//store_Tel
 
 	char* lat_ptr=((char*)tel_ptr)+tel_size;

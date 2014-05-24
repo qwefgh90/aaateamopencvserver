@@ -25,6 +25,7 @@ typedef struct _Memory{
 typedef struct _Imagelist{
 	u_int store_code;
 	char store_name[256];
+	char store_tel[20];
 	char store_path[256];
 
 	//매트릭스 객체 추가
@@ -34,6 +35,7 @@ typedef struct _Imagelist{
 typedef struct _ImageBufferElement{
 	u_int store_code;
 	char store_name[256];
+	char store_tel[20];
 	char store_path[256];
 	cv::Mat key_xml;
 	float latitude;	//위도
@@ -221,6 +223,7 @@ typedef struct _OUT_Leave{
 typedef struct _OUT_List{
 	u_int code;
 	char name[256];
+	char store_tel[20];
 	float matching;
 }OUT_List;
 
@@ -232,6 +235,7 @@ typedef struct _OUT_Search{
 	float score;
 	//상호명 추가
 	char name[256];
+	char store_tel[20];
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Search;
@@ -273,6 +277,7 @@ typedef struct _OUT_Report{
 	u_int code;
 	float score;
 	char name[256];
+	char store_tel[20];
 	OUT_Opinion opi[10];
 	u_int opi_cnt;
 }OUT_Report;

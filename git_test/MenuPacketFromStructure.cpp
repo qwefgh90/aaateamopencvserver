@@ -127,7 +127,7 @@ bool MenuAnalyzer::packetFromLeave(__out Memory& out, __in OUT_Leave& in)
 }
 const u_int SEARCH_PACKET_SIZE_BUT_CONTENT = (4)+(1)+(4)+(4)+2 ;
 //마지막 \r\n하나빼고..
-bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
+bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)	
 {
 	bool result = false;
 	char big_buffer[1000]={0,};							//temp buffer
@@ -290,6 +290,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 	char big_buffer[1000]={0,};							//temp buffer
 	
 	bytelen+=SEARCH_LIST_SIZE_BUT_LIST;
+
 	/*
 	vector<OUT_List>::iterator iter = in.out_list.begin() ;
 	for (; iter != in.out_list.end() ; ++iter){
@@ -300,7 +301,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 	for (int i =0; i<in.out_list.size();i++){
 		in.out_list[i].code;
 		int name_length = strlen(in.out_list[i].name);
-		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%f%s\r\n%f\r\n%f\r\n\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
 		bytelen += strlen(big_buffer);
 	}
 	out.len = bytelen;
@@ -318,8 +319,8 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 
 	
 	for (int i =0; i<in.out_list.size();i++){
-		sprintf_s(big_buffer,"%u\r\n%s\r\n%u\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
-		printf("list[%d] : %u,%s,%f\n",i,in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching);
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%f%s\r\n%f\r\n%f\r\n\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
+		printf("list[%d] : %u,%s,%f,%s,%f,%f\n",i,in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
 		int list_len = strlen(big_buffer);
 		strncpy((char*)list_ptr,big_buffer,list_len);
 		list_ptr+=list_len;
@@ -334,7 +335,6 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 		list_ptr+=list_len;
 		i++;
 	}
-
 	*/
 	strncpy((char*)list_ptr,spliter.c_str(),2);
 

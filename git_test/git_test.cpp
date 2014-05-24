@@ -27,9 +27,6 @@ CIocpSrv *g_pSrv;	//¼­¹ö °´Ã¼
 void initManager();
 void destroyMnager();
 
-//TEST MODULE CHANG
-#include "testcase.h"
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	//chang_test();

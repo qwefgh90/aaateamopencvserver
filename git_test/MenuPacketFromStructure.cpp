@@ -336,7 +336,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 		i++;
 	}
 	*/
-	strncpy((char*)list_ptr,spliter.c_str(),2);
+	//strncpy((char*)list_ptr,spliter.c_str(),2);
 
 	result=true;
 

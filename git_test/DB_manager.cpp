@@ -245,7 +245,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 		}
 		*(strrchr(not,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
-		sprintf_s(sql, "select store_code, store_key,store_name,store_tel from STORE where store_filter in(%s) and store_code not in (%s) and 2000 > dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')",
+		sprintf_s(sql, "select store_code, store_key,store_name,store_tel,gps_Longitude,gps_Latitude from STORE where store_filter in(%s) and store_code not in (%s) and 2000 > dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')",
 			buf, not, in_search.store.latitude, in_search.store.longitude);
 
 		if(Sql_run(sql, sqlstatementhandle))
@@ -257,6 +257,8 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Image_list.store_path, 256, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, Image_list.store_name, 256, NULL);
 				SQLGetData(sqlstatementhandle, 4, SQL_C_CHAR, Image_list.store_tel, 20, NULL);
+				SQLGetData(sqlstatementhandle, 5, SQL_C_FLOAT, &Image_list.longitude, 4, NULL);
+				SQLGetData(sqlstatementhandle, 6, SQL_C_FLOAT, &Image_list.latitude, 4, NULL);
 				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
@@ -359,6 +361,8 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			out_report.opi[0].sns_id = sns_id;
 			out_report.opi[0].dislike_cnt = 0;
 			out_report.store_tel[0] = NULL;
+			out_report.latitude = in_report.store.latitude;
+			out_report.longitude = in_report.store.longitude;
 			out_report.opi_cnt = 1;
 			out_report.result = 1;
 			out_report.score = (float)in_report.comment_score;

@@ -184,6 +184,9 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 		store_element.code=img.store_code;
 		store_element.matching=m.percent;
 		strncpy(store_element.name,img.store_name,strlen(img.store_name));
+		strncpy(store_element.store_tel,img.store_tel,strlen(img.store_tel));
+		store_element.latitude = img.latitude;
+		store_element.longitude = img.longitude;
 		out_list.push_back(store_element);
 
 
@@ -306,6 +309,9 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 		store_element.code=img.store_code;
 		store_element.matching=m.percent;
 		strncpy(store_element.name,img.store_name,strlen(img.store_name));
+		strncpy(store_element.store_tel,img.store_tel,strlen(img.store_tel));
+		store_element.latitude = img.latitude;
+		store_element.longitude = img.longitude;
 		out_list.push_back(store_element);
 
 		} catch(cv::Exception& e) {

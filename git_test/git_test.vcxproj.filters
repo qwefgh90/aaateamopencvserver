@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="git_test.vcxproj.user">
+      <Filter>DB Pool</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -92,9 +95,6 @@
     </ClInclude>
     <ClInclude Include="CrossHelper.h">
       <Filter>DB Pool</Filter>
-    </ClInclude>
-    <ClInclude Include="testcase.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageCache.h">
       <Filter>Source Files\Cache</Filter>

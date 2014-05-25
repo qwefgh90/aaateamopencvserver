@@ -26,7 +26,7 @@ DB_manager::DB_manager(void)
 	/*Create a pool that will have 3 cached connections and will swell upto a 
 	total of 5 connections. Returns the number of cached connections or -1 on error
 	*/
-	if(sqlsvrpool->CreatePool(10, 100)<=0){
+	if(sqlsvrpool->CreatePool(10, 500)<=0){
 		cout<<"Error creating database pool\n";
 		cout<<sqlsvrpool->GetLastSystemError()<<endl;	//If it's asystem error
 	}
@@ -360,7 +360,7 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			strcpy_s(out_report.opi[0].nick,16,nick);
 			out_report.opi[0].sns_id = sns_id;
 			out_report.opi[0].dislike_cnt = 0;
-			out_report.store_tel[0] = NULL;
+			out_report.store_tel[0] = '0';
 			out_report.latitude = in_report.store.latitude;
 			out_report.longitude = in_report.store.longitude;
 			out_report.opi_cnt = 1;

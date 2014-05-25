@@ -246,7 +246,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 						}else{
 							freeImage(in.store.image);
 							printf_s("%s\n","[SEARCH]잘못된 반환 by MenuAnalyzer\n");
-							err_code = out.result;
+							err_code = out.result= 0;
 							goto ERRORCODE;
 						}
 					}else{

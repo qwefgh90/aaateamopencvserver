@@ -121,11 +121,16 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 				vector<OUT_List> temp;
 				for(int i=0;out_search.out_list.size() > i ; i++)
 				{
-					if(out_search.out_list[i].matching > SiftEngine::MIN_PERCENT)
+					if(out_search.out_list[i].matching > 0)
 					{
 						out_search.out_list[i].matching = (out_search.out_list[i].matching/SiftEngine::SEARCH_PERCENT)*100;//12%를 100%로 환산
 						temp.push_back(out_search.out_list[i]);
 					}
+				}
+				if(temp.size() == 0)
+				{
+					out_search.result = 2;
+					return false;
 				}
 				bubble_sort(temp);
 				for(int i= 0; (int)temp.size() > 5; i++)
@@ -137,11 +142,11 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 				}
 			}else
 			{
-				//if(out_search.out_list[0].matching <= SiftEngine::MIN_PERCENT)
-				// {
-				//	out_search.result = 2;
-				//	return false;
-				
+				if(out_search.out_list[0].matching <= SiftEngine::MIN_PERCENT)
+				{
+					out_search.result = 2;
+					return false;
+				}
 
 				out_search.out_list[0].matching = (out_search.out_list[0].matching/SiftEngine::SEARCH_PERCENT)*100;//12%를 100%로 환산
 			}

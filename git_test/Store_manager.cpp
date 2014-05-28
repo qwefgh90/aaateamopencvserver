@@ -50,6 +50,8 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		in_search.filter;
 		out_search.code = matchcache.store_code;
 		memcpy_s(out_search.store_tel,20,matchcache.store_tel,20);
+		memcpy_s(out_search.store_time,30,matchcache.store_time,30);
+		memcpy_s(out_search.store_rest,100,matchcache.store_rest,100);
 		memcpy_s(out_search.name,256,matchcache.store_name,256);
 		out_search.latitude = matchcache.latitude;
 		out_search.longitude = matchcache.longitude;
@@ -84,6 +86,8 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 		//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
 		out_search.code = imagelist.store_code;
 		memcpy(out_search.store_tel,imagelist.store_tel,20);
+		memcpy(out_search.store_time,imagelist.store_time,20);
+		memcpy(out_search.store_rest,imagelist.store_rest,100);
 		memcpy_s(out_search.name,256,imagelist.store_name,256);
 		out_search.latitude = imagelist.latitude;
 		out_search.longitude = imagelist.longitude;

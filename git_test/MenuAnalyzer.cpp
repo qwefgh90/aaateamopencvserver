@@ -287,6 +287,7 @@ bool MenuAnalyzer::MenuSelector(Memory& in_memory,Memory& out_memory)
 				{
 					if(store_manager->Store_more(in,out))
 					{
+						printf_s("average score : %f\n",out.score);
 						if(packetFromMore(out_memory,out))
 						{
 

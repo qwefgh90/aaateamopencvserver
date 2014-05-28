@@ -245,7 +245,7 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 		}
 		*(strrchr(not,','))=NULL;
 		//필터값과 경도/위도를 이용해 상점코드 받아오기
-		sprintf_s(sql, "select store_code, store_key,store_name,store_tel,gps_Longitude,gps_Latitude from STORE where store_filter in(%s) and store_code not in (%s) and 2000 > dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')",
+		sprintf_s(sql, "select store_code, store_key,store_name,store_tel,store_time,store_rest,gps_Longitude,gps_Latitude from STORE where store_filter in(%s) and store_code not in (%s) and 2000 > dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')",
 			buf, not, in_search.store.latitude, in_search.store.longitude);
 
 		if(Sql_run(sql, sqlstatementhandle))
@@ -257,8 +257,10 @@ bool DB_manager::Query_images(IN_Search in_search, vector<Imagelist> &Imagevecto
 				SQLGetData(sqlstatementhandle, 2, SQL_C_CHAR, Image_list.store_path, 256, NULL);
 				SQLGetData(sqlstatementhandle, 3, SQL_C_CHAR, Image_list.store_name, 256, NULL);
 				SQLGetData(sqlstatementhandle, 4, SQL_C_CHAR, Image_list.store_tel, 20, NULL);
-				SQLGetData(sqlstatementhandle, 5, SQL_C_FLOAT, &Image_list.longitude, 4, NULL);
-				SQLGetData(sqlstatementhandle, 6, SQL_C_FLOAT, &Image_list.latitude, 4, NULL);
+				SQLGetData(sqlstatementhandle, 5, SQL_C_CHAR, Image_list.store_time, 30, NULL);
+				SQLGetData(sqlstatementhandle, 6, SQL_C_CHAR, Image_list.store_rest, 100, NULL);
+				SQLGetData(sqlstatementhandle, 7, SQL_C_FLOAT, &Image_list.longitude, 4, NULL);
+				SQLGetData(sqlstatementhandle, 8, SQL_C_FLOAT, &Image_list.latitude, 4, NULL);
 				//이미지 경로 변수를 이용해 파일을 READ해서 벡터에 저장
 				Imagevector.push_back(Image_list);
 			}
@@ -361,6 +363,8 @@ bool DB_manager::Query_image_register(IN_Report in_report, OUT_Report &out_repor
 			out_report.opi[0].sns_id = sns_id;
 			out_report.opi[0].dislike_cnt = 0;
 			out_report.store_tel[0] = '0';
+			out_report.store_time[0] = '0';
+			out_report.store_rest[0] = '0';
 			out_report.latitude = in_report.store.latitude;
 			out_report.longitude = in_report.store.longitude;
 			out_report.opi_cnt = 1;
@@ -793,7 +797,7 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
 
-	sprintf_s(sql, "select store_code,store_key,gps_Latitude,gps_Longitude,store_filter,store_name,store_tel from STORE where 1500 > dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')", latitude, longitude);
+	sprintf_s(sql, "select store_code,store_key,gps_Latitude,gps_Longitude,store_filter,store_name,store_tel,store_time,store_rest from STORE where 1500 > dbo.fn_distance(gps_Latitude,gps_Longitude,'%f','%f')", latitude, longitude);
 
 	//캐시 구조체 선언
 	ImageBufferElement Ibe;
@@ -812,6 +816,8 @@ bool DB_manager::Query_Image_cache(float longitude, float latitude, vector<Image
 				SQLGetData(sqlstatementhandle, 5, SQL_INTEGER, &filter, 4, NULL);
 				SQLGetData(sqlstatementhandle, 6, SQL_C_CHAR, Ibe.store_name, 256, NULL);
 				SQLGetData(sqlstatementhandle, 7, SQL_C_CHAR, Ibe.store_tel, 20, NULL);
+				SQLGetData(sqlstatementhandle, 8, SQL_C_CHAR, Ibe.store_time, 30, NULL);
+				SQLGetData(sqlstatementhandle, 9, SQL_C_CHAR, Ibe.store_rest, 100, NULL);
 				Ibe.filter = (u_char)filter;
 				printf("cache filter ; %d\n",Ibe.filter);
 				//거리 구하는 함수 사용

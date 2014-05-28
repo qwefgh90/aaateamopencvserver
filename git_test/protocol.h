@@ -26,6 +26,8 @@ typedef struct _Imagelist{
 	u_int store_code;
 	char store_name[256];
 	char store_tel[20];
+	char store_time[30];
+	char store_rest[100];
 	char store_path[256];
 	float latitude;	//위도
 	float longitude;//경도
@@ -38,6 +40,8 @@ typedef struct _ImageBufferElement{
 	u_int store_code;
 	char store_name[256];
 	char store_tel[20];
+	char store_time[30];
+	char store_rest[100];
 	char store_path[256];
 	cv::Mat key_xml;
 	float latitude;	//위도
@@ -226,6 +230,8 @@ typedef struct _OUT_List{
 	u_int code;
 	char name[256];
 	char store_tel[20];
+	char store_time[30];
+	char store_rest[100];
 	float latitude;	//위도
 	float longitude;//경도
 	float matching;
@@ -240,6 +246,8 @@ typedef struct _OUT_Search{
 	//상호명 추가
 	char name[256];
 	char store_tel[20];
+	char store_time[30];
+	char store_rest[100];
 	float latitude;	//위도
 	float longitude;//경도
 	OUT_Opinion opi[10];
@@ -284,6 +292,8 @@ typedef struct _OUT_Report{
 	float score;
 	char name[256];
 	char store_tel[20];
+	char store_time[30];
+	char store_rest[100];
 	float latitude;	//위도
 	float longitude;//경도
 	OUT_Opinion opi[10];

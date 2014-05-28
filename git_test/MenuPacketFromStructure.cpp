@@ -141,6 +141,8 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	u_int tel_size=0;
 	u_int lat_size=0;
 	u_int long_size=0;
+	u_int time_size=0;
+	u_int rest_size=0;
 
 	//calculate store content byte length
 	store_size=strlen(in.name)+2;
@@ -149,6 +151,14 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 	//calculate tel content byte length
 	tel_size=strlen(in.store_tel)+2;
 	bytelen += tel_size;
+
+	//calculate tel content byte length
+	time_size=strlen(in.store_time)+2;
+	bytelen += time_size;
+
+	//calculate tel content byte length
+	rest_size=strlen(in.store_rest)+2;
+	bytelen += rest_size;
 
 	//calculate latitude content byte length
 	sprintf(big_buffer,"%f\r\n",in.latitude);
@@ -221,7 +231,23 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 
 	memcpy(tel_ptr,big_buffer,tel_size);	//store_Tel
 
-	char* lat_ptr=((char*)tel_ptr)+tel_size;
+	/////
+	char* time_ptr = tel_ptr+tel_size;
+
+	sprintf(big_buffer,"%s\r\n",in.store_time);//store_time is not NULL
+	time_size=strlen(big_buffer);
+
+	memcpy(time_ptr,big_buffer,time_size);	//store_time
+	/////
+	char* rest_ptr = time_ptr+time_size;
+
+	sprintf(big_buffer,"%s\r\n",in.store_rest);//store_rest is not NULL
+	rest_size=strlen(big_buffer);
+
+	memcpy(rest_ptr,big_buffer,rest_size);	//store_holiday
+	//////
+	char* lat_ptr=((char*)rest_ptr)+rest_size;
+
 	sprintf(big_buffer,"%f\r\n",in.latitude);
 	memcpy(lat_ptr,big_buffer,lat_size);	//store_Tel
 
@@ -281,7 +307,8 @@ bool MenuAnalyzer::packetFromSearch(__out Memory& out, __in OUT_Search& in)
 
 const u_int SEARCH_LIST_SIZE_BUT_LIST = (4)+(1)+(4)+2;
 //마지막 \r\n하나빼고..
-bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
+bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in)
+{
 	bool result=false;
 	u_int bytelen=0;
 	char big_buffer[1000]={0,};							//temp buffer
@@ -299,7 +326,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 		in.out_list[i].code;
 		int name_length = strlen(in.out_list[i].name);
 
-		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n%s\r\n%f\r\n%f\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n%s\r\n%s\r\n%s\r\n%f\r\n%f\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].store_time  ,in.out_list[i].store_rest,  in.out_list[i].latitude,in.out_list[i].longitude);
 
 		bytelen += strlen(big_buffer);
 	}
@@ -317,9 +344,8 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 	int i =0;
 
 	for (int i =0; i<in.out_list.size();i++){
-
-		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n%s\r\n%f\r\n%f\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
-
+		sprintf_s(big_buffer,"%u\r\n%s\r\n%f\r\n%s\r\n%s\r\n%s\r\n%f\r\n%f\r\n",in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].store_time  ,in.out_list[i].store_rest,  in.out_list[i].latitude,in.out_list[i].longitude);
+		
 		printf("list[%d] : %u,%s,%f,%s,%f,%f\n",i,in.out_list[i].code,in.out_list[i].name,in.out_list[i].matching,in.out_list[i].store_tel,in.out_list[i].latitude,in.out_list[i].longitude);
 		int list_len = strlen(big_buffer);
 		strncpy((char*)list_ptr,big_buffer,list_len);
@@ -335,6 +361,7 @@ bool MenuAnalyzer::packetFromSearchList(__out Memory& out, __in OUT_Search& in){
 		i++;
 	}
 	*/
+
 	strncpy((char*)list_ptr,spliter.c_str(),2);
 
 	result=true;
@@ -796,6 +823,8 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	u_int tel_size=0;
 	u_int lat_size=0;
 	u_int long_size=0;
+	u_int time_size=0;
+	u_int rest_size=0;
 
 	//calculate store content byte length
 	store_size=strlen(in.name)+2;
@@ -804,6 +833,14 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	//calculate tel content byte length
 	tel_size=strlen(in.store_tel)+2;
 	bytelen += tel_size;
+
+	//calculate tel content byte length
+	time_size=strlen(in.store_time)+2;
+	bytelen += time_size;
+
+	//calculate tel content byte length
+	rest_size=strlen(in.store_rest)+2;
+	bytelen += rest_size;
 
 	//calculate latitude content byte length
 	sprintf(big_buffer,"%f\r\n",in.latitude);
@@ -870,16 +907,29 @@ bool MenuAnalyzer::packetFromReport(__out Memory& out, __in _OUT_Report& in)
 	memcpy(store_name_ptr,big_buffer,store_size);	//storename
 
 	char* tel_ptr = store_name_ptr+store_size;
-	if(tel_size>2){
-		sprintf(big_buffer,"%s\r\n",in.store_tel);//store_tel is not NULL
-		tel_size=strlen(big_buffer);
-	}else if(tel_size==2){
-		sprintf(big_buffer,"0\r\n",in.store_tel);//store_tel is NULL
-		tel_size=strlen(big_buffer);
-	}
+
+	sprintf(big_buffer,"%s\r\n",in.store_tel);//store_tel is not NULL
+	tel_size=strlen(big_buffer);
+
 	memcpy(tel_ptr,big_buffer,tel_size);	//store_Tel
 
-	char* lat_ptr=((char*)tel_ptr)+tel_size;
+	/////
+	char* time_ptr = tel_ptr+tel_size;
+
+	sprintf(big_buffer,"%s\r\n",in.store_time);//store_time is not NULL
+	time_size=strlen(big_buffer);
+
+	memcpy(time_ptr,big_buffer,time_size);	//store_time
+	/////
+	char* rest_ptr = time_ptr+time_size;
+
+	sprintf(big_buffer,"%s\r\n",in.store_rest);//store_rest is not NULL
+	rest_size=strlen(big_buffer);
+
+	memcpy(rest_ptr,big_buffer,rest_size);	//store_holiday
+	//////
+	char* lat_ptr=((char*)rest_ptr)+rest_size;
+
 	sprintf(big_buffer,"%f\r\n",in.latitude);
 	memcpy(lat_ptr,big_buffer,lat_size);	//store_Tel
 

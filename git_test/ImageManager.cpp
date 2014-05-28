@@ -56,7 +56,14 @@ bool ImageManager::matchingImageWithCache(__out ImageBufferElement& image,__in M
 bool ImageManager::storeKey(__in Memory& memory,__in char* store_path)
 {
 	bool result = false;
+	char img_path[255]={0,};
 	SiftEngine* sift = SiftEngine::getSiftEngine();
+	//Image Save
+	sprintf(img_path,"%s.jpeg",store_path);
+	FILE* f = fopen(img_path,"wb");
+	fwrite(memory.buf,memory.len,1,f);
+	fclose(f);
+
 	if(!sift->storeKey(memory,store_path))
 	{
 		goto END;

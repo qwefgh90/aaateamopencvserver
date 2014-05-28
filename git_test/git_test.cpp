@@ -36,11 +36,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	//return 0;
 
 	MSG msg;
-	HWND consolHwnd;			//Console Handle
 	HWND windowHwnd;			//CreateWindow Handle
 	HACCEL hAccelTable;	
+	//HWND consolHwnd;			//Console Handle
 	//hide console window
-	consolHwnd = FindWindow("ConsoleWindowClass",NULL);
+	//consolHwnd = FindWindow("ConsoleWindowClass",NULL);
 	//ShowWindow(consolHwnd,0);
 	hInst = GetModuleHandleA(NULL);
 	//1)RegisterClass, CreateWindow to handle wndproc for handling message
@@ -56,7 +56,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	Tray.uCallbackMessage=WM_USER_SHELLICON;
 	Tray.uFlags=NIF_ICON | NIF_TIP | NIF_MESSAGE;
 	Shell_NotifyIcon(NIM_ADD, &Tray);
-
+	
+	//3)Server Start
 	WSADATA stWSAData = {0};
 	int nWSAError = WSAStartup( MAKEWORD( 2, 2 ), &stWSAData );
 	if( nWSAError != 0 )
@@ -117,9 +118,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	POINT lpClickPoint;
 	switch (message)
 	{
-
 	case WM_USER_SHELLICON:		//윈도우 메세지 발생
-		switch(LOWORD(lParam)) 
+		switch(LOWORD(lParam))
 		{   
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:	//오른쪽 클릭시 팝업 메뉴 생성
@@ -203,7 +203,6 @@ DWORD WINAPI WorkerThread ( LPVOID WorkerThreadContext )
 	DWORD			dwRecvNBytes =0;
 	DWORD			dwIoSize;
 	u_char*			pBuffer;
-
 
 	while (1)
 	{	//IO 통보받는 함수. 큐로 이루어 져있으며 이벤트가 발생할떄까지 락상태로 대기한다.

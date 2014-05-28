@@ -54,13 +54,13 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	// Feature description 디스크립터 생성
 	extractor.compute( db, kps_db, m);
 	
-	//if(remove(title)==0)
-	//{
+	if(remove(title)==0)
+	{
 		//임시파일 삭제
-	//}else
-//	{
-//		printf("%s","[createKey]Fail to delete temporary file\n");
-//	}
+	}else
+	{
+		printf("%s","[createKey]Fail to delete temporary file\n");
+	}
 
 	result = true;
 

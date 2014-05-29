@@ -54,13 +54,13 @@ bool SiftEngine::createKey(__in Memory& memory,__out cv::Mat& m)
 	// Feature description 디스크립터 생성
 	extractor.compute( db, kps_db, m);
 	
-	if(remove(title)==0)
-	{
+	//if(remove(title)==0)
+	//{
 		//임시파일 삭제
-	}else
-	{
-		printf("%s","[createKey]Fail to delete temporary file\n");
-	}
+//	}else
+//	{
+//		printf("%s","[createKey]Fail to delete temporary file\n");
+//	}
 
 	result = true;
 
@@ -127,7 +127,8 @@ bool SiftEngine::matchingImageWithCache(__out ImageBufferElement& image ,cv::Mat
 	bool result = false;
 	for ( int i = 0 ; i < (int)imageList.size(); i++)
 	{
-		printf("[FILTER]client.filter : %d ,imageList[i].filter %d\n",clientfilter,imageList[i].filter);
+		
+		printf("[CACHE SEARCH]상점명 : %s,client.filter : %d ,imageList[i].filter %d\n",imageList[i].store_name,clientfilter,imageList[i].filter);
 		if((clientfilter&imageList[i].filter)!=imageList[i].filter){
 			printf("[FILTER]filter is not matched\n");
 			continue;
@@ -251,6 +252,8 @@ bool SiftEngine::matchingImageWithVector(__out Imagelist& image ,__in cv::Mat ma
 	for(int i = 0; i<(int)imageList.size(); i++)
 	{
 		Imagelist img = imageList[i];
+		printf("[NORMAL SEARCH]상점명 : %s\n",imageList[i].store_name);
+
 		cv::Mat compareM;
 		u_int totalmatchsize=0;
 		if(!loadKey(img.store_path,compareM))

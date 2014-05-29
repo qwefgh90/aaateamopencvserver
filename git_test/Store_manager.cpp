@@ -127,7 +127,7 @@ bool Store_manager::Store_Search(IN_Search &in_search, OUT_Search &out_search)
 				{
 					if(out_search.out_list[i].matching > 0)
 					{
-						out_search.out_list[i].matching = (out_search.out_list[i].matching/SiftEngine::SEARCH_PERCENT)*100;//12%를 100%로 환산
+						out_search.out_list[i].matching = (out_search.out_list[i].matching/SiftEngine::SEARCH_PERCENT)*100;//15%를 100%로 환산
 						temp.push_back(out_search.out_list[i]);
 					}
 				}
@@ -190,7 +190,7 @@ bool Store_manager::Store_report(IN_Report &in_report, OUT_Report &out_report)
 	in_search.sort = in_report.sort;
 	
 	//우선 등록된 이미지가 있는지 검색
-	if(!Store_Search(in_search, out_search))
+	if(!Store_Report_Search(in_search, out_search))
 	{
 		//키생성
 		if(im->storeKey(in_search.store.image,save_path))
@@ -294,4 +294,91 @@ bool Store_manager::Create_cache(IN_Cache in_cache)
 	//se->loadKey(상점 경로, 캐시 구조체에 있는 매트릭스)
 	//캐시 구조체를 벡터에 저장
 	return true;
+}
+
+
+bool Store_manager::Store_Report_Search(IN_Search &in_search, OUT_Search &out_search)
+{
+	//이미지 구조체를 선언
+	Imagelist imagelist;
+	//캐시검색성공후 저장을 위한 이미지 구조체 선언
+	ImageBufferElement matchcache;
+	//이미지벡터를 지역변수로 선언
+	vector<Imagelist> Imagevector;
+	
+	ImageCache* Ic = NULL;
+	//이미지 캐시 팩토리에서 캐시 생성
+	string str(in_search.ID);
+	Icf->createImageCache(str);
+	//ID에 대한 이미지 캐시 받아오기
+	Ic = Icf->getImageCache(str);
+	//NULL일 경우 검사 안해야됨
+	//캐시를 우선으로 검색
+	if(Ic != NULL && im->matchingImageWithCache(matchcache, in_search.store.image, Ic->imageVector,in_search.filter, out_search.out_list))
+	{
+		in_search.filter;
+		out_search.code = matchcache.store_code;
+		memcpy_s(out_search.store_tel,20,matchcache.store_tel,20);
+		memcpy_s(out_search.store_time,30,matchcache.store_time,30);
+		memcpy_s(out_search.store_rest,100,matchcache.store_rest,100);
+		memcpy_s(out_search.name,256,matchcache.store_name,256);
+		out_search.latitude = matchcache.latitude;
+		out_search.longitude = matchcache.longitude;
+		//검색된 상점에 대한 의견검색을 위해 선언
+		IN_More in_more;
+		OUT_More out_more;
+		//구조체에 검색한 상점의 인자들을 저장
+		in_more.code = matchcache.store_code;
+		in_more.comment_count = 0;
+		memcpy_s(in_more.cookie,64,in_search.cookie,64);
+		in_more.sort = in_search.sort;
+		dbm->Query_opi_search(in_more, out_more);
+		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
+		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(out_more.opi[1]), 
+			out_more.opi, out_more.opi_cnt*sizeof(out_more.opi[1]));
+		out_search.opi_cnt = out_more.opi_cnt;
+		out_search.result = out_more.result;
+		out_search.score = out_more.score;
+		
+		//결과값을 분석기에 반환
+		return true;
+	}else if(!dbm->Query_images(in_search, Imagevector, Ic->imageVector)) // 캐시 안에있는 이미지는 제외하고 검색해야하므로 벡터를 인자로 넣어 SQL의 not in구문을 이용해야 한다.
+	{
+		cout<<"이미지 벡터 등록에 실패하였습니다."<<endl;
+		out_search.result = 2;
+		return false;
+	}
+	//이미지 벡터에 담긴 이미지 경로를 Fetch하여 읽은 매트릭스값을 새로 만든 매트릭스 벡터에 저장
+	//이미지 벡터, 이미지 리스트, 검색 구조제를 이미지매니저로 전달
+	if(im->matchingImage(imagelist, in_search.store.image, Imagevector,out_search.out_list))
+	{
+		//이미지 매니저(&이미지구조체, &매트릭스, 상점코드를 담은 벡터, &인서치);
+		out_search.code = imagelist.store_code;
+		memcpy(out_search.store_tel,imagelist.store_tel,20);
+		memcpy(out_search.store_time,imagelist.store_time,20);
+		memcpy(out_search.store_rest,imagelist.store_rest,100);
+		memcpy_s(out_search.name,256,imagelist.store_name,256);
+		out_search.latitude = imagelist.latitude;
+		out_search.longitude = imagelist.longitude;
+		//검색된 상점에 대한 의견검색을 위해 선언
+		IN_More in_more;
+		OUT_More out_more;
+		//구조체에 검색한 상점의 인자들을 저장
+		in_more.code = imagelist.store_code;
+		in_more.comment_count = 0;
+		memcpy_s(in_more.cookie,64,in_search.cookie,64);
+		in_more.sort = 1;
+		dbm->Query_opi_search(in_more, out_more);
+		//아웃 서치에 담아서 반환		//개수가 고려 안되있었음 (수정완)
+		memcpy_s(out_search.opi, out_more.opi_cnt*sizeof(out_more.opi[1]), 
+			out_more.opi, out_more.opi_cnt*sizeof(out_more.opi[1]));
+		out_search.opi_cnt = out_more.opi_cnt;
+		out_search.result = out_more.result;
+		out_search.score = out_more.score;
+		
+		//결과값을 분석기에 반환
+		return true;
+	}
+	out_search.result = 2;
+	return false;
 }

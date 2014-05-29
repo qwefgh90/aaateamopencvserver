@@ -26,7 +26,7 @@ DB_manager::DB_manager(void)
 	/*Create a pool that will have 3 cached connections and will swell upto a 
 	total of 5 connections. Returns the number of cached connections or -1 on error
 	*/
-	if(sqlsvrpool->CreatePool(10, 500)<=0){
+	if(sqlsvrpool->CreatePool(50, 500)<=0){
 		cout<<"Error creating database pool\n";
 		cout<<sqlsvrpool->GetLastSystemError()<<endl;	//If it's asystem error
 	}
@@ -397,16 +397,16 @@ bool DB_manager::Query_opi_search(IN_More in_more, OUT_More &out_more)
 	if(SQL_SUCCESS!=SQLAllocHandle(SQL_HANDLE_STMT, *psqlconnectionhandle, &sqlstatementhandle)){
 		sqlsvrpool->ShowSQLError(cout, SQL_HANDLE_DBC, *psqlconnectionhandle);
 	}
-	char* sort_no = "good";
+	char* sort_no = "good-bed";
 	if(in_more.sort == 0 ) // 0이 좋아요순, 1이 최신순
-		sort_no = "good";
+		sort_no = "good-bed";
 	else
 		sort_no = "date";
 	
 
 	int i=0;
 	//의견 검색 쿼리
-	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by \"%s\" desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_more.code, sort_no, in_more.comment_count);
+	sprintf_s(sql, "select sns_id, nick, sns_con, good, bed from SNS where store_code='%d' order by %s desc OFFSET %d ROWS FETCH NEXT 10 ROWS ONLY;", in_more.code, sort_no, in_more.comment_count);
 
 	if(Sql_run(sql, sqlstatementhandle))
 	{

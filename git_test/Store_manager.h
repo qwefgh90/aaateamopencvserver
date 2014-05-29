@@ -26,6 +26,7 @@ public:
 	static Store_manager* GetStore_manager();
 
 	bool Store_Search(IN_Search &in_search, OUT_Search &out_search);
+	bool Store_Report_Search(IN_Search &in_search, OUT_Search &out_search);
 	bool Store_report(IN_Report &in_report, OUT_Report &out_report);
 	bool Store_more(IN_More &in_more, OUT_More &out_more);
 	bool Store_opi_write(IN_Write_comment &in_write, OUT_Write_comment &out_write);

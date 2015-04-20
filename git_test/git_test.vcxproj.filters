@@ -43,9 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="git_test.vcxproj.user">
-      <Filter>DB Pool</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -102,12 +99,12 @@
     <ClInclude Include="ImageCacheFactory.h">
       <Filter>Source Files\Cache</Filter>
     </ClInclude>
+    <ClInclude Include="testcase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="git_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IOCPServer.cpp">
@@ -157,6 +154,12 @@
     </ClCompile>
     <ClCompile Include="DB_manager.cpp">
       <Filter>Source Files\DataBase</Filter>
+    </ClCompile>
+    <ClCompile Include="testcase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="startup.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
